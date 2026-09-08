@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SÉFIRA — Joyería de Oro Suizo</title>
+<meta name="description" content="SÉFIRA - Joyería de oro suizo exclusiva. Anillos, cadenas, pulseras, aretes y más. Envíos a todo Colombia.">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #D4B86A;
+  --gold-deep: #B89A3A;
+  --gold-shadow: #8B6B2A;
+  --emerald: #0B6E3F;
+  --emerald-light: #1A8B52;
+  --emerald-dark: #064D2E;
+  --bg-dark: #0E1219;
+  --bg-card: #141a24;
+  --bg-card-hover: #1a2230;
+  --diamond: #E8DCC8;
+  --silver: #C0C4C8;
+  --text-light: #F5F0E6;
+  --text-muted: #8a8a8a;
+  --font-title: 'Cinzel', serif;
+  --font-body: 'Raleway', sans-serif;
+  --font-elegant: 'Cormorant Garamond', serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-dark);
+  color: var(--text-light);
+  overflow-x: hidden;
+}
+
+/* ==================== HEADER ==================== */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.4s ease;
+  background: transparent;
+}
+
+header.scrolled {
+  background: rgba(14, 18, 25, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 0.7rem 2rem;
+  border-bottom: 1px solid rgba(197, 160, 85, 0.15);
+}
+
+.logo {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  color: var(--gold);
+  letter-spacing: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+header.scrolled .logo-img {
+  height: 32px;
+}
+
+.hero-logo {
+  display: block;
+  width: clamp(200px, 35vw, 350px);
+  height: auto;
+  margin: 0 auto 1.5rem;
+  filter: drop-shadow(0 0 30px rgba(201, 168, 76, 0.3));
+  animation: heroLogoIn 1.2s ease 0.1s both;
+}
+
+@keyframes heroLogoIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+nav { display: flex; align-items: center; gap: 2rem; }
+
+nav a {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: color 0.3s;
+  position: relative;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.3s;
+}
+
+nav a:hover { color: var(--gold); }
+nav a:hover::after { width: 100%; }
+
+.cart-icon {
+  cursor: pointer;
+  position: relative;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.cart-icon:hover { color: var(--gold); }
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  background: var(--emerald);
+  color: white;
+  font-size: 0.6rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.menu-toggle span {
+  width: 25px;
+  height: 1.5px;
+  background: var(--gold);
+  transition: all 0.3s;
+}
+
+/* ==================== HERO ==================== */
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, rgba(197, 160, 85, 0.08) 0%, transparent 70%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.hero-title {
+  font-family: var(--font-title);
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: var(--gold);
+  letter-spacing: 12px;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+/* ==================== GOLD LIQUID TITLE ==================== */
+.gold-liquid-title {
+  font-family: var(--font-title);
+  font-size: clamp(4rem, 14vw, 10rem);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 0.5rem;
+  line-height: 1;
+  position: relative;
+  cursor: default;
+  color: #C9A84C;
+  text-shadow:
+    0 0 40px rgba(201, 168, 76, 0.4),
+    0 0 80px rgba(201, 168, 76, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: text-shadow 0.4s ease;
+}
+.gold-liquid-title:hover {
+  text-shadow:
+    0 0 60px rgba(201, 168, 76, 0.6),
+    0 0 120px rgba(201, 168, 76, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.gold-liquid-title::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 251, 230, 0.15) 35%,
+    rgba(245, 230, 163, 0.35) 45%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(245, 230, 163, 0.35) 55%,
+    rgba(255, 251, 230, 0.15) 65%,
+    transparent 80%
+  );
+  animation: goldSweep 3.5s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+.gold-liquid-title::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.2) 45%,
+    rgba(255, 251, 230, 0.5) 50%,
+    rgba(255, 255, 255, 0.2) 55%,
+    transparent 70%
+  );
+  animation: goldSweep 3.5s ease-in-out 1.5s infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+@keyframes goldSweep {
+  0%   { left: -100%; }
+  100% { left: 200%; }
+}
+.gold-liquid-title .gold-char {
+  display: inline-block;
+  animation: goldCharFloat 4s ease-in-out infinite;
+}
+.gold-liquid-title .gold-char:nth-child(1) { animation-delay: 0s; }
+.gold-liquid-title .gold-char:nth-child(2) { animation-delay: 0.2s; }
+.gold-liquid-title .gold-char:nth-child(3) { animation-delay: 0.4s; }
+.gold-liquid-title .gold-char:nth-child(4) { animation-delay: 0.6s; }
+.gold-liquid-title .gold-char:nth-child(5) { animation-delay: 0.8s; }
+.gold-liquid-title .gold-char:nth-child(6) { animation-delay: 1s; }
+@keyframes goldCharFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ==================== GLOW CURSOR ==================== */
+.glow-cursor-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  user-select: none;
+}
+@media (hover: none) {
+  .glow-cursor-canvas { display: none; }
+}
+
+/* ==================== IMAGE TRAIL ==================== */
+.image-trail {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero { pointer-events: auto; }
+.image-trail .content__img {
+  width: 160px;
+  aspect-ratio: 1.1;
+  border-radius: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  overflow: hidden;
+  will-change: transform, filter;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(201, 168, 76, 0.2);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+}
+.image-trail .content__img-inner {
+  background-position: 50% 50%;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  background-size: cover;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+}
+@media (max-width: 768px) {
+  .image-trail .content__img { width: 100px; }
+}
+
+.hero-tagline {
+  font-family: var(--font-elegant);
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  color: var(--diamond);
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 3rem;
+  letter-spacing: 1px;
+}
+
+.hero-cta {
+  display: inline-block;
+  padding: 14px 50px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  transition: all 0.4s ease;
+}
+
+.hero-cta:hover {
+  background: var(--gold);
+  color: var(--bg-dark);
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ==================== SECTIONS ==================== */
+section {
+  padding: 6rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.section-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--diamond);
+  font-weight: 400;
+  letter-spacing: 4px;
+}
+
+.section-divider {
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+  margin: 1.5rem auto 0;
+}
+
+/* ==================== CATEGORIES ==================== */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.category-card {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  border: 1px solid rgba(197, 160, 85, 0.15);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(197, 160, 85, 0.05), transparent);
+  transition: left 0.6s;
+}
+
+.category-card:hover::before { left: 100%; }
+
+.category-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-4px);
+}
+
+.category-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.category-name {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: var(--diamond);
+  text-transform: uppercase;
+}
+
+/* ==================== CATALOG ==================== */
+.catalog-filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.filter-btn {
+  padding: 8px 24px;
+  border: 1px solid rgba(197, 160, 85, 0.3);
+  background: transparent;
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: var(--gold);
+  color: var(--bg-dark);
+  border-color: var(--gold);
+}
+
+.catalog-sort {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.catalog-sort select {
+  background: var(--bg-card);
+  color: var(--text-light);
+  border: 1px solid rgba(197, 160, 85, 0.2);
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  border: 1px solid rgba(197, 160, 85, 0.1);
+  transition: all 0.4s ease;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.product-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.08);
+}
+
+.product-placeholder {
+  color: var(--text-muted);
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+}
+
+.product-actions-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: linear-gradient(transparent, rgba(14,18,25,0.9));
+  display: flex;
+  gap: 0.5rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-actions-overlay {
+  transform: translateY(0);
+}
+
+.btn-add-cart, .btn-whatsapp-quick {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-add-cart:hover {
+  background: var(--gold);
+  color: var(--bg-dark);
+}
+
+.btn-whatsapp-quick {
+  border-color: var(--emerald);
+  color: var(--emerald-light);
+}
+
+.btn-whatsapp-quick:hover {
+  background: var(--emerald);
+  color: white;
+}
+
+.product-info {
+  padding: 1.2rem;
+}
+
+.product-category {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.product-name {
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  color: var(--diamond);
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+.product-specs {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+}
+
+.product-price {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.product-size-tag {
+  display: inline-block;
+  font-size: 0.6rem;
+  padding: 2px 8px;
+  border: 1px solid rgba(197,160,85,0.2);
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  letter-spacing: 1px;
+}
+
+/* ==================== PRODUCT DETAIL MODAL ==================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(14, 18, 25, 0.95);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+  background: var(--bg-card);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid rgba(197, 160, 85, 0.15);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 2001;
+}
+
+.modal-gallery {
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.modal-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-details {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-category {
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.modal-name {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  color: var(--diamond);
+  letter-spacing: 2px;
+  font-weight: 400;
+}
+
+.modal-price {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.modal-description {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.modal-specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.modal-spec {
+  padding: 0.8rem;
+  background: rgba(197, 160, 85, 0.05);
+  border: 1px solid rgba(197, 160, 85, 0.1);
+}
+
+.modal-spec-label {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.modal-spec-value {
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  color: var(--diamond);
+}
+
+.modal-size-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-size-select label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.modal-size-select select {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  border: 1px solid rgba(197, 160, 85, 0.3);
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: auto;
+}
+
+.btn-primary {
+  padding: 14px;
+  background: var(--gold);
+  color: var(--bg-dark);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  padding: 14px;
+  background: transparent;
+  color: var(--emerald-light);
+  border: 1px solid var(--emerald);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+
+.btn-secondary:hover {
+  background: var(--emerald);
+  color: white;
+}
+
+/* ==================== ABOUT ==================== */
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-text h3 {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  color: var(--diamond);
+  font-weight: 400;
+  letter-spacing: 3px;
+  margin-bottom: 1.5rem;
+}
+
+.about-text p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.about-text .gold-text { color: var(--gold); font-weight: 500; }
+
+.about-image {
+  aspect-ratio: 3/4;
+  background: var(--bg-card);
+  border: 1px solid rgba(197, 160, 85, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.about-feature {
+  text-align: center;
+  padding: 2rem 1rem;
+  border: 1px solid rgba(197, 160, 85, 0.1);
+}
+
+.about-feature-number {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.about-feature-text {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ==================== GOLD INFO ==================== */
+.gold-info {
+  background: linear-gradient(135deg, rgba(197, 160, 85, 0.05), rgba(11, 110, 63, 0.05));
+  border: 1px solid rgba(197, 160, 85, 0.15);
+  padding: 4rem;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 1200px;
+}
+
+.gold-info h3 {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--gold);
+  letter-spacing: 4px;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.gold-info p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ==================== TESTIMONIALS ==================== */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.testimonial-card {
+  padding: 2.5rem;
+  border: 1px solid rgba(197, 160, 85, 0.1);
+  position: relative;
+}
+
+.testimonial-quote {
+  font-family: var(--font-elegant);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--diamond);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.testimonial-quote::before {
+  content: '"';
+  font-family: var(--font-title);
+  font-size: 3rem;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.testimonial-author {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ==================== POLICIES ==================== */
+.policies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.policy-card {
+  padding: 2rem;
+  border: 1px solid rgba(197, 160, 85, 0.1);
+  text-align: center;
+}
+
+.policy-icon {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--gold);
+}
+
+.policy-title {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--diamond);
+  margin-bottom: 0.8rem;
+}
+
+.policy-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* ==================== SHIPPING INFO ==================== */
+.shipping-note {
+  text-align: center;
+  padding: 2rem;
+  border: 1px solid rgba(11, 110, 63, 0.3);
+  background: rgba(11, 110, 63, 0.05);
+  margin-top: 2rem;
+}
+
+.shipping-note p {
+  color: var(--emerald-light);
+  font-size: 0.85rem;
+}
+
+/* ==================== CART SIDEBAR ==================== */
+.cart-sidebar {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background: var(--bg-card);
+  border-left: 1px solid rgba(197, 160, 85, 0.15);
+  z-index: 3000;
+  transition: right 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.cart-sidebar.open { right: 0; }
+
+.cart-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 2999;
+}
+
+.cart-overlay.open { display: block; }
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(197, 160, 85, 0.15);
+}
+
+.cart-header h3 {
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  color: var(--diamond);
+  letter-spacing: 3px;
+  font-weight: 400;
+}
+
+.cart-close {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(197, 160, 85, 0.08);
+}
+
+.cart-item-img {
+  width: 70px;
+  height: 70px;
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-name {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  color: var(--diamond);
+  letter-spacing: 1px;
+}
+
+.cart-item-price {
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin-top: 0.2rem;
+}
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.cart-item-qty button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(197,160,85,0.3);
+  background: transparent;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-item-qty span {
+  font-size: 0.85rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+.cart-item-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: color 0.3s;
+}
+
+.cart-item-remove:hover { color: #e24b4a; }
+
+.cart-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.cart-footer {
+  border-top: 1px solid rgba(197, 160, 85, 0.15);
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.cart-total-label {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cart-total-value {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.cart-shipping-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.cart-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+  border-top: 1px solid rgba(197, 160, 85, 0.1);
+  padding: 4rem 2rem 2rem;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+}
+
+.footer-brand .logo {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.footer-brand p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.footer-col h4 {
+  font-family: var(--font-title);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--diamond);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.footer-col a {
+  display: block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  margin-bottom: 0.8rem;
+  transition: color 0.3s;
+}
+
+.footer-col a:hover { color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(197, 160, 85, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ==================== WHATSAPP FLOAT ==================== */
+.whatsapp-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  transition: all 0.3s;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-float svg {
+  width: 28px;
+  height: 28px;
+  fill: white;
+}
+
+/* ==================== SCROLL ANIMATIONS ==================== */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+[data-animate].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-animate="fade-left"] {
+  transform: translateX(-40px);
+}
+
+[data-animate="fade-left"].visible {
+  transform: translateX(0);
+}
+
+[data-animate="fade-right"] {
+  transform: translateX(40px);
+}
+
+[data-animate="fade-right"].visible {
+  transform: translateX(0);
+}
+
+[data-animate="scale"] {
+  transform: scale(0.92);
+}
+
+[data-animate="scale"].visible {
+  transform: scale(1);
+}
+
+[data-animate].delay-1 { transition-delay: 0.1s; }
+[data-animate].delay-2 { transition-delay: 0.2s; }
+[data-animate].delay-3 { transition-delay: 0.3s; }
+[data-animate].delay-4 { transition-delay: 0.4s; }
+[data-animate].delay-5 { transition-delay: 0.5s; }
+[data-animate].delay-6 { transition-delay: 0.6s; }
+[data-animate].delay-7 { transition-delay: 0.7s; }
+
+.hero-content .hero-subtitle { animation: heroFadeIn 1s ease 0.2s both; }
+.hero-content .hero-title { animation: heroFadeIn 1s ease 0.5s both; }
+.hero-content .hero-tagline { animation: heroFadeIn 1s ease 0.8s both; }
+.hero-content .hero-cta { animation: heroFadeIn 1s ease 1.1s both; }
+
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notification-toast {
+  position: fixed;
+  bottom: 6rem;
+  right: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--gold);
+  padding: 1rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  z-index: 4000;
+  transform: translateX(150%);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.notification-toast.show {
+  transform: translateX(0);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(14, 18, 25, 0.98);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    z-index: 1000;
+  }
+
+  nav.open { display: flex; }
+  nav a { font-size: 1rem; }
+
+  .menu-toggle { display: flex; }
+
+  .hero-title { letter-spacing: 6px; }
+
+  .modal-content { grid-template-columns: 1fr; }
+  .modal-gallery { min-height: 250px; }
+
+  .about-content { grid-template-columns: 1fr; gap: 2rem; }
+  .about-features { grid-template-columns: 1fr; }
+
+  .footer-content { grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+  .cart-sidebar { width: 100%; right: -100%; }
+
+  .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+  .product-actions-overlay { transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .footer-content { grid-template-columns: 1fr; }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* ==================== PARTICLE CANVAS ==================== */
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero, section, .gold-info, footer, #categorias, #catalogo, #historia, #testimonios, #politicas {
+  position: relative;
+  z-index: 1;
+}
+
+header { z-index: 1000; }
+</style>
+</head>
+<body>
+
+<!-- GOLDEN PARTICLE CANVAS -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- HEADER -->
+<header id="header">
+  <a href="#" class="logo"><img src="assets/img/logo/logo.png" alt="SÉFIRA" class="logo-img"> SÉFIRA</a>
+  <div class="menu-toggle" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <nav id="nav">
+    <a href="#inicio">Inicio</a>
+    <a href="#catalogo">Catálogo</a>
+    <a href="#historia">Nuestra Historia</a>
+    <a href="#politicas">Políticas</a>
+    <a href="#contacto">Contacto</a>
+    <div class="cart-icon" onclick="toggleCart()">
+      Carrito
+      <span class="cart-count" id="cartCount">0</span>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="image-trail" id="imageTrail">
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_hwnit4hwnit4hwni.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_jl0l7njl0l7njl0l.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_99hb4099hb4099hb.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_grgkz2grgkz2grgk.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_z6uf1lz6uf1lz6uf.jpg')"></div></div>
+    <div class="content__img"><div class="content__img-inner" style="background-image:url('assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg')"></div></div>
+  </div>
+  <div class="hero-content">
+    <img src="assets/img/logo/logo.png" alt="SÉFIRA" class="hero-logo">
+
+    <h2 class="gold-liquid-title" id="goldTitle">
+      <span class="gold-char">S</span><span class="gold-char">É</span><span class="gold-char">F</span><span class="gold-char">I</span><span class="gold-char">R</span><span class="gold-char">A</span>
+    </h2>
+
+    <span class="hero-subtitle">Joyería de oro suizo</span>
+    <p class="hero-tagline">Donde cada pieza cuenta una historia de eternidad</p>
+    <a href="#catalogo" class="hero-cta">Explorar colección</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Descubrir</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="categorias">
+  <div class="section-header" data-animate>
+    <span class="section-label">Colecciones</span>
+    <h2 class="section-title">Categorías</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="categories-grid">
+    <div class="category-card delay-1" data-animate onclick="filterProducts('anillos')">
+      <span class="category-icon">&#9672;</span>
+      <span class="category-name">Anillos</span>
+    </div>
+    <div class="category-card delay-2" data-animate onclick="filterProducts('cadenas')">
+      <span class="category-icon">&#9687;</span>
+      <span class="category-name">Cadenas</span>
+    </div>
+    <div class="category-card delay-3" data-animate onclick="filterProducts('pulseras')">
+      <span class="category-icon">&#9900;</span>
+      <span class="category-name">Pulseras</span>
+    </div>
+    <div class="category-card delay-4" data-animate onclick="filterProducts('aretes')">
+      <span class="category-icon">&#10022;</span>
+      <span class="category-name">Aretes</span>
+    </div>
+    <div class="category-card delay-5" data-animate onclick="filterProducts('dijes')">
+      <span class="category-icon">&#10045;</span>
+      <span class="category-name">Dijes</span>
+    </div>
+    <div class="category-card delay-6" data-animate onclick="filterProducts('sets')">
+      <span class="category-icon">&#10070;</span>
+      <span class="category-name">Sets</span>
+    </div>
+    <div class="category-card delay-7" data-animate onclick="filterProducts('accesorios')">
+      <span class="category-icon">&#9733;</span>
+      <span class="category-name">Accesorios</span>
+    </div>
+  </div>
+</section>
+
+<!-- CATALOG -->
+<section id="catalogo">
+  <div class="section-header" data-animate>
+    <span class="section-label">Exclusividad en oro suizo</span>
+    <h2 class="section-title">Catálogo</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="catalog-filters">
+    <button class="filter-btn active" onclick="filterProducts('todos')">Todos</button>
+    <button class="filter-btn" onclick="filterProducts('anillos')">Anillos</button>
+    <button class="filter-btn" onclick="filterProducts('cadenas')">Cadenas</button>
+    <button class="filter-btn" onclick="filterProducts('pulseras')">Pulseras</button>
+    <button class="filter-btn" onclick="filterProducts('aretes')">Aretes</button>
+    <button class="filter-btn" onclick="filterProducts('dijes')">Dijes</button>
+    <button class="filter-btn" onclick="filterProducts('sets')">Sets</button>
+    <button class="filter-btn" onclick="filterProducts('accesorios')">Accesorios</button>
+  </div>
+
+  <div class="catalog-sort">
+    <select onchange="sortProducts(this.value)">
+      <option value="default">Ordenar por</option>
+      <option value="price-low">Precio: Menor a Mayor</option>
+      <option value="price-high">Precio: Mayor a Menor</option>
+      <option value="name">Nombre A-Z</option>
+    </select>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- Products loaded dynamically -->
+  </div>
+</section>
+
+<!-- ABOUT / HISTORY -->
+<section id="historia">
+  <div class="section-header" data-animate>
+    <span class="section-label">Nuestra esencia</span>
+    <h2 class="section-title">La Historia de SÉFIRA</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="about-content">
+    <div class="about-text" data-animate="fade-left">
+      <h3>Un legado familiar forjado en oro</h3>
+      <p>SÉFIRA nace del sueño de una familia unida por la pasión por lo extraordinario. Cada letra de nuestro nombre lleva el alma de quienes dieron vida a este proyecto: <span class="gold-text">Sebastián, Sofía, Luz Marina y María José</span>.</p>
+      <p>Nos especializamos en <span class="gold-text">oro suizo</span>, reconocido mundialmente por su pureza excepcional y su resistencia superior. Suiza refina el 70% del oro mundial bajo los estándares de calidad más exigentes del planeta.</p>
+      <p>Cada pieza de SÉFIRA es una promesa de eternidad. No vendemos joyas — entregamos herencias.</p>
+    </div>
+    <div class="about-image" data-animate="fade-right">
+      <span style="color:var(--text-muted);font-family:var(--font-title);font-size:0.8rem;letter-spacing:3px;">FOTO FAMILIA</span>
+    </div>
+  </div>
+
+  <div class="about-features">
+    <div class="about-feature">
+      <div class="about-feature-number">18K</div>
+      <div class="about-feature-text">Oro suizo certificado</div>
+    </div>
+    <div class="about-feature">
+      <div class="about-feature-number">100%</div>
+      <div class="about-feature-text">Garantía de autenticidad</div>
+    </div>
+    <div class="about-feature">
+      <div class="about-feature-number">24/7</div>
+      <div class="about-feature-text">Atención personalizada</div>
+    </div>
+  </div>
+</section>
+
+<!-- GOLD INFO -->
+<div class="gold-info" data-animate="scale">
+  <h3>¿Por qué oro suizo?</h3>
+  <p>El oro suizo es sinónimo de excelencia. Refinado bajo los controles de calidad más rigurosos del mundo, ofrece una resistencia superior al agua, cremas y uso diario. Nuestras piezas mantienen su brillo y color como el primer día, porque la verdadera joyería no se desgasta — evoluciona contigo.</p>
+</div>
+
+<!-- TESTIMONIALS -->
+<section id="testimonios">
+  <div class="section-header" data-animate>
+    <span class="section-label">Experiencias</span>
+    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-quote">Compré un anillo para mi esposa y la calidad superó todas mis expectativas. El brillo es incomparable.</div>
+      <div class="testimonial-author">Carlos M. — Medellín</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-quote">La atención fue excepcional. Me asesoraron en cada detalle y el envío llegó perfecto a Bogotá.</div>
+      <div class="testimonial-author">Laura G. — Bogotá</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-quote">El oro suizo se siente diferente. Llevo mi cadena todos los días y sigue impecable. SÉFIRA es otra cosa.</div>
+      <div class="testimonial-author">Andrés R. — Cali</div>
+    </div>
+  </div>
+</section>
+
+<!-- POLICIES -->
+<section id="politicas">
+  <div class="section-header" data-animate>
+    <span class="section-label">Tranquilidad</span>
+    <h2 class="section-title">Nuestras Políticas</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="policies-grid">
+    <div class="policy-card">
+      <div class="policy-icon">&#9881;</div>
+      <h4 class="policy-title">Garantía</h4>
+      <p class="policy-text">Todas nuestras piezas cuentan con garantía de autenticidad y calidad. Certificamos cada gramo de oro suizo que llega a tus manos.</p>
+    </div>
+    <div class="policy-card">
+      <div class="policy-icon">&#8635;</div>
+      <h4 class="policy-title">Cambios y devoluciones</h4>
+      <p class="policy-text">Tienes 5 días hábiles después de recibir tu pieza para solicitar un cambio de talla o devolución en perfecto estado.</p>
+    </div>
+    <div class="policy-card">
+      <div class="policy-icon">&#9992;</div>
+      <h4 class="policy-title">Envíos</h4>
+      <p class="policy-text">Envíos a todo Colombia. El costo se calcula según tu ubicación. Empaque premium de seguridad para proteger tu joya.</p>
+    </div>
+    <div class="policy-card">
+      <div class="policy-icon">&#128274;</div>
+      <h4 class="policy-title">Seguridad</h4>
+      <p class="policy-text">Tu información personal está protegida. Todas las transacciones se manejan de forma segura y confidencial.</p>
+    </div>
+  </div>
+
+  <div class="shipping-note">
+    <p>Los envíos se cobran por separado según la ciudad de destino. Consulta el costo exacto por WhatsApp antes de finalizar tu compra.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contacto">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <a href="#" class="logo"><img src="assets/img/logo/logo.png" alt="SÉFIRA" class="logo-img"> SÉFIRA</a>
+      <p>Joyería de oro suizo exclusiva. Cada pieza es una obra de arte diseñada para trascender generaciones.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <a href="#inicio">Inicio</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#historia">Nuestra historia</a>
+      <a href="#politicas">Políticas</a>
+    </div>
+    <div class="footer-col">
+      <h4>Categorías</h4>
+      <a href="#" onclick="filterProducts('anillos')">Anillos</a>
+      <a href="#" onclick="filterProducts('cadenas')">Cadenas</a>
+      <a href="#" onclick="filterProducts('pulseras')">Pulseras</a>
+      <a href="#" onclick="filterProducts('aretes')">Aretes</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <a href="mailto:sefira.joyeria@gmail.com">sefira.joyeria@gmail.com</a>
+      <a href="https://www.instagram.com/sefira.joyeria" target="_blank" rel="noopener">Instagram — @sefira.joyeria</a>
+      <a href="https://www.tiktok.com/@sefira.joyeria" target="_blank" rel="noopener">TikTok — @sefira.joyeria</a>
+      <a href="https://www.facebook.com/profile.php?id=61593341068485" target="_blank" rel="noopener">Facebook — Sefira Joyeria</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 SÉFIRA. Todos los derechos reservados.</span>
+    <span>Joyería de Oro Suizo — Colombia</span>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Tu Selección</h3>
+    <button class="cart-close" onclick="toggleCart()">&#10005;</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Tu carrito está vacío</div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-value" id="cartTotal">$0</span>
+    </div>
+    <p class="cart-shipping-note">* Envío no incluido. Se calcula según destino.</p>
+    <div class="cart-buttons">
+      <button class="btn-primary" onclick="checkoutWhatsApp()">Finalizar por WhatsApp</button>
+      <a href="#" class="btn-secondary" onclick="checkoutWhatsApp()">Solicitar información</a>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="productModal">
+  <button class="modal-close" onclick="closeModal()">&#10005;</button>
+  <div class="modal-content">
+    <div class="modal-gallery" id="modalGallery">
+      <span style="color:var(--text-muted);font-family:var(--font-title);font-size:0.8rem;letter-spacing:3px;">FOTO</span>
+    </div>
+    <div class="modal-details">
+      <span class="modal-category" id="modalCategory"></span>
+      <h2 class="modal-name" id="modalName"></h2>
+      <span class="modal-price" id="modalPrice"></span>
+      <p class="modal-description" id="modalDescription"></p>
+      <div class="modal-specs-grid">
+        <div class="modal-spec">
+          <div class="modal-spec-label">Quilates</div>
+          <div class="modal-spec-value" id="modalKarat"></div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Peso</div>
+          <div class="modal-spec-value" id="modalWeight"></div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Tipo de oro</div>
+          <div class="modal-spec-value" id="modalGoldType"></div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Disponible</div>
+          <div class="modal-spec-value" id="modalStock"></div>
+        </div>
+      </div>
+      <div class="modal-size-select" id="modalSizeContainer" style="display:none;">
+        <label>Seleccionar talla</label>
+        <select id="modalSize">
+          <option value="">Elige tu talla</option>
+        </select>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="modalAddCart">Agregar al carrito</button>
+        <a href="#" class="btn-secondary" id="modalWhatsApp">Consultar por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/573022609363?text=Hola%20SÉFIRA,%20me%20interesa%20conocer%20más%20sobre%20sus%20joyas" class="whatsapp-float" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+// ==================== IMAGE TRAIL ====================
+(function() {
+  var container = document.getElementById('imageTrail');
+  if (!container || typeof gsap === 'undefined') return;
+
+  function lerp(a, b, n) { return (1 - n) * a + n * b; }
+  function getPos(e, rect) {
+    var cx = e.touches ? e.touches[0].clientX : e.clientX;
+    var cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: cx - rect.left, y: cy - rect.top };
+  }
+  function getDist(p1, p2) { return Math.hypot(p1.x - p2.x, p1.y - p2.y); }
+
+  var imgEls = container.querySelectorAll('.content__img');
+  var images = [];
+  imgEls.forEach(function(el) {
+    var inner = el.querySelector('.content__img-inner');
+    var rect = el.getBoundingClientRect();
+    images.push({ el: el, inner: inner, rect: rect });
+    window.addEventListener('resize', function() {
+      gsap.set(el, { scale: 1, x: 0, y: 0, opacity: 0 });
+      rect = el.getBoundingClientRect();
+      images.forEach(function(img) { if (img.el === el) img.rect = rect; });
+    });
+  });
+
+  var total = images.length;
+  var pos = 0, zIdx = 1, active = 0, idle = true, threshold = 80;
+  var mouse = { x: 0, y: 0 }, last = { x: 0, y: 0 }, cache = { x: 0, y: 0 };
+  var started = false, raf = 0;
+
+  function showNext() {
+    ++zIdx;
+    pos = pos < total - 1 ? pos + 1 : 0;
+    var img = images[pos];
+    gsap.killTweensOf(img.el);
+    gsap.timeline({
+      onStart: function() { active++; idle = false; },
+      onComplete: function() { active--; if (active === 0) idle = true; }
+    })
+    .fromTo(img.el,
+      { opacity: 1, scale: 0, zIndex: zIdx,
+        x: cache.x - img.rect.width / 2, y: cache.y - img.rect.height / 2 },
+      { duration: 0.4, ease: 'power1', scale: 1,
+        x: mouse.x - img.rect.width / 2, y: mouse.y - img.rect.height / 2 }, 0)
+    .fromTo(img.inner,
+      { scale: 2.8, filter: 'brightness(250%)' },
+      { duration: 0.4, ease: 'power1', scale: 1, filter: 'brightness(100%)' }, 0)
+    .to(img.el,
+      { duration: 0.4, ease: 'power2', opacity: 0, scale: 0.2 }, 0.45);
+  }
+
+  function render() {
+    cache.x = lerp(cache.x, mouse.x, 0.1);
+    cache.y = lerp(cache.y, mouse.y, 0.1);
+    if (getDist(mouse, last) > threshold) {
+      showNext();
+      last = { x: mouse.x, y: mouse.y };
+    }
+    if (idle && zIdx !== 1) zIdx = 1;
+    raf = requestAnimationFrame(render);
+  }
+
+  // Use hero section as event target (covers whole viewport)
+  var hero = container.parentElement;
+  function onMove(e) {
+    var rect = container.getBoundingClientRect();
+    mouse = getPos(e, rect);
+    if (!started) {
+      cache = { x: mouse.x, y: mouse.y };
+      started = true;
+      raf = requestAnimationFrame(render);
+    }
+  }
+  hero.addEventListener('mousemove', onMove);
+  hero.addEventListener('touchmove', onMove);
+})();
+
+// ==================== GOLD LIQUID TITLE ====================
+(function() {
+  const title = document.getElementById('goldTitle');
+  if (!title) return;
+  const chars = title.querySelectorAll('.gold-char');
+
+  // Parallax: move gold gradient based on mouse position
+  title.addEventListener('pointermove', function(e) {
+    const r = title.getBoundingClientRect();
+    const px = ((e.clientX - r.left) / r.width) * 100;
+    const py = ((e.clientY - r.top) / r.height) * 100;
+    title.style.backgroundPosition = px + '% ' + py + '%';
+    title.style.animationPlayState = 'paused';
+  });
+  title.addEventListener('pointerleave', function() {
+    title.style.animationPlayState = 'running';
+  });
+
+  // GSAP reveal: chars rise up on load
+  if (typeof gsap !== 'undefined') {
+    gsap.from(chars, {
+      y: 80,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.1,
+      ease: 'power4.out',
+      delay: 0.3
+    });
+  }
+})();
+</script>
+
+<script>
+// ==================== CONFIG ====================
+const WHATSAPP_NUMBER = '573022609363';
+const CURRENCY = 'COP';
+
+// ==================== CATÁLOGO SÉFIRA ====================
+let products = [
+  { id: 'SEF-001', name: 'Róndeles Verdes x3', category: 'accesorios', price: 135000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 3 róndeles verdes en oro suizo 18K. Perfectos para personalizar cadenas y pulseras con un toque de color y elegancia.', stock: 10, sizes: [], image: '' },
+  { id: 'SEF-002', name: 'Balines Diamantados #3 x10', category: 'accesorios', price: 105000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #3 en oro suizo 18K. Acabado facetado que refleja la luz con cada movimiento.', stock: 15, sizes: [], image: '' },
+  { id: 'SEF-003', name: 'Balines Diamantados #4 x10', category: 'accesorios', price: 130000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #4 en oro suizo 18K. Mayor presencia y brillo con el corte diamantado.', stock: 12, sizes: [], image: '' },
+  { id: 'SEF-004', name: 'Balines Diamantados #5 x10', category: 'accesorios', price: 140000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #5 en oro suizo 18K. Tamaño ideal para cadenas y pulseras con carácter.', stock: 10, sizes: [], image: '' },
+  { id: 'SEF-005', name: 'Balines Diamantados #6 x10', category: 'accesorios', price: 170000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #6 en oro suizo 18K. Presencia y brillo en un tamaño generoso.', stock: 8, sizes: [], image: '' },
+  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 72000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8 en oro suizo 18K. Los más grandes de nuestra colección, impacto visual garantizado.', stock: 10, sizes: [], image: '' },
+  { id: 'SEF-007', name: 'Balines Lisos #3 x10', category: 'accesorios', price: 50000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines lisos talla #3 en oro suizo 18K. Acabado pulido clásico, elegancia sutil y atemporal.', stock: 20, sizes: [], image: '' },
+  { id: 'SEF-008', name: 'Cadena Gucci 60cm', category: 'cadenas', price: 255000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K. Eslabones entrelazados con el diseño icónico. Resistente y versátil para uso diario.', stock: 5, sizes: [], image: '' },
+  { id: 'SEF-009', name: 'Topos Esmeralda Broche Rosca', category: 'aretes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos con piedra esmeralda y broche de rosca en oro suizo 18K. Seguros, elegantes y con el verde esmeralda que define a SÉFIRA.', stock: 15, sizes: [], image: '' },
+  { id: 'SEF-010', name: 'Barriles x10', category: 'accesorios', price: 160000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 barriles en oro suizo 18K. Forma cilíndrica elegante para personalizar tus cadenas y pulseras.', stock: 8, sizes: [], image: '' },
+  { id: 'SEF-011', name: 'Dije Inicial M', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial "M" en oro suizo 18K. Personaliza tu cadena con estilo. Acabado pulido brillante.', stock: 10, sizes: [], image: '' },
+  { id: 'SEF-012', name: 'Dije Inicial S', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial "S" en oro suizo 18K. Lleva tu letra con orgullo. Acabado pulido brillante.', stock: 10, sizes: [], image: '' },
+  { id: 'SEF-013', name: 'Dije Trébol', category: 'dijes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije en forma de trébol de la suerte en oro suizo 18K. Símbolo de buena fortuna con acabado delicado.', stock: 12, sizes: [], image: '' },
+  { id: 'SEF-014', name: 'Dije Caballo', category: 'dijes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con figura de caballo en oro suizo 18K. Detallado y elegante, símbolo de fuerza y libertad.', stock: 6, sizes: [], image: '' },
+  { id: 'SEF-015', name: 'Dije Infinito Grande', category: 'dijes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije infinito en tamaño grande, oro suizo 18K. Símbolo de amor eterno. Pieza con presencia que no pasa desapercibida.', stock: 8, sizes: [], image: '' },
+  { id: 'SEF-016', name: 'Dije Virgen Tallada', category: 'dijes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije de la Virgen con tallado detallado en oro suizo 18K. Pieza de devoción y elegancia con acabado artesanal.', stock: 10, sizes: [], image: '' },
+];
+
+let cart = [];
+let currentFilter = 'todos';
+
+// ==================== HEADER SCROLL ====================
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('header');
+  header.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ==================== MENU MOBILE ====================
+function toggleMenu() {
+  document.getElementById('nav').classList.toggle('open');
+}
+
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('nav').classList.remove('open');
+  });
+});
+
+// ==================== RENDER PRODUCTS ====================
+function renderProducts(items) {
+  const grid = document.getElementById('productsGrid');
+  if (items.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:3rem;font-style:italic;">No hay productos en esta categoría aún.</p>';
+    return;
+  }
+  grid.innerHTML = items.map(p => `
+    <div class="product-card" onclick="openProduct('${p.id}')">
+      <div class="product-image">
+        ${p.image ? `<img src="${p.image}" alt="${p.name}">` : `<span class="product-placeholder">SÉFIRA</span>`}
+        <div class="product-actions-overlay" onclick="event.stopPropagation()">
+          <button class="btn-add-cart" onclick="addToCart('${p.id}')">Agregar</button>
+          <a class="btn-whatsapp-quick" href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola SÉFIRA, me interesa: ' + p.name + ' ($' + p.price.toLocaleString('es-CO') + ')')}" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-category">${p.category}</div>
+        <h3 class="product-name">${p.name}</h3>
+        <div class="product-specs">${p.karat} · ${p.weight} · Oro ${p.goldType}</div>
+        <div class="product-price">$${p.price.toLocaleString('es-CO')}</div>
+        ${p.sizes.length ? `<span class="product-size-tag">Tallas: ${p.sizes.join(', ')}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ==================== FILTER & SORT ====================
+function filterProducts(category) {
+  currentFilter = category;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = [...document.querySelectorAll('.filter-btn')].find(b =>
+    b.textContent.toLowerCase().includes(category === 'todos' ? 'todos' : category)
+  );
+  if (activeBtn) activeBtn.classList.add('active');
+
+  const filtered = category === 'todos' ? products : products.filter(p => p.category === category);
+  renderProducts(filtered);
+
+  document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
+}
+
+function sortProducts(type) {
+  let items = currentFilter === 'todos' ? [...products] : products.filter(p => p.category === currentFilter);
+  if (type === 'price-low') items.sort((a, b) => a.price - b.price);
+  else if (type === 'price-high') items.sort((a, b) => b.price - a.price);
+  else if (type === 'name') items.sort((a, b) => a.name.localeCompare(b.name));
+  renderProducts(items);
+}
+
+// ==================== PRODUCT MODAL ====================
+function openProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('modalCategory').textContent = p.category.toUpperCase();
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalPrice').textContent = '$' + p.price.toLocaleString('es-CO');
+  document.getElementById('modalDescription').textContent = p.description;
+  document.getElementById('modalKarat').textContent = p.karat;
+  document.getElementById('modalWeight').textContent = p.weight;
+  document.getElementById('modalGoldType').textContent = 'Suizo';
+  document.getElementById('modalStock').textContent = p.stock > 0 ? `Sí (${p.stock} disponibles)` : 'Agotado';
+
+  const gallery = document.getElementById('modalGallery');
+  gallery.innerHTML = p.image ? `<img src="${p.image}" alt="${p.name}">` : '<span style="color:var(--text-muted);font-family:var(--font-title);font-size:0.8rem;letter-spacing:3px;">FOTO</span>';
+
+  const sizeContainer = document.getElementById('modalSizeContainer');
+  if (p.sizes.length > 0) {
+    sizeContainer.style.display = 'flex';
+    document.getElementById('modalSize').innerHTML = '<option value="">Elige tu talla</option>' + p.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+  } else {
+    sizeContainer.style.display = 'none';
+  }
+
+  document.getElementById('modalAddCart').onclick = () => { addToCart(p.id); closeModal(); };
+  document.getElementById('modalWhatsApp').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola SÉFIRA, me interesa el producto: ' + p.name + ' - $' + p.price.toLocaleString('es-CO') + '. ¿Está disponible?')}`;
+
+  document.getElementById('productModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ==================== CART ====================
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+
+  const existing = cart.find(x => x.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...p, qty: 1 });
+  }
+  updateCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(x => x.id !== id);
+  updateCart();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) removeFromCart(id);
+  else updateCart();
+}
+
+function updateCart() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+
+  const itemsEl = document.getElementById('cartItems');
+  const footerEl = document.getElementById('cartFooter');
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = '<div class="cart-empty">Tu carrito está vacío</div>';
+    footerEl.style.display = 'none';
+    return;
+  }
+
+  footerEl.style.display = 'block';
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  document.getElementById('cartTotal').textContent = '$' + total.toLocaleString('es-CO');
+
+  itemsEl.innerHTML = cart.map(i => `
+    <div class="cart-item">
+      <div class="cart-item-img">
+        ${i.image ? `<img src="${i.image}" alt="${i.name}">` : '<span style="color:var(--text-muted);font-size:0.5rem;">SÉFIRA</span>'}
+      </div>
+      <div>
+        <div class="cart-item-name">${i.name}</div>
+        <div class="cart-item-price">$${i.price.toLocaleString('es-CO')}</div>
+        <div class="cart-item-qty">
+          <button onclick="changeQty('${i.id}', -1)">-</button>
+          <span>${i.qty}</span>
+          <button onclick="changeQty('${i.id}', 1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart('${i.id}')">&#10005;</button>
+    </div>
+  `).join('');
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+}
+
+function checkoutWhatsApp() {
+  if (cart.length === 0) return;
+
+  let msg = '¡Hola SÉFIRA! Me gustaría hacer el siguiente pedido:\n\n';
+  cart.forEach(i => {
+    msg += `• ${i.name} (x${i.qty}) - $${(i.price * i.qty).toLocaleString('es-CO')}\n`;
+  });
+  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  msg += `\n💰 Total: $${total.toLocaleString('es-CO')}\n\n¿Me pueden confirmar disponibilidad y costo de envío?`;
+
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// ==================== SCROLL ANIMATIONS ====================
+const animObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      animObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('[data-animate]').forEach(el => animObserver.observe(el));
+
+// ==================== CART NOTIFICATION ====================
+function showNotification(text) {
+  let toast = document.querySelector('.notification-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'notification-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = text;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+const origAddToCart = addToCart;
+addToCart = function(id) {
+  origAddToCart(id);
+  const p = products.find(x => x.id === id);
+  if (p) showNotification('Agregado: ' + p.name);
+};
+
+// ==================== GOLDEN PARTICLE SPIRAL 3D ====================
+(function() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  let scrollY = 0;
+  let particles = [];
+  const PARTICLE_COUNT = 80;
+
+  const GOLD_COLORS = [
+    { r: 212, g: 176, b: 106 },
+    { r: 197, g: 160, b: 85 },
+    { r: 176, g: 141, b: 58 },
+    { r: 232, g: 220, b: 200 },
+    { r: 255, g: 223, b: 140 },
+  ];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  window.addEventListener('scroll', () => { scrollY = window.pageYOffset; });
+
+  class Particle {
+    constructor() {
+      this.reset(true);
+    }
+
+    reset(initial) {
+      this.angle = Math.random() * Math.PI * 2;
+      this.spiralRadius = 50 + Math.random() * 250;
+      this.spiralSpeed = (0.002 + Math.random() * 0.006) * (Math.random() > 0.5 ? 1 : -1);
+      this.y = initial ? Math.random() * H : -20;
+      this.fallSpeed = 0.15 + Math.random() * 0.5;
+      this.centerX = W * (0.2 + Math.random() * 0.6);
+      this.z = Math.random();
+      this.zSpeed = 0.003 + Math.random() * 0.005;
+      this.zPhase = Math.random() * Math.PI * 2;
+      this.size = 1 + Math.random() * 2.5;
+      this.color = GOLD_COLORS[Math.floor(Math.random() * GOLD_COLORS.length)];
+      this.opacity = 0.2 + Math.random() * 0.6;
+      this.pulseSpeed = 0.01 + Math.random() * 0.03;
+      this.pulsePhase = Math.random() * Math.PI * 2;
+      this.drift = (Math.random() - 0.5) * 0.3;
+      this.life = 0;
+    }
+
+    update(time) {
+      this.life++;
+      const scrollFactor = scrollY * 0.0008;
+
+      this.angle += this.spiralSpeed + scrollFactor * 0.01;
+
+      this.z = 0.3 + 0.7 * ((Math.sin(this.zPhase + time * this.zSpeed) + 1) / 2);
+
+      const depthScale = 0.4 + this.z * 0.6;
+      const currentRadius = this.spiralRadius * depthScale;
+
+      this.x = this.centerX + Math.cos(this.angle) * currentRadius;
+
+      this.y += this.fallSpeed * depthScale + scrollFactor * 0.5;
+      this.x += this.drift;
+
+      this.currentOpacity = this.opacity * (0.5 + 0.5 * Math.sin(this.pulsePhase + time * this.pulseSpeed)) * this.z;
+
+      this.currentSize = this.size * depthScale;
+
+      if (this.y > H + 30 || this.x < -50 || this.x > W + 50) {
+        this.reset(false);
+      }
+    }
+
+    draw(ctx, time) {
+      const glow = this.currentSize * 3 * this.z;
+      const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, glow);
+      gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.currentOpacity})`);
+      gradient.addColorStop(0.4, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.currentOpacity * 0.3})`);
+      gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
+
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, glow, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.currentSize * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 240, 200, ${this.currentOpacity * 0.8})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push(new Particle());
+  }
+
+  let time = 0;
+
+  function animate() {
+    time++;
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.globalCompositeOperation = 'lighter';
+
+    particles.sort((a, b) => a.z - b.z);
+
+    for (let p of particles) {
+      p.update(time);
+      p.draw(ctx, time);
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
+
+// ==================== INIT ====================
+renderProducts(products);
+</script>
+
+<canvas id="glowCursorCanvas" class="glow-cursor-canvas" aria-hidden="true"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/ogl/dist/ogl.umd.js"></script>
+<script>
+// ==================== GLOW CURSOR (vanilla) ====================
+(function() {
+  if (window.matchMedia('(hover: none)').matches) return;
+  var canvas = document.getElementById('glowCursorCanvas');
+  if (!canvas || typeof ogl === 'undefined') return;
+
+  var MAX_POINTS = 64;
+  var VERTEX = 'attribute vec2 position;attribute vec2 uv;varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,0.0,1.0);}';
+  var FRAGMENT = [
+    'precision highp float;',
+    '#define MAX_POINTS 64',
+    'uniform vec2 uResolution;uniform vec2 uPoints[MAX_POINTS];uniform float uPointCount;',
+    'uniform vec3 uColor;uniform vec3 uSecondaryColor;uniform float uTrailWidth;',
+    'uniform float uTaper;uniform float uGlowIntensity;uniform float uGlowSpread;',
+    'uniform float uHotspot;uniform float uBrightness;uniform float uOpacity;',
+    'uniform float uPulseSpeed;uniform float uNoiseStrength;uniform float uNormalBlend;',
+    'uniform float uTime;uniform float uFade;varying vec2 vUv;',
+    'float sRGB(float x){if(x<=0.00031308)return 12.92*x;return 1.055*pow(x,1.0/2.4)-0.055;}',
+    'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}',
+    'float filmGrain(vec2 p,float time){float frame=time*18.0;float fi=mod(floor(frame),256.0);',
+    'float ni=mod(fi+1.0,256.0);float blend=fract(frame);blend=blend*blend*(3.0-2.0*blend);',
+    'vec2 px=floor(p);float c=hash(px+vec2(fi*17.0,fi*31.0));float n=hash(px+vec2(ni*17.0,ni*31.0));',
+    'return mix(c,n,blend)*2.0-1.0;}',
+    'void main(){vec2 pixel=vUv*uResolution;float denom=max(uPointCount-1.0,1.0);',
+    'float strongest=0.0;float strongestCore=0.0;float colorWeight=0.0;vec3 colorSum=vec3(0.0);',
+    'for(int i=0;i<MAX_POINTS-1;i++){float idx=float(i);float active=1.0-step(uPointCount-1.0,idx);',
+    'vec2 start=uPoints[i];vec2 end=uPoints[i+1];vec2 toPixel=pixel-start;vec2 seg=end-start;',
+    'float along=clamp(dot(toPixel,seg)/max(dot(seg,seg),0.0001),0.0,1.0);',
+    'float progress=clamp((idx+along)/denom,0.0,1.0);',
+    'float life=pow(max(1.0-progress,0.0),mix(0.55,1.25,uTaper));',
+    'float w=uTrailWidth*mix(1.0,0.25,pow(progress,mix(0.55,1.6,uTaper)));',
+    'float dist=length(toPixel-seg*along);float falloff=max(w*(0.8+uGlowSpread*1.4),0.5);',
+    'float beam=min(1.0,(falloff*falloff)/(dist*dist+falloff*falloff));',
+    'float core=exp(-pow(dist/max(w,0.5),2.0)*2.5);',
+    'float pa=min(abs(uPulseSpeed),1.0);',
+    'float pulse=1.0+sin(uTime*uPulseSpeed*3.0-progress*11.0)*0.16*pa;',
+    'float intensity=(core+beam*uGlowIntensity*0.55)*life*pulse*active;',
+    'vec3 sc=mix(uColor,uSecondaryColor,progress);',
+    'strongest=max(strongest,intensity);strongestCore=max(strongestCore,core*life*active);',
+    'colorSum+=sc*intensity;colorWeight+=intensity;}',
+    'float grain=filmGrain(pixel,uTime);float noiseAmt=(1.0-exp(-uNoiseStrength*2.2))*0.4;',
+    'float alpha=clamp(strongest*uOpacity*uFade,0.0,1.0);if(alpha<0.0005)discard;',
+    'vec3 color=colorSum/max(colorWeight,0.0001);',
+    'color=mix(color,vec3(1.0),smoothstep(0.25,0.95,strongestCore)*uHotspot);',
+    'float lum=sRGB(clamp(strongest*uBrightness,0.0,1.0));lum*=1.0+grain*noiseAmt;',
+    'vec3 addC=color*lum;float nAlpha=clamp(strongest*uBrightness*uOpacity*uFade,0.0,1.0);',
+    'vec3 nColor=mix(color,vec3(1.0),smoothstep(0.45,1.0,strongestCore)*uHotspot*0.35);',
+    'gl_FragColor=vec4(mix(addC,nColor,uNormalBlend),mix(alpha,nAlpha,uNormalBlend));}'
+  ].join('\n');
+
+  function hexToRgb(hex) {
+    var v = (hex || '').replace('#', '').trim();
+    if (v.length === 3) v = v.split('').map(function(c){ return c+c; }).join('');
+    var p = parseInt(v || '000000', 16);
+    return [((p >> 16) & 255) / 255, ((p >> 8) & 255) / 255, (p & 255) / 255];
+  }
+  function clamp(v, a, b) { return Math.min(Math.max(v, a), b); }
+
+  var COLOR = '#C9A84C';
+  var SEC_COLOR = '#0B6E3F';
+  var TRAIL_LEN = 40;
+  var TRAIL_W = 8;
+  var TAPER = 0.8;
+  var FOLLOW = 0.16;
+  var GLOW_INT = 1.9;
+  var GLOW_SPR = 1.2;
+  var HOTSPOT = 0.65;
+  var BRIGHT = 1.25;
+  var OPACITY = 1;
+  var PULSE = 1.1;
+  var NOISE = 0.035;
+  var IDLE_TIMEOUT = 700;
+  var FADE_DUR = 900;
+
+  var Renderer = ogl.Renderer, Program = ogl.Program, Mesh = ogl.Mesh, Triangle = ogl.Triangle;
+  var renderer = new Renderer({ canvas: canvas, alpha: true, dpr: Math.min(window.devicePixelRatio || 1, 1.5) });
+  var gl = renderer.gl;
+  gl.clearColor(0, 0, 0, 0);
+
+  var pointData = new Array(MAX_POINTS * 2).fill(0);
+  var points = [];
+  for (var i = 0; i < MAX_POINTS; i++) points.push({ x: 0, y: 0 });
+  var target = { x: 0, y: 0 }, head = { x: 0, y: 0 };
+
+  var program = new Program(gl, {
+    vertex: VERTEX, fragment: FRAGMENT,
+    uniforms: {
+      uResolution: { value: [1, 1] }, uPoints: { value: pointData },
+      uPointCount: { value: TRAIL_LEN }, uColor: { value: hexToRgb(COLOR) },
+      uSecondaryColor: { value: hexToRgb(SEC_COLOR) }, uTrailWidth: { value: TRAIL_W },
+      uTaper: { value: TAPER }, uGlowIntensity: { value: GLOW_INT },
+      uGlowSpread: { value: GLOW_SPR }, uHotspot: { value: HOTSPOT },
+      uBrightness: { value: BRIGHT }, uOpacity: { value: OPACITY },
+      uPulseSpeed: { value: PULSE }, uNoiseStrength: { value: NOISE },
+      uNormalBlend: { value: 0 }, uTime: { value: 0 }, uFade: { value: 0 }
+    },
+    transparent: true, depthTest: false, depthWrite: false
+  });
+  var mesh = new Mesh(gl, { geometry: new Triangle(gl), program: program });
+
+  var width = 1, height = 1, initialized = false, pointerInside = false;
+  var fade = 0, lastInput = performance.now(), lastFrame = performance.now();
+  var raf = 0;
+
+  canvas.style.mixBlendMode = 'screen';
+
+  function resize() {
+    width = Math.max(window.innerWidth, 1);
+    height = Math.max(window.innerHeight, 1);
+    renderer.setSize(width, height);
+    program.uniforms.uResolution.value = [width, height];
+  }
+
+  function initTrail(x, y) {
+    target.x = x; target.y = y; head.x = x; head.y = y;
+    for (var j = 0; j < points.length; j++) { points[j].x = x; points[j].y = y; }
+    initialized = true; fade = 1;
+  }
+
+  function onMove(e) {
+    var x = clamp(e.clientX, 0, width);
+    var y = clamp(height - e.clientY, 0, height);
+    if (!initialized) initTrail(x, y);
+    target.x = x; target.y = y;
+    pointerInside = true; lastInput = performance.now();
+  }
+
+  function onLeave() { pointerInside = false; lastInput = performance.now(); }
+
+  function render(now) {
+    var delta = Math.min((now - lastFrame) / 16.667, 3);
+    lastFrame = now;
+    if (initialized) {
+      var headEase = 1 - Math.pow(1 - clamp(FOLLOW, 0.01, 0.99), delta);
+      var chainBase = clamp(0.28 + FOLLOW * 0.35, 0.08, 0.92);
+      var chainEase = 1 - Math.pow(1 - chainBase, delta);
+      head.x += (target.x - head.x) * headEase;
+      head.y += (target.y - head.y) * headEase;
+      points[0].x = head.x; points[0].y = head.y;
+      for (var j = 1; j < MAX_POINTS; j++) {
+        points[j].x += (points[j - 1].x - points[j].x) * chainEase;
+        points[j].y += (points[j - 1].y - points[j].y) * chainEase;
+      }
+      for (var k = 0; k < MAX_POINTS; k++) {
+        pointData[k * 2] = points[k].x;
+        pointData[k * 2 + 1] = points[k].y;
+      }
+    }
+    var idle = now - lastInput;
+    var shouldFade = !pointerInside || idle > IDLE_TIMEOUT;
+    var fadeStep = (16.667 * delta) / Math.max(FADE_DUR, 16);
+    var fadeTarget = initialized && !shouldFade ? 1 : 0;
+    fade += (fadeTarget - fade) * Math.min(1, fadeStep * 7);
+    program.uniforms.uTime.value = now * 0.001;
+    program.uniforms.uFade.value = fade;
+    renderer.render({ scene: mesh });
+    raf = requestAnimationFrame(render);
+  }
+
+  window.addEventListener('resize', resize);
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerleave', onLeave);
+  resize();
+  raf = requestAnimationFrame(render);
+})();
+</script>
+
+</body>
+</html>

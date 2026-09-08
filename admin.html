@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SÉFIRA — Panel de Administración</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C5A055;
+  --gold-light: #D4B06A;
+  --gold-deep: #B08D3A;
+  --gold-shadow: #8B6B2A;
+  --emerald: #0B6E3F;
+  --emerald-light: #1A8B52;
+  --emerald-dark: #064D2E;
+  --bg-dark: #0E1219;
+  --bg-card: #141a24;
+  --bg-card-hover: #1a2230;
+  --bg-input: #111820;
+  --diamond: #E8DCC8;
+  --silver: #C0C4C8;
+  --text-light: #F5F0E6;
+  --text-muted: #8a8a8a;
+  --red: #e24b4a;
+  --green: #2ecc71;
+  --yellow: #f1c40f;
+  --font-title: 'Cinzel', serif;
+  --font-body: 'Raleway', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-dark);
+  color: var(--text-light);
+  min-height: 100vh;
+}
+
+/* ==================== LOGIN ==================== */
+.login-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.login-screen .logo {
+  font-family: var(--font-title);
+  font-size: 2.5rem;
+  color: var(--gold);
+  letter-spacing: 8px;
+}
+
+.login-box {
+  background: var(--bg-card);
+  border: 1px solid rgba(197, 160, 85, 0.15);
+  padding: 3rem;
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-box h2 {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  color: var(--diamond);
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 400;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg-input);
+  border: 1px solid rgba(197, 160, 85, 0.2);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.login-box input:focus {
+  border-color: var(--gold);
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: var(--gold);
+  color: var(--bg-dark);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.login-box button:hover {
+  background: var(--gold-light);
+}
+
+.login-error {
+  color: var(--red);
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 1rem;
+  display: none;
+}
+
+/* ==================== ADMIN LAYOUT ==================== */
+.admin-layout {
+  display: none;
+  min-height: 100vh;
+}
+
+.admin-layout.active {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+}
+
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  background: var(--bg-card);
+  border-right: 1px solid rgba(197, 160, 85, 0.1);
+  padding: 1.5rem 0;
+  position: fixed;
+  width: 240px;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-logo {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--gold);
+  letter-spacing: 5px;
+  text-align: center;
+  padding: 1rem 1.5rem 0.3rem;
+  text-decoration: none;
+  display: block;
+}
+
+.sidebar-subtitle {
+  font-size: 0.55rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sidebar-nav {
+  flex: 1;
+}
+
+.sidebar-section {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-link:hover {
+  color: var(--text-light);
+  background: rgba(197, 160, 85, 0.05);
+}
+
+.sidebar-link.active {
+  color: var(--gold);
+  background: rgba(197, 160, 85, 0.08);
+  border-left-color: var(--gold);
+}
+
+.sidebar-link-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(197, 160, 85, 0.1);
+}
+
+.sidebar-footer a {
+  display: block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.75rem;
+  padding: 0.5rem 0;
+  transition: color 0.3s;
+}
+
+.sidebar-footer a:hover { color: var(--gold); }
+
+/* ==================== MAIN CONTENT ==================== */
+.main-content {
+  margin-left: 240px;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(197, 160, 85, 0.1);
+}
+
+.page-title {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--diamond);
+  letter-spacing: 3px;
+  font-weight: 400;
+}
+
+.page-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+.btn {
+  padding: 10px 24px;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--bg-dark);
+  font-weight: 600;
+}
+
+.btn-gold:hover { background: var(--gold-light); }
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+
+.btn-outline:hover {
+  background: var(--gold);
+  color: var(--bg-dark);
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+
+.btn-danger:hover {
+  background: var(--red);
+  color: white;
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.6rem;
+}
+
+/* ==================== DASHBOARD ==================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(197, 160, 85, 0.1);
+  padding: 1.5rem;
+  transition: border-color 0.3s;
+}
+
+.stat-card:hover { border-color: rgba(197, 160, 85, 0.3); }
+
+.stat-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.stat-change {
+  font-size: 0.7rem;
+  margin-top: 0.3rem;
+}
+
+.stat-change.up { color: var(--green); }
+.stat-change.down { color: var(--red); }
+
+/* ==================== TABLES ==================== */
+.data-table-container {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(197, 160, 85, 0.15);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(197, 160, 85, 0.06);
+  vertical-align: middle;
+}
+
+.data-table tr:hover td {
+  background: rgba(197, 160, 85, 0.03);
+}
+
+.table-img {
+  width: 45px;
+  height: 45px;
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.45rem;
+  color: var(--text-muted);
+}
+
+.table-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.badge-active {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--green);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.badge-pending {
+  background: rgba(241, 196, 15, 0.15);
+  color: var(--yellow);
+  border: 1px solid rgba(241, 196, 15, 0.3);
+}
+
+.badge-inactive {
+  background: rgba(226, 75, 74, 0.15);
+  color: var(--red);
+  border: 1px solid rgba(226, 75, 74, 0.3);
+}
+
+.badge-shipped {
+  background: rgba(197, 160, 85, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(197, 160, 85, 0.3);
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ==================== FORMS / MODALS ==================== */
+.admin-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(14, 18, 25, 0.9);
+  z-index: 5000;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3rem;
+  overflow-y: auto;
+}
+
+.admin-modal-overlay.active { display: flex; }
+
+.admin-modal {
+  background: var(--bg-card);
+  border: 1px solid rgba(197, 160, 85, 0.15);
+  width: 100%;
+  max-width: 600px;
+  padding: 2.5rem;
+}
+
+.admin-modal h3 {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: var(--diamond);
+  letter-spacing: 3px;
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid rgba(197, 160, 85, 0.2);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--gold);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: flex-end;
+}
+
+/* ==================== SEARCH & FILTERS ==================== */
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid rgba(197, 160, 85, 0.2);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus { border-color: var(--gold); }
+
+.search-input::placeholder { color: var(--text-muted); }
+
+.toolbar select {
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid rgba(197, 160, 85, 0.2);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* ==================== PANELS ==================== */
+.panel { display: none; }
+.panel.active { display: block; }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid rgba(197, 160, 85, 0.1);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.card h4 {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--diamond);
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.recent-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.recent-order {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  border: 1px solid rgba(197, 160, 85, 0.06);
+  font-size: 0.8rem;
+}
+
+.recent-order-client { color: var(--diamond); }
+.recent-order-total { color: var(--gold); font-weight: 500; }
+
+/* ==================== RESPONSIVE ADMIN ==================== */
+@media (max-width: 768px) {
+  .admin-layout.active {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgba(197, 160, 85, 0.1);
+  }
+
+  .sidebar-nav { display: flex; overflow-x: auto; padding: 0 1rem; }
+  .sidebar-link { white-space: nowrap; padding: 0.8rem 1rem; border-left: none; border-bottom: 3px solid transparent; }
+  .sidebar-link.active { border-bottom-color: var(--gold); border-left-color: transparent; }
+  .sidebar-section { display: none; }
+  .sidebar-footer { display: none; }
+
+  .main-content { margin-left: 0; padding: 1rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div class="login-screen" id="loginScreen">
+  <div class="logo">SÉFIRA</div>
+  <div class="login-box">
+    <h2>Panel Administrativo</h2>
+    <input type="password" id="loginPass" placeholder="Contraseña de acceso" onkeydown="if(event.key==='Enter') attemptLogin()">
+    <button onclick="attemptLogin()">Ingresar</button>
+    <div class="login-error" id="loginError">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN LAYOUT ==================== -->
+<div class="admin-layout" id="adminLayout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-logo">SÉFIRA</a>
+    <div class="sidebar-subtitle">Administración</div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <div class="sidebar-link active" onclick="showPanel('dashboard')">
+        <span class="sidebar-link-icon">&#9632;</span> Dashboard
+      </div>
+
+      <div class="sidebar-section">Gestión</div>
+      <div class="sidebar-link" onclick="showPanel('products')">
+        <span class="sidebar-link-icon">&#10022;</span> Productos
+      </div>
+      <div class="sidebar-link" onclick="showPanel('orders')">
+        <span class="sidebar-link-icon">&#9993;</span> Pedidos
+      </div>
+      <div class="sidebar-link" onclick="showPanel('clients')">
+        <span class="sidebar-link-icon">&#9823;</span> Clientes
+      </div>
+
+      <div class="sidebar-section">Reportes</div>
+      <div class="sidebar-link" onclick="showPanel('reports')">
+        <span class="sidebar-link-icon">&#9783;</span> Reportes
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html">Ver tienda</a>
+      <a href="#" onclick="logout()">Cerrar sesión</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Resumen general de SÉFIRA</p>
+        </div>
+        <span style="font-size:0.7rem;color:var(--text-muted);" id="dashDate"></span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Productos activos</div>
+          <div class="stat-value" id="statProducts">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pedidos este mes</div>
+          <div class="stat-value" id="statOrders">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ventas del mes</div>
+          <div class="stat-value" id="statSales">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Clientes registrados</div>
+          <div class="stat-value" id="statClients">0</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div class="card">
+          <h4>Pedidos recientes</h4>
+          <div class="recent-orders-list" id="recentOrders">
+            <div class="recent-order"><span class="recent-order-client">Sin pedidos aún</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Productos con bajo stock</h4>
+          <div class="recent-orders-list" id="lowStock">
+            <div class="recent-order"><span class="recent-order-client">Todo en orden</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PRODUCTS PANEL ==================== -->
+    <div class="panel" id="panel-products">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Productos</h1>
+          <p class="page-subtitle">Gestión del catálogo de SÉFIRA</p>
+        </div>
+        <button class="btn btn-gold" onclick="openProductForm()">+ Nuevo producto</button>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input" placeholder="Buscar producto..." oninput="filterAdminProducts(this.value)">
+        <select onchange="filterAdminCategory(this.value)">
+          <option value="todos">Todas las categorías</option>
+          <option value="anillos">Anillos</option>
+          <option value="cadenas">Cadenas</option>
+          <option value="pulseras">Pulseras</option>
+          <option value="aretes">Aretes</option>
+          <option value="dijes">Dijes</option>
+          <option value="sets">Sets</option>
+          <option value="accesorios">Accesorios</option>
+        </select>
+      </div>
+
+      <div class="data-table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Quilates</th>
+              <th>Peso</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== ORDERS PANEL ==================== -->
+    <div class="panel" id="panel-orders">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Pedidos</h1>
+          <p class="page-subtitle">Seguimiento de pedidos y ventas</p>
+        </div>
+        <button class="btn btn-gold" onclick="openOrderForm()">+ Nuevo pedido</button>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input" placeholder="Buscar por cliente o ID..." oninput="filterAdminOrders(this.value)">
+        <select onchange="filterOrderStatus(this.value)">
+          <option value="todos">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="enviado">Enviado</option>
+          <option value="entregado">Entregado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+      </div>
+
+      <div class="data-table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID Pedido</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>WhatsApp</th>
+              <th>Productos</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== CLIENTS PANEL ==================== -->
+    <div class="panel" id="panel-clients">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Clientes</h1>
+          <p class="page-subtitle">Base de datos de clientes SÉFIRA</p>
+        </div>
+        <button class="btn btn-gold" onclick="openClientForm()">+ Nuevo cliente</button>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input" placeholder="Buscar cliente..." oninput="filterAdminClients(this.value)">
+      </div>
+
+      <div class="data-table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>WhatsApp</th>
+              <th>Correo</th>
+              <th>Total comprado</th>
+              <th>Última compra</th>
+              <th>Notas</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="clientsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== REPORTS PANEL ==================== -->
+    <div class="panel" id="panel-reports">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Reportes</h1>
+          <p class="page-subtitle">Análisis y métricas del negocio</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Ventas totales</div>
+          <div class="stat-value" id="reportTotalSales">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ticket promedio</div>
+          <div class="stat-value" id="reportAvgTicket">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Categoría más vendida</div>
+          <div class="stat-value" id="reportTopCategory" style="font-size:1rem;">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total clientes</div>
+          <div class="stat-value" id="reportTotalClients">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Ventas por categoría</h4>
+        <div id="categoryBreakdown" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-top:1rem;"></div>
+      </div>
+
+      <div class="card" style="margin-top:1.5rem;">
+        <h4>Inventario general</h4>
+        <div id="inventoryReport" style="margin-top:1rem;"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ==================== PRODUCT FORM MODAL ==================== -->
+<div class="admin-modal-overlay" id="productModal">
+  <div class="admin-modal">
+    <h3 id="productFormTitle">Nuevo producto</h3>
+    <input type="hidden" id="editProductId">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre del producto</label>
+        <input type="text" id="pName" placeholder="Ej: Anillo Serpiente Dorada">
+      </div>
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="pCategory">
+          <option value="anillos">Anillos</option>
+          <option value="cadenas">Cadenas</option>
+          <option value="pulseras">Pulseras</option>
+          <option value="aretes">Aretes</option>
+          <option value="dijes">Dijes</option>
+          <option value="sets">Sets</option>
+          <option value="accesorios">Accesorios</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Precio (COP)</label>
+        <input type="number" id="pPrice" placeholder="850000">
+      </div>
+      <div class="form-group">
+        <label>Stock disponible</label>
+        <input type="number" id="pStock" placeholder="5">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Quilates</label>
+        <input type="text" id="pKarat" placeholder="18K" value="18K">
+      </div>
+      <div class="form-group">
+        <label>Peso</label>
+        <input type="text" id="pWeight" placeholder="4.2g">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo de oro</label>
+        <input type="text" id="pGoldType" placeholder="Suizo" value="Suizo">
+      </div>
+      <div class="form-group">
+        <label>URL de foto</label>
+        <input type="text" id="pImage" placeholder="https://...">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Tallas disponibles (separadas por coma, solo anillos)</label>
+      <input type="text" id="pSizes" placeholder="6, 7, 8, 9, 10">
+    </div>
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="pDescription" placeholder="Descripción detallada del producto..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Estado</label>
+      <select id="pStatus">
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeProductForm()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveProduct()">Guardar producto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ORDER FORM MODAL ==================== -->
+<div class="admin-modal-overlay" id="orderModal">
+  <div class="admin-modal">
+    <h3 id="orderFormTitle">Nuevo pedido</h3>
+    <input type="hidden" id="editOrderId">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre del cliente</label>
+        <input type="text" id="oClient" placeholder="Nombre completo">
+      </div>
+      <div class="form-group">
+        <label>WhatsApp</label>
+        <input type="text" id="oWhatsApp" placeholder="+57 300 000 0000">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Productos (descripción)</label>
+      <textarea id="oProducts" placeholder="Ej: 1x Anillo Serpiente Dorada, 1x Cadena Eslabón Imperial"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total (COP)</label>
+        <input type="number" id="oTotal" placeholder="850000">
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="oStatus">
+          <option value="pendiente">Pendiente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="enviado">Enviado</option>
+          <option value="entregado">Entregado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Medio de contacto</label>
+        <select id="oMedio">
+          <option value="whatsapp">WhatsApp</option>
+          <option value="web">Web</option>
+          <option value="instagram">Instagram</option>
+          <option value="presencial">Presencial</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="oDate">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notas</label>
+      <textarea id="oNotes" placeholder="Notas adicionales del pedido..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeOrderForm()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveOrder()">Guardar pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CLIENT FORM MODAL ==================== -->
+<div class="admin-modal-overlay" id="clientModal">
+  <div class="admin-modal">
+    <h3 id="clientFormTitle">Nuevo cliente</h3>
+    <input type="hidden" id="editClientId">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" id="cName" placeholder="Nombre del cliente">
+      </div>
+      <div class="form-group">
+        <label>WhatsApp</label>
+        <input type="text" id="cWhatsApp" placeholder="+57 300 000 0000">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="cEmail" placeholder="correo@ejemplo.com">
+      </div>
+      <div class="form-group">
+        <label>Total comprado (COP)</label>
+        <input type="number" id="cTotal" placeholder="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notas</label>
+      <textarea id="cNotes" placeholder="Notas sobre el cliente..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeClientForm()">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveClient()">Guardar cliente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== CONFIG ====================
+const ADMIN_PASSWORD = 'sefira2026';
+
+// ==================== DATA (localStorage persistence) ====================
+function loadData(key, fallback) {
+  try { return JSON.parse(localStorage.getItem('sefira_' + key)) || fallback; }
+  catch { return fallback; }
+}
+function saveData(key, data) {
+  localStorage.setItem('sefira_' + key, JSON.stringify(data));
+}
+
+let adminProducts = loadData('products', [
+  { id: 'SEF-001', name: 'Róndeles Verdes x3', category: 'accesorios', price: 135000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 3 róndeles verdes en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-002', name: 'Balines Diamantados #3 x10', category: 'accesorios', price: 105000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #3.', stock: 15, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-003', name: 'Balines Diamantados #4 x10', category: 'accesorios', price: 130000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #4.', stock: 12, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-004', name: 'Balines Diamantados #5 x10', category: 'accesorios', price: 140000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #5.', stock: 10, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-005', name: 'Balines Diamantados #6 x10', category: 'accesorios', price: 170000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #6.', stock: 8, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 72000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8.', stock: 10, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-007', name: 'Balines Lisos #3 x10', category: 'accesorios', price: 50000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines lisos talla #3.', stock: 20, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-008', name: 'Cadena Gucci 60cm', category: 'cadenas', price: 255000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K.', stock: 5, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-009', name: 'Topos Esmeralda Broche Rosca', category: 'aretes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos con piedra esmeralda y broche de rosca.', stock: 15, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-010', name: 'Barriles x10', category: 'accesorios', price: 160000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 barriles en oro suizo 18K.', stock: 8, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-011', name: 'Dije Inicial M', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial M en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-012', name: 'Dije Inicial S', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial S en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-013', name: 'Dije Trébol', category: 'dijes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije trébol de la suerte en oro suizo 18K.', stock: 12, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-014', name: 'Dije Caballo', category: 'dijes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con figura de caballo en oro suizo 18K.', stock: 6, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-015', name: 'Dije Infinito Grande', category: 'dijes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije infinito grande en oro suizo 18K.', stock: 8, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-016', name: 'Dije Virgen Tallada', category: 'dijes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije de la Virgen tallada en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
+]);
+
+let adminOrders = loadData('orders', []);
+let adminClients = loadData('clients', []);
+
+// ==================== LOGIN ====================
+function attemptLogin() {
+  const pass = document.getElementById('loginPass').value;
+  if (pass === ADMIN_PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminLayout').classList.add('active');
+    sessionStorage.setItem('sefira_auth', 'true');
+    updateDashboard();
+    renderProductsTable();
+    renderOrdersTable();
+    renderClientsTable();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('sefira_auth');
+  document.getElementById('adminLayout').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPass').value = '';
+}
+
+if (sessionStorage.getItem('sefira_auth') === 'true') {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminLayout').classList.add('active');
+}
+
+// ==================== NAVIGATION ====================
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  if (name === 'dashboard') updateDashboard();
+  if (name === 'products') renderProductsTable();
+  if (name === 'orders') renderOrdersTable();
+  if (name === 'clients') renderClientsTable();
+  if (name === 'reports') updateReports();
+}
+
+// ==================== DASHBOARD ====================
+function updateDashboard() {
+  document.getElementById('dashDate').textContent = new Date().toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('statProducts').textContent = adminProducts.filter(p => p.status === 'activo').length;
+  document.getElementById('statOrders').textContent = adminOrders.length;
+  const totalSales = adminOrders.filter(o => o.status !== 'cancelado').reduce((s, o) => s + (o.total || 0), 0);
+  document.getElementById('statSales').textContent = '$' + totalSales.toLocaleString('es-CO');
+  document.getElementById('statClients').textContent = adminClients.length;
+
+  const recentEl = document.getElementById('recentOrders');
+  if (adminOrders.length === 0) {
+    recentEl.innerHTML = '<div class="recent-order"><span class="recent-order-client">Sin pedidos aún</span></div>';
+  } else {
+    recentEl.innerHTML = adminOrders.slice(-5).reverse().map(o => `
+      <div class="recent-order">
+        <span class="recent-order-client">${o.client}</span>
+        <span class="recent-order-total">$${(o.total||0).toLocaleString('es-CO')}</span>
+        <span class="badge badge-${o.status === 'pendiente' ? 'pending' : o.status === 'enviado' ? 'shipped' : o.status === 'entregado' ? 'active' : o.status === 'cancelado' ? 'inactive' : 'active'}">${o.status}</span>
+      </div>
+    `).join('');
+  }
+
+  const lowEl = document.getElementById('lowStock');
+  const lowItems = adminProducts.filter(p => p.stock <= 3 && p.status === 'activo');
+  if (lowItems.length === 0) {
+    lowEl.innerHTML = '<div class="recent-order"><span class="recent-order-client">Todo en orden</span></div>';
+  } else {
+    lowEl.innerHTML = lowItems.map(p => `
+      <div class="recent-order">
+        <span class="recent-order-client">${p.name}</span>
+        <span style="color:${p.stock <= 1 ? 'var(--red)' : 'var(--yellow)'}; font-weight:500;">${p.stock} uds</span>
+      </div>
+    `).join('');
+  }
+}
+
+// ==================== PRODUCTS TABLE ====================
+let prodSearchTerm = '';
+let prodCategoryFilter = 'todos';
+
+function renderProductsTable() {
+  let items = [...adminProducts];
+  if (prodCategoryFilter !== 'todos') items = items.filter(p => p.category === prodCategoryFilter);
+  if (prodSearchTerm) items = items.filter(p => p.name.toLowerCase().includes(prodSearchTerm.toLowerCase()));
+
+  document.getElementById('productsTableBody').innerHTML = items.map(p => `
+    <tr>
+      <td><div class="table-img">${p.image ? `<img src="${p.image}" alt="${p.name}">` : 'FOTO'}</div></td>
+      <td style="color:var(--diamond);font-weight:500;">${p.name}</td>
+      <td style="text-transform:capitalize;">${p.category}</td>
+      <td style="color:var(--gold);">$${p.price.toLocaleString('es-CO')}</td>
+      <td>${p.karat}</td>
+      <td>${p.weight}</td>
+      <td>${p.stock}</td>
+      <td><span class="badge badge-${p.status === 'activo' ? 'active' : 'inactive'}">${p.status}</span></td>
+      <td>
+        <div class="table-actions">
+          <button class="btn btn-outline btn-sm" onclick="editProduct('${p.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Eliminar</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterAdminProducts(term) { prodSearchTerm = term; renderProductsTable(); }
+function filterAdminCategory(cat) { prodCategoryFilter = cat; renderProductsTable(); }
+
+function openProductForm(product) {
+  document.getElementById('productFormTitle').textContent = product ? 'Editar producto' : 'Nuevo producto';
+  document.getElementById('editProductId').value = product ? product.id : '';
+  document.getElementById('pName').value = product ? product.name : '';
+  document.getElementById('pCategory').value = product ? product.category : 'anillos';
+  document.getElementById('pPrice').value = product ? product.price : '';
+  document.getElementById('pStock').value = product ? product.stock : '';
+  document.getElementById('pKarat').value = product ? product.karat : '18K';
+  document.getElementById('pWeight').value = product ? product.weight : '';
+  document.getElementById('pGoldType').value = product ? product.goldType : 'Suizo';
+  document.getElementById('pImage').value = product ? product.image : '';
+  document.getElementById('pSizes').value = product ? (product.sizes || []).join(', ') : '';
+  document.getElementById('pDescription').value = product ? product.description : '';
+  document.getElementById('pStatus').value = product ? product.status : 'activo';
+  document.getElementById('productModal').classList.add('active');
+}
+
+function closeProductForm() { document.getElementById('productModal').classList.remove('active'); }
+
+function saveProduct() {
+  const editId = document.getElementById('editProductId').value;
+  const product = {
+    id: editId || 'PROD-' + String(Date.now()).slice(-6),
+    name: document.getElementById('pName').value,
+    category: document.getElementById('pCategory').value,
+    price: parseInt(document.getElementById('pPrice').value) || 0,
+    stock: parseInt(document.getElementById('pStock').value) || 0,
+    karat: document.getElementById('pKarat').value,
+    weight: document.getElementById('pWeight').value,
+    goldType: document.getElementById('pGoldType').value,
+    image: document.getElementById('pImage').value,
+    sizes: document.getElementById('pSizes').value.split(',').map(s => s.trim()).filter(Boolean),
+    description: document.getElementById('pDescription').value,
+    status: document.getElementById('pStatus').value,
+  };
+
+  if (!product.name) { alert('El nombre es obligatorio'); return; }
+
+  if (editId) {
+    const idx = adminProducts.findIndex(p => p.id === editId);
+    if (idx >= 0) adminProducts[idx] = product;
+  } else {
+    adminProducts.push(product);
+  }
+
+  saveData('products', adminProducts);
+  closeProductForm();
+  renderProductsTable();
+  updateDashboard();
+}
+
+function editProduct(id) {
+  const p = adminProducts.find(x => x.id === id);
+  if (p) openProductForm(p);
+}
+
+function deleteProduct(id) {
+  if (!confirm('¿Eliminar este producto?')) return;
+  adminProducts = adminProducts.filter(p => p.id !== id);
+  saveData('products', adminProducts);
+  renderProductsTable();
+  updateDashboard();
+}
+
+// ==================== ORDERS TABLE ====================
+let orderSearchTerm = '';
+let orderStatusFilter = 'todos';
+
+function renderOrdersTable() {
+  let items = [...adminOrders];
+  if (orderStatusFilter !== 'todos') items = items.filter(o => o.status === orderStatusFilter);
+  if (orderSearchTerm) items = items.filter(o =>
+    o.client.toLowerCase().includes(orderSearchTerm.toLowerCase()) ||
+    o.id.toLowerCase().includes(orderSearchTerm.toLowerCase())
+  );
+
+  if (items.length === 0) {
+    document.getElementById('ordersTableBody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:3rem;">No hay pedidos registrados</td></tr>';
+    return;
+  }
+
+  document.getElementById('ordersTableBody').innerHTML = items.map(o => `
+    <tr>
+      <td style="color:var(--gold);">${o.id}</td>
+      <td>${o.date || '—'}</td>
+      <td style="color:var(--diamond);">${o.client}</td>
+      <td>${o.whatsapp || '—'}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${o.products || '—'}</td>
+      <td style="color:var(--gold);font-weight:500;">$${(o.total||0).toLocaleString('es-CO')}</td>
+      <td><span class="badge badge-${o.status === 'pendiente' ? 'pending' : o.status === 'enviado' ? 'shipped' : o.status === 'entregado' ? 'active' : o.status === 'cancelado' ? 'inactive' : 'active'}">${o.status}</span></td>
+      <td>
+        <div class="table-actions">
+          <button class="btn btn-outline btn-sm" onclick="editOrder('${o.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">Eliminar</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterAdminOrders(term) { orderSearchTerm = term; renderOrdersTable(); }
+function filterOrderStatus(status) { orderStatusFilter = status; renderOrdersTable(); }
+
+function openOrderForm(order) {
+  document.getElementById('orderFormTitle').textContent = order ? 'Editar pedido' : 'Nuevo pedido';
+  document.getElementById('editOrderId').value = order ? order.id : '';
+  document.getElementById('oClient').value = order ? order.client : '';
+  document.getElementById('oWhatsApp').value = order ? order.whatsapp : '';
+  document.getElementById('oProducts').value = order ? order.products : '';
+  document.getElementById('oTotal').value = order ? order.total : '';
+  document.getElementById('oStatus').value = order ? order.status : 'pendiente';
+  document.getElementById('oMedio').value = order ? order.medio : 'whatsapp';
+  document.getElementById('oDate').value = order ? order.date : new Date().toISOString().split('T')[0];
+  document.getElementById('oNotes').value = order ? order.notes : '';
+  document.getElementById('orderModal').classList.add('active');
+}
+
+function closeOrderForm() { document.getElementById('orderModal').classList.remove('active'); }
+
+function saveOrder() {
+  const editId = document.getElementById('editOrderId').value;
+  const order = {
+    id: editId || 'PED-' + String(Date.now()).slice(-6),
+    client: document.getElementById('oClient').value,
+    whatsapp: document.getElementById('oWhatsApp').value,
+    products: document.getElementById('oProducts').value,
+    total: parseInt(document.getElementById('oTotal').value) || 0,
+    status: document.getElementById('oStatus').value,
+    medio: document.getElementById('oMedio').value,
+    date: document.getElementById('oDate').value,
+    notes: document.getElementById('oNotes').value,
+  };
+
+  if (!order.client) { alert('El nombre del cliente es obligatorio'); return; }
+
+  if (editId) {
+    const idx = adminOrders.findIndex(o => o.id === editId);
+    if (idx >= 0) adminOrders[idx] = order;
+  } else {
+    adminOrders.push(order);
+  }
+
+  saveData('orders', adminOrders);
+  closeOrderForm();
+  renderOrdersTable();
+  updateDashboard();
+}
+
+function editOrder(id) {
+  const o = adminOrders.find(x => x.id === id);
+  if (o) openOrderForm(o);
+}
+
+function deleteOrder(id) {
+  if (!confirm('¿Eliminar este pedido?')) return;
+  adminOrders = adminOrders.filter(o => o.id !== id);
+  saveData('orders', adminOrders);
+  renderOrdersTable();
+  updateDashboard();
+}
+
+// ==================== CLIENTS TABLE ====================
+let clientSearchTerm = '';
+
+function renderClientsTable() {
+  let items = [...adminClients];
+  if (clientSearchTerm) items = items.filter(c =>
+    c.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
+    (c.whatsapp || '').includes(clientSearchTerm)
+  );
+
+  if (items.length === 0) {
+    document.getElementById('clientsTableBody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:3rem;">No hay clientes registrados</td></tr>';
+    return;
+  }
+
+  document.getElementById('clientsTableBody').innerHTML = items.map(c => `
+    <tr>
+      <td style="color:var(--gold);">${c.id}</td>
+      <td style="color:var(--diamond);">${c.name}</td>
+      <td>${c.whatsapp || '—'}</td>
+      <td>${c.email || '—'}</td>
+      <td style="color:var(--gold);">$${(c.totalPurchased||0).toLocaleString('es-CO')}</td>
+      <td>${c.lastPurchase || '—'}</td>
+      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.notes || '—'}</td>
+      <td>
+        <div class="table-actions">
+          <button class="btn btn-outline btn-sm" onclick="editClient('${c.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')">Eliminar</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterAdminClients(term) { clientSearchTerm = term; renderClientsTable(); }
+
+function openClientForm(client) {
+  document.getElementById('clientFormTitle').textContent = client ? 'Editar cliente' : 'Nuevo cliente';
+  document.getElementById('editClientId').value = client ? client.id : '';
+  document.getElementById('cName').value = client ? client.name : '';
+  document.getElementById('cWhatsApp').value = client ? client.whatsapp : '';
+  document.getElementById('cEmail').value = client ? client.email : '';
+  document.getElementById('cTotal').value = client ? client.totalPurchased : '';
+  document.getElementById('cNotes').value = client ? client.notes : '';
+  document.getElementById('clientModal').classList.add('active');
+}
+
+function closeClientForm() { document.getElementById('clientModal').classList.remove('active'); }
+
+function saveClient() {
+  const editId = document.getElementById('editClientId').value;
+  const client = {
+    id: editId || 'CLI-' + String(Date.now()).slice(-6),
+    name: document.getElementById('cName').value,
+    whatsapp: document.getElementById('cWhatsApp').value,
+    email: document.getElementById('cEmail').value,
+    totalPurchased: parseInt(document.getElementById('cTotal').value) || 0,
+    lastPurchase: new Date().toISOString().split('T')[0],
+    notes: document.getElementById('cNotes').value,
+  };
+
+  if (!client.name) { alert('El nombre es obligatorio'); return; }
+
+  if (editId) {
+    const idx = adminClients.findIndex(c => c.id === editId);
+    if (idx >= 0) adminClients[idx] = client;
+  } else {
+    adminClients.push(client);
+  }
+
+  saveData('clients', adminClients);
+  closeClientForm();
+  renderClientsTable();
+  updateDashboard();
+}
+
+function editClient(id) {
+  const c = adminClients.find(x => x.id === id);
+  if (c) openClientForm(c);
+}
+
+function deleteClient(id) {
+  if (!confirm('¿Eliminar este cliente?')) return;
+  adminClients = adminClients.filter(c => c.id !== id);
+  saveData('clients', adminClients);
+  renderClientsTable();
+  updateDashboard();
+}
+
+// ==================== REPORTS ====================
+function updateReports() {
+  const totalSales = adminOrders.filter(o => o.status !== 'cancelado').reduce((s, o) => s + (o.total || 0), 0);
+  const completedOrders = adminOrders.filter(o => o.status !== 'cancelado');
+  const avgTicket = completedOrders.length > 0 ? Math.round(totalSales / completedOrders.length) : 0;
+
+  document.getElementById('reportTotalSales').textContent = '$' + totalSales.toLocaleString('es-CO');
+  document.getElementById('reportAvgTicket').textContent = '$' + avgTicket.toLocaleString('es-CO');
+  document.getElementById('reportTotalClients').textContent = adminClients.length;
+
+  const categories = ['anillos', 'cadenas', 'pulseras', 'aretes', 'dijes', 'sets'];
+  const catBreakdown = document.getElementById('categoryBreakdown');
+  catBreakdown.innerHTML = categories.map(cat => {
+    const count = adminProducts.filter(p => p.category === cat && p.status === 'activo').length;
+    const totalStock = adminProducts.filter(p => p.category === cat).reduce((s, p) => s + p.stock, 0);
+    return `<div style="padding:1rem;border:1px solid rgba(197,160,85,0.1);text-align:center;">
+      <div style="font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.3rem;">${cat}</div>
+      <div style="font-family:var(--font-title);font-size:1.5rem;color:var(--gold);">${count}</div>
+      <div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.2rem;">Stock: ${totalStock}</div>
+    </div>`;
+  }).join('');
+
+  const topCat = categories.reduce((best, cat) => {
+    const count = adminProducts.filter(p => p.category === cat && p.status === 'activo').length;
+    return count > best.count ? { cat, count } : best;
+  }, { cat: '—', count: 0 });
+  document.getElementById('reportTopCategory').textContent = topCat.cat.charAt(0).toUpperCase() + topCat.cat.slice(1);
+
+  const inventoryEl = document.getElementById('inventoryReport');
+  const totalProducts = adminProducts.length;
+  const activeProducts = adminProducts.filter(p => p.status === 'activo').length;
+  const totalStock = adminProducts.reduce((s, p) => s + p.stock, 0);
+  const totalValue = adminProducts.reduce((s, p) => s + (p.price * p.stock), 0);
+  inventoryEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+      <div style="padding:1rem;border:1px solid rgba(197,160,85,0.1);"><span style="font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">Total productos</span><div style="font-family:var(--font-title);font-size:1.3rem;color:var(--diamond);margin-top:0.3rem;">${totalProducts}</div></div>
+      <div style="padding:1rem;border:1px solid rgba(197,160,85,0.1);"><span style="font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">Activos</span><div style="font-family:var(--font-title);font-size:1.3rem;color:var(--green);margin-top:0.3rem;">${activeProducts}</div></div>
+      <div style="padding:1rem;border:1px solid rgba(197,160,85,0.1);"><span style="font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">Unidades en stock</span><div style="font-family:var(--font-title);font-size:1.3rem;color:var(--diamond);margin-top:0.3rem;">${totalStock}</div></div>
+      <div style="padding:1rem;border:1px solid rgba(197,160,85,0.1);"><span style="font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">Valor del inventario</span><div style="font-family:var(--font-title);font-size:1.3rem;color:var(--gold);margin-top:0.3rem;">$${totalValue.toLocaleString('es-CO')}</div></div>
+    </div>
+  `;
+}
+
+// ==================== INIT ====================
+if (sessionStorage.getItem('sefira_auth') === 'true') {
+  updateDashboard();
+  renderProductsTable();
+  renderOrdersTable();
+  renderClientsTable();
+}
+</script>
+
+</body>
+</html>
