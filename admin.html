@@ -360,8 +360,8 @@ body {
 /* ==================== DASHBOARD ==================== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.2rem;
   margin-bottom: 2rem;
 }
 
@@ -658,14 +658,32 @@ body {
 .cp-inner { display:none; }
 .cp-inner.active { display:block; }
 
-.day-card-admin { background:var(--bg-card);border:1px solid rgba(197,160,85,0.1);padding:16px;margin-bottom:12px;transition:border-color .2s; }
-.day-card-admin.completed { border-color:var(--emerald-dark);opacity:.65; }
-.day-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:10px; }
-.day-date-label { font-size:.7rem;font-weight:600;color:var(--gold-deep);letter-spacing:.06em;text-transform:uppercase; }
-.day-tag { font-size:.65rem;padding:2px 8px;font-weight:500; }
-.day-tag-urgent { color:var(--red);background:rgba(226,75,74,0.1); }
-.day-tag-normal { color:var(--text-muted);background:rgba(197,160,85,0.05); }
-.day-tag-holiday { color:var(--green);background:rgba(46,204,113,0.1); }
+.cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1.5rem; }
+.cal-header { font-size:.6rem;font-weight:700;color:var(--gold-deep);text-align:center;padding:6px 2px;letter-spacing:1px;text-transform:uppercase; }
+.cal-day { background:var(--bg-card);border:1px solid rgba(197,160,85,0.06);padding:6px 4px;min-height:54px;font-size:.7rem;color:var(--text-muted);position:relative;cursor:default;transition:all .2s; }
+.cal-day.empty { background:transparent;border-color:transparent; }
+.cal-day.active { border-color:rgba(197,160,85,0.25);cursor:pointer; }
+.cal-day.active:hover { border-color:var(--gold);background:rgba(197,160,85,0.06); }
+.cal-day.selected { border-color:var(--gold);background:rgba(197,160,85,0.1); }
+.cal-day.today { box-shadow:inset 0 0 0 1.5px var(--gold); }
+.cal-day-num { font-weight:700;font-size:.72rem;color:var(--diamond);margin-bottom:2px; }
+.cal-day.empty .cal-day-num { color:var(--text-muted);font-weight:400;opacity:.4; }
+.cal-day-label { font-size:.5rem;color:var(--gold);line-height:1.2;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.cal-day-dots { display:flex;gap:2px;margin-top:3px; }
+.cal-dot { width:5px;height:5px;border-radius:50%; }
+.cal-dot-ig { background:#E1306C; }
+.cal-dot-fb { background:#1877F2; }
+.cal-dot-tt { background:#fff; }
+.cal-day-tag { position:absolute;top:2px;right:3px;font-size:.45rem;font-weight:700;padding:1px 3px;border-radius:2px; }
+.cal-day-tag.urgent { background:rgba(226,75,74,0.2);color:var(--red); }
+.cal-day-tag.holiday { background:rgba(46,204,113,0.2);color:var(--green); }
+
+.day-detail { display:none;background:var(--bg-card);border:1px solid rgba(197,160,85,0.15);padding:16px;margin-bottom:1.5rem; }
+.day-detail.active { display:block; }
+.day-detail-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(197,160,85,0.1); }
+.day-detail-title { font-family:var(--font-title);font-size:.9rem;color:var(--diamond);letter-spacing:1px; }
+.day-detail-close { background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:4px 8px;font-family:var(--font-body); }
+.day-detail-close:hover { color:var(--diamond); }
 
 .cp-task { display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-top:1px solid rgba(197,160,85,0.06); }
 .cp-task:first-of-type { border-top:none; }
@@ -738,15 +756,20 @@ body {
   .sidebar-footer { display: none; }
 
   .main-content { margin-left: 0; padding: 1rem; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.8rem; }
   .form-row { grid-template-columns: 1fr; }
 
   /* Content plan mobile fixes */
   .cp-tabs { gap: 0; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
   .cp-tab { padding: 8px 12px; font-size: .62rem; letter-spacing: 1px; }
-  .day-card-admin { padding: 12px; }
-  .day-head { flex-wrap: wrap; gap: 6px; }
-  .day-date-label { font-size: .65rem; }
+  .cal-grid { gap: 2px; }
+  .cal-header { font-size: .5rem; padding: 4px 1px; }
+  .cal-day { padding: 4px 2px; min-height: 42px; font-size: .6rem; }
+  .cal-day-num { font-size: .62rem; }
+  .cal-day-label { font-size: .42rem; }
+  .cal-day-tag { font-size: .38rem; }
+  .cal-dot { width: 4px; height: 4px; }
+  .day-detail { padding: 12px; }
   .cp-task { gap: 8px; padding: 6px 0; }
   .cp-task-name { font-size: .76rem; }
   .cp-task-detail { font-size: .68rem; }
@@ -1032,71 +1055,87 @@ body {
 
       <!-- CALENDARIO -->
       <div class="cp-inner active" id="cp-calendario">
-
-        <div class="day-card-admin" id="dc1">
-          <div class="day-head"><span class="day-date-label">Día 1 · Sep 8 — Hoy</span><span class="day-tag day-tag-urgent">Hoy</span></div>
-          <div class="cp-task"><div class="cp-check" data-cp="c1"></div><div class="cp-task-body"><div class="cp-task-name">Post teaser: Logo + "Próximamente"</div><div class="cp-task-detail">Fondo negro, logo centrado. Generar expectativa.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        <div style="text-align:center;margin-bottom:12px;font-family:var(--font-title);font-size:1rem;color:var(--diamond);letter-spacing:2px;">SEPTIEMBRE 2026</div>
+        <div class="cal-grid">
+          <div class="cal-header">Lun</div><div class="cal-header">Mar</div><div class="cal-header">Mié</div><div class="cal-header">Jue</div><div class="cal-header">Vie</div><div class="cal-header">Sáb</div><div class="cal-header">Dom</div>
+          <div class="cal-day empty"><div class="cal-day-num">31</div></div>
+          <div class="cal-day"><div class="cal-day-num">1</div></div>
+          <div class="cal-day"><div class="cal-day-num">2</div></div>
+          <div class="cal-day"><div class="cal-day-num">3</div></div>
+          <div class="cal-day"><div class="cal-day-num">4</div></div>
+          <div class="cal-day"><div class="cal-day-num">5</div></div>
+          <div class="cal-day"><div class="cal-day-num">6</div></div>
+          <div class="cal-day"><div class="cal-day-num">7</div></div>
+          <div class="cal-day active today" onclick="openDayDetail(1)"><div class="cal-day-num">8</div><span class="cal-day-label">Teaser</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span><span class="cal-dot cal-dot-fb"></span><span class="cal-dot cal-dot-tt"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(2)"><div class="cal-day-num">9</div><span class="cal-day-label">Producto</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span><span class="cal-dot cal-dot-fb"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(3)"><div class="cal-day-num">10</div><span class="cal-day-label">Variedad</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(4)"><div class="cal-day-num">11</div><span class="cal-day-label">Emoción</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(5)"><div class="cal-day-num">12</div><span class="cal-day-label">Detalle</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(6)"><div class="cal-day-num">13</div><span class="cal-day-label">Guía</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(7)"><div class="cal-day-num">14</div><span class="cal-day-label">Promo</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span><span class="cal-dot cal-dot-fb"></span><span class="cal-dot cal-dot-tt"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(8)"><div class="cal-day-num">15</div><span class="cal-day-label">Precios</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(9)"><div class="cal-day-num">16</div><span class="cal-day-label">Reseña</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(10)"><div class="cal-day-num">17</div><span class="cal-day-label">Countdown</span><span class="cal-day-tag urgent">!</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span><span class="cal-dot cal-dot-tt"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(11)"><div class="cal-day-num">18</div><span class="cal-day-label">Último</span><span class="cal-day-tag urgent">!</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span></div></div>
+          <div class="cal-day active" onclick="openDayDetail(12)"><div class="cal-day-num">19</div><span class="cal-day-label">A&A</span><span class="cal-day-tag holiday">&#9829;</span><div class="cal-day-dots"><span class="cal-dot cal-dot-ig"></span><span class="cal-dot cal-dot-fb"></span><span class="cal-dot cal-dot-tt"></span></div></div>
+          <div class="cal-day"><div class="cal-day-num">20</div></div>
+          <div class="cal-day"><div class="cal-day-num">21</div></div>
+          <div class="cal-day"><div class="cal-day-num">22</div></div>
+          <div class="cal-day"><div class="cal-day-num">23</div></div>
+          <div class="cal-day"><div class="cal-day-num">24</div></div>
+          <div class="cal-day"><div class="cal-day-num">25</div></div>
+          <div class="cal-day"><div class="cal-day-num">26</div></div>
+          <div class="cal-day"><div class="cal-day-num">27</div></div>
+          <div class="cal-day"><div class="cal-day-num">28</div></div>
+          <div class="cal-day"><div class="cal-day-num">29</div></div>
+          <div class="cal-day"><div class="cal-day-num">30</div></div>
+          <div class="cal-day empty"><div class="cal-day-num">1</div></div>
+          <div class="cal-day empty"><div class="cal-day-num">2</div></div>
+          <div class="cal-day empty"><div class="cal-day-num">3</div></div>
+          <div class="cal-day empty"><div class="cal-day-num">4</div></div>
         </div>
 
-        <div class="day-card-admin" id="dc2">
-          <div class="day-head"><span class="day-date-label">Día 2 · Sep 9</span><span class="day-tag day-tag-normal">Producto estrella</span></div>
+        <div class="day-detail" id="dd1"><div class="day-detail-head"><span class="day-detail-title">Sep 8 — Teaser</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c1"></div><div class="cp-task-body"><div class="cp-task-name">Post teaser: Logo + "Próximamente"</div><div class="cp-task-detail">Fondo negro, logo centrado. Generar expectativa.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+        <div class="day-detail" id="dd2"><div class="day-detail-head"><span class="day-detail-title">Sep 9 — Producto estrella</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c2"></div><div class="cp-task-body"><div class="cp-task-name">Post: Foto Cadena Gucci</div><div class="cp-task-detail">Producto estrella sobre tela negra, luz lateral de ventana.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
           <div class="cp-task"><div class="cp-check" data-cp="c3"></div><div class="cp-task-body"><div class="cp-task-name">Reel 1: Unboxing de una pieza</div><div class="cp-task-detail">15-30 seg. Manos abriendo caja, close-up del brillo.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc3">
-          <div class="day-head"><span class="day-date-label">Día 3 · Sep 10</span><span class="day-tag day-tag-normal">Variedad</span></div>
+        <div class="day-detail" id="dd3"><div class="day-detail-head"><span class="day-detail-title">Sep 10 — Variedad</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c4"></div><div class="cp-task-body"><div class="cp-task-name">Post: Collage de 3 dijes</div><div class="cp-task-detail">Foto cenital, dijes en línea sobre fondo negro.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
           <div class="cp-task"><div class="cp-check" data-cp="c5"></div><div class="cp-task-body"><div class="cp-task-name">Stories: Encuesta "¿Cuál te gusta más?"</div><div class="cp-task-detail">3 stories, cada una con un dije + sticker de encuesta.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc4">
-          <div class="day-head"><span class="day-date-label">Día 4 · Sep 11</span><span class="day-tag day-tag-normal">Emoción</span></div>
+        <div class="day-detail" id="dd4"><div class="day-detail-head"><span class="day-detail-title">Sep 11 — Emoción</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c6"></div><div class="cp-task-body"><div class="cp-task-name">Post: Frase + producto de fondo</div><div class="cp-task-detail">"Lo que vale, permanece." — Pieza sobre superficie elegante.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
           <div class="cp-task"><div class="cp-check" data-cp="c7"></div><div class="cp-task-body"><div class="cp-task-name">Reel 2: "El regalo perfecto existe"</div><div class="cp-task-detail">15-20 seg. Transiciones rápidas entre 3-4 piezas.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc5">
-          <div class="day-head"><span class="day-date-label">Día 5 · Sep 12</span><span class="day-tag day-tag-normal">Detalle</span></div>
+        <div class="day-detail" id="dd5"><div class="day-detail-head"><span class="day-detail-title">Sep 12 — Detalle</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c8"></div><div class="cp-task-body"><div class="cp-task-name">Post: Topos Esmeralda close-up</div><div class="cp-task-detail">Macro con buena luz. Sobre pétalo de rosa si tienes.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
           <div class="cp-task"><div class="cp-check" data-cp="c9"></div><div class="cp-task-body"><div class="cp-task-name">Story: Countdown al Amor y Amistad</div><div class="cp-task-detail">Sticker de cuenta regresiva apuntando al 19 de Sep.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc6">
-          <div class="day-head"><span class="day-date-label">Día 6 · Sep 13</span><span class="day-tag day-tag-normal">Guía</span></div>
+        <div class="day-detail" id="dd6"><div class="day-detail-head"><span class="day-detail-title">Sep 13 — Guía de regalos</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c10"></div><div class="cp-task-body"><div class="cp-task-name">Post: Carrusel "¿Ya sabes qué regalar?"</div><div class="cp-task-detail">4-5 slides. Cada una con un producto + precio.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
           <div class="cp-task"><div class="cp-check" data-cp="c11"></div><div class="cp-task-body"><div class="cp-task-name">Reel 3: Video de presentación (Gemini)</div><div class="cp-task-detail">Editar los 4 clips en CapCut. Agregar texto + música.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc7">
-          <div class="day-head"><span class="day-date-label">Día 7 · Sep 14</span><span class="day-tag day-tag-normal">Promoción</span></div>
+        <div class="day-detail" id="dd7"><div class="day-detail-head"><span class="day-detail-title">Sep 14 — Promoción</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c12"></div><div class="cp-task-body"><div class="cp-task-name">Post: Revelar PROMO Amor y Amistad</div><div class="cp-task-detail">Cadena Gucci + Dije = $280.000. Diseño impactante.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
           <div class="cp-task"><div class="cp-check" data-cp="c13"></div><div class="cp-task-body"><div class="cp-task-name">Stories: Detrás de cámaras</div><div class="cp-task-detail">Mostrar piezas en la mesa, armando combos, preparando pedidos.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc8">
-          <div class="day-head"><span class="day-date-label">Día 8 · Sep 15</span><span class="day-tag day-tag-normal">Precios</span></div>
+        <div class="day-detail" id="dd8"><div class="day-detail-head"><span class="day-detail-title">Sep 15 — Precios</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c14"></div><div class="cp-task-body"><div class="cp-task-name">Post: Guía de regalos por precio</div><div class="cp-task-detail">3 rangos: Menos de $80K / Menos de $150K / $150K+</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
           <div class="cp-task"><div class="cp-check" data-cp="c15"></div><div class="cp-task-body"><div class="cp-task-name">Reel 4: "Menos de $100K"</div><div class="cp-task-detail">Mostrar piezas económicas una por una con nombre y precio.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc9">
-          <div class="day-head"><span class="day-date-label">Día 9 · Sep 16</span><span class="day-tag day-tag-normal">Confianza</span></div>
+        <div class="day-detail" id="dd9"><div class="day-detail-head"><span class="day-detail-title">Sep 16 — Confianza</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c16"></div><div class="cp-task-body"><div class="cp-task-name">Post: Testimonio / reseña</div><div class="cp-task-detail">Foto de alguien usando una pieza + cita. Familia o amiga.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc10">
-          <div class="day-head"><span class="day-date-label">Día 10 · Sep 17</span><span class="day-tag day-tag-urgent">Faltan 2 días</span></div>
+        <div class="day-detail" id="dd10"><div class="day-detail-head"><span class="day-detail-title">Sep 17 — Countdown</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c17"></div><div class="cp-task-body"><div class="cp-task-name">Reel 5: Countdown "Faltan 2 días"</div><div class="cp-task-detail">10 seg. Texto grande + piezas rápidas + CTA urgente.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc11">
-          <div class="day-head"><span class="day-date-label">Día 11 · Sep 18</span><span class="day-tag day-tag-urgent">Último día</span></div>
+        <div class="day-detail" id="dd11"><div class="day-detail-head"><span class="day-detail-title">Sep 18 — Último día</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c18"></div><div class="cp-task-body"><div class="cp-task-name">Stories: "Últimas horas para pedir"</div><div class="cp-task-detail">Urgencia. Mostrar piezas disponibles + link de WhatsApp.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
         </div>
-
-        <div class="day-card-admin" id="dc12">
-          <div class="day-head"><span class="day-date-label">Día 12 · Sep 19</span><span class="day-tag day-tag-holiday">Amor y Amistad</span></div>
+        <div class="day-detail" id="dd12"><div class="day-detail-head"><span class="day-detail-title">Sep 19 — Amor y Amistad</span><button class="day-detail-close" onclick="closeDayDetail()">&#10005;</button></div>
           <div class="cp-task"><div class="cp-check" data-cp="c19"></div><div class="cp-task-body"><div class="cp-task-name">Post especial: Feliz Día del Amor y Amistad</div><div class="cp-task-detail">Diseño celebratorio. Reforzar marca + agradecimiento.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
         </div>
       </div>
@@ -1957,6 +1996,21 @@ function updateReports() {
 }
 
 // ==================== CONTENT PLAN ====================
+function openDayDetail(dayNum) {
+  document.querySelectorAll('.day-detail').forEach(function(d) { d.classList.remove('active'); });
+  document.querySelectorAll('.cal-day').forEach(function(d) { d.classList.remove('selected'); });
+  var detail = document.getElementById('dd' + dayNum);
+  if (detail) {
+    detail.classList.add('active');
+    detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  event.currentTarget.classList.add('selected');
+}
+function closeDayDetail() {
+  document.querySelectorAll('.day-detail').forEach(function(d) { d.classList.remove('active'); });
+  document.querySelectorAll('.cal-day').forEach(function(d) { d.classList.remove('selected'); });
+}
+
 function switchCpTab(tabId, el) {
   document.querySelectorAll('.cp-tab').forEach(function(x) { x.classList.remove('active'); });
   document.querySelectorAll('.cp-inner').forEach(function(x) { x.classList.remove('active'); });

@@ -353,54 +353,6 @@ section {
 }
 
 /* ==================== CATEGORIES ==================== */
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
-  margin-top: 3rem;
-}
-
-.category-card {
-  text-align: center;
-  padding: 2.5rem 1rem;
-  border: 1px solid rgba(197, 160, 85, 0.15);
-  cursor: pointer;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.category-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(197, 160, 85, 0.05), transparent);
-  transition: left 0.6s;
-}
-
-.category-card:hover::before { left: 100%; }
-
-.category-card:hover {
-  border-color: var(--gold);
-  transform: translateY(-4px);
-}
-
-.category-icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  display: block;
-}
-
-.category-name {
-  font-family: var(--font-title);
-  font-size: 0.8rem;
-  letter-spacing: 3px;
-  color: var(--diamond);
-  text-transform: uppercase;
-}
 
 /* ==================== CATALOG ==================== */
 .catalog-filters {
@@ -1338,7 +1290,7 @@ footer {
 
 @media (max-width: 480px) {
   .footer-content { grid-template-columns: 1fr; }
-  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+
 }
 /* ==================== PARTICLE CANVAS ==================== */
 #particleCanvas {
@@ -1351,7 +1303,7 @@ footer {
   pointer-events: none;
 }
 
-.hero, section, .gold-info, footer, #categorias, #catalogo, #historia, #testimonios, #politicas {
+.hero, section, .gold-info, footer, #catalogo, #historia, #testimonios, #politicas {
   position: relative;
   z-index: 1;
 }
@@ -1408,45 +1360,6 @@ header { z-index: 1000; }
   <div class="hero-scroll">
     <span>Descubrir</span>
     <div class="hero-scroll-line"></div>
-  </div>
-</section>
-
-<!-- CATEGORIES -->
-<section id="categorias">
-  <div class="section-header" data-animate>
-    <span class="section-label">Colecciones</span>
-    <h2 class="section-title">Categorías</h2>
-    <div class="section-divider"></div>
-  </div>
-  <div class="categories-grid">
-    <div class="category-card delay-1" data-animate onclick="filterProducts('anillos')">
-      <span class="category-icon">&#9672;</span>
-      <span class="category-name">Anillos</span>
-    </div>
-    <div class="category-card delay-2" data-animate onclick="filterProducts('cadenas')">
-      <span class="category-icon">&#9687;</span>
-      <span class="category-name">Cadenas</span>
-    </div>
-    <div class="category-card delay-3" data-animate onclick="filterProducts('pulseras')">
-      <span class="category-icon">&#9900;</span>
-      <span class="category-name">Pulseras</span>
-    </div>
-    <div class="category-card delay-4" data-animate onclick="filterProducts('aretes')">
-      <span class="category-icon">&#10022;</span>
-      <span class="category-name">Aretes</span>
-    </div>
-    <div class="category-card delay-5" data-animate onclick="filterProducts('dijes')">
-      <span class="category-icon">&#10045;</span>
-      <span class="category-name">Dijes</span>
-    </div>
-    <div class="category-card delay-6" data-animate onclick="filterProducts('sets')">
-      <span class="category-icon">&#10070;</span>
-      <span class="category-name">Sets</span>
-    </div>
-    <div class="category-card delay-7" data-animate onclick="filterProducts('accesorios')">
-      <span class="category-icon">&#9733;</span>
-      <span class="category-name">Accesorios</span>
-    </div>
   </div>
 </section>
 
@@ -1600,11 +1513,11 @@ header { z-index: 1000; }
       <a href="#politicas">Políticas</a>
     </div>
     <div class="footer-col">
-      <h4>Categorías</h4>
-      <a href="#" onclick="filterProducts('anillos')">Anillos</a>
-      <a href="#" onclick="filterProducts('cadenas')">Cadenas</a>
-      <a href="#" onclick="filterProducts('pulseras')">Pulseras</a>
-      <a href="#" onclick="filterProducts('aretes')">Aretes</a>
+      <h4>Productos</h4>
+      <a href="#catalogo" onclick="filterProducts('cadenas')">Cadenas</a>
+      <a href="#catalogo" onclick="filterProducts('dijes')">Dijes</a>
+      <a href="#catalogo" onclick="filterProducts('aretes')">Aretes</a>
+      <a href="#catalogo" onclick="filterProducts('accesorios')">Accesorios</a>
     </div>
     <div class="footer-col">
       <h4>Contacto</h4>
