@@ -117,6 +117,68 @@ body {
   display: none;
 }
 
+.user-select {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+.user-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border: 1px solid rgba(197, 160, 85, 0.12);
+  cursor: pointer;
+  transition: all 0.3s;
+  background: transparent;
+}
+.user-option:hover {
+  border-color: rgba(197, 160, 85, 0.4);
+  background: rgba(197, 160, 85, 0.04);
+}
+.user-option.selected {
+  border-color: var(--gold);
+  background: rgba(197, 160, 85, 0.08);
+}
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(197, 160, 85, 0.12);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.user-option.selected .user-avatar {
+  background: var(--gold);
+  color: var(--bg-dark);
+}
+.user-name {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.3;
+}
+.user-option.selected .user-name { color: var(--diamond); }
+
+.logged-user {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  padding: 0.6rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(197, 160, 85, 0.1);
+  margin-top: auto;
+}
+.logged-user strong { color: var(--gold); }
+
 /* ==================== ADMIN LAYOUT ==================== */
 .admin-layout {
   display: none;
@@ -688,8 +750,26 @@ body {
   <div class="logo">SÉFIRA</div>
   <div class="login-box">
     <h2>Panel Administrativo</h2>
-    <input type="password" id="loginPass" placeholder="Contraseña de acceso" onkeydown="if(event.key==='Enter') attemptLogin()">
-    <button onclick="attemptLogin()">Ingresar</button>
+    <div class="user-select" id="userSelect">
+      <div class="user-option" onclick="selectUser(this,'sebastian')" data-user="sebastian">
+        <div class="user-avatar">SB</div>
+        <div class="user-name">Sebastián Betancur</div>
+      </div>
+      <div class="user-option" onclick="selectUser(this,'luzmarina')" data-user="luzmarina">
+        <div class="user-avatar">LT</div>
+        <div class="user-name">Luz Marina Taborda</div>
+      </div>
+      <div class="user-option" onclick="selectUser(this,'sofia')" data-user="sofia">
+        <div class="user-avatar">SZ</div>
+        <div class="user-name">Sofía Zuleta Taborda</div>
+      </div>
+      <div class="user-option" onclick="selectUser(this,'mariajose')" data-user="mariajose">
+        <div class="user-avatar">MJ</div>
+        <div class="user-name">María José Zuleta Taborda</div>
+      </div>
+    </div>
+    <input type="password" id="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter') attemptLogin()" style="display:none;">
+    <button onclick="attemptLogin()" id="loginBtn" style="display:none;">Ingresar</button>
     <div class="login-error" id="loginError">Contraseña incorrecta</div>
   </div>
 </div>
@@ -1341,7 +1421,13 @@ Oro suizo 18K — SÉFIRA ✨
 
 <script>
 // ==================== CONFIG ====================
-const ADMIN_PASSWORD = 'sefira2026';
+const ADMIN_USERS = {
+  sebastian: { name: 'Sebastián Betancur', initials: 'SB', password: 'sefira2026' },
+  luzmarina: { name: 'Luz Marina Taborda', initials: 'LT', password: 'luzmarina2026' },
+  sofia: { name: 'Sofía Zuleta Taborda', initials: 'SZ', password: 'sofia2026' },
+  mariajose: { name: 'María José Zuleta Taborda', initials: 'MJ', password: 'mariajose2026' },
+};
+let selectedUserId = null;
 
 // ==================== DATA (localStorage persistence) ====================
 function loadData(key, fallback) {
@@ -1375,12 +1461,25 @@ let adminOrders = loadData('orders', []);
 let adminClients = loadData('clients', []);
 
 // ==================== LOGIN ====================
+function selectUser(el, userId) {
+  document.querySelectorAll('.user-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedUserId = userId;
+  document.getElementById('loginPass').style.display = '';
+  document.getElementById('loginBtn').style.display = '';
+  document.getElementById('loginPass').focus();
+}
+
 function attemptLogin() {
+  if (!selectedUserId) { alert('Selecciona tu perfil'); return; }
   const pass = document.getElementById('loginPass').value;
-  if (pass === ADMIN_PASSWORD) {
+  const user = ADMIN_USERS[selectedUserId];
+  if (user && pass === user.password) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminLayout').classList.add('active');
     sessionStorage.setItem('sefira_auth', 'true');
+    sessionStorage.setItem('sefira_user', selectedUserId);
+    showLoggedUser(selectedUserId);
     updateDashboard();
     renderProductsTable();
     renderOrdersTable();
@@ -1391,16 +1490,43 @@ function attemptLogin() {
   }
 }
 
+function showLoggedUser(userId) {
+  var user = ADMIN_USERS[userId];
+  if (!user) return;
+  var existing = document.getElementById('loggedUserInfo');
+  if (existing) existing.remove();
+  var footer = document.querySelector('.sidebar-footer');
+  if (footer) {
+    var div = document.createElement('div');
+    div.className = 'logged-user';
+    div.id = 'loggedUserInfo';
+    div.innerHTML = '<strong>' + user.initials + '</strong> ' + user.name;
+    footer.parentNode.insertBefore(div, footer);
+  }
+}
+
 function logout() {
   sessionStorage.removeItem('sefira_auth');
+  sessionStorage.removeItem('sefira_user');
+  selectedUserId = null;
   document.getElementById('adminLayout').classList.remove('active');
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginPass').value = '';
+  document.getElementById('loginPass').style.display = 'none';
+  document.getElementById('loginBtn').style.display = 'none';
+  document.querySelectorAll('.user-option').forEach(o => o.classList.remove('selected'));
+  var info = document.getElementById('loggedUserInfo');
+  if (info) info.remove();
 }
 
 if (sessionStorage.getItem('sefira_auth') === 'true') {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('adminLayout').classList.add('active');
+  var savedUser = sessionStorage.getItem('sefira_user');
+  if (savedUser && ADMIN_USERS[savedUser]) {
+    selectedUserId = savedUser;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminLayout').classList.add('active');
+    showLoggedUser(savedUser);
+  }
 }
 
 // ==================== NAVIGATION ====================
