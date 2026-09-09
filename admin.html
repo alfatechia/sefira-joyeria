@@ -583,6 +583,78 @@ body {
 .recent-order-client { color: var(--diamond); }
 .recent-order-total { color: var(--gold); font-weight: 500; }
 
+/* ==================== CONTENT PLAN ==================== */
+.cp-progress { display:flex;align-items:center;gap:10px;margin-bottom:1.5rem; }
+.cp-progress-track { flex:1;height:6px;background:rgba(197,160,85,0.1);border-radius:3px;overflow:hidden; }
+.cp-progress-fill { height:100%;background:linear-gradient(90deg,var(--emerald),var(--gold));border-radius:3px;transition:width .4s; }
+.cp-progress-label { font-size:.75rem;color:var(--text-muted);font-weight:600;min-width:36px;text-align:right;font-variant-numeric:tabular-nums; }
+
+.cp-tabs { display:flex;gap:0;border-bottom:1px solid rgba(197,160,85,0.15);margin-bottom:1.5rem;overflow-x:auto; }
+.cp-tab { padding:10px 18px;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-weight:500; }
+.cp-tab:hover { color:var(--text-light); }
+.cp-tab.active { color:var(--gold);border-bottom-color:var(--gold); }
+.cp-inner { display:none; }
+.cp-inner.active { display:block; }
+
+.day-card-admin { background:var(--bg-card);border:1px solid rgba(197,160,85,0.1);padding:16px;margin-bottom:12px;transition:border-color .2s; }
+.day-card-admin.completed { border-color:var(--emerald-dark);opacity:.65; }
+.day-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:10px; }
+.day-date-label { font-size:.7rem;font-weight:600;color:var(--gold-deep);letter-spacing:.06em;text-transform:uppercase; }
+.day-tag { font-size:.65rem;padding:2px 8px;font-weight:500; }
+.day-tag-urgent { color:var(--red);background:rgba(226,75,74,0.1); }
+.day-tag-normal { color:var(--text-muted);background:rgba(197,160,85,0.05); }
+.day-tag-holiday { color:var(--green);background:rgba(46,204,113,0.1); }
+
+.cp-task { display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-top:1px solid rgba(197,160,85,0.06); }
+.cp-task:first-of-type { border-top:none; }
+.cp-check { flex:0 0 20px;width:20px;height:20px;border:2px solid rgba(197,160,85,0.25);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s;background:transparent; }
+.cp-check:hover { border-color:var(--emerald);background:rgba(11,110,63,0.1); }
+.cp-check.checked { background:var(--emerald);border-color:var(--emerald); }
+.cp-check.checked::after { content:'✓';color:#fff;font-size:11px;font-weight:700; }
+.cp-task-body { flex:1;min-width:0; }
+.cp-task-name { font-weight:600;font-size:.82rem;color:var(--diamond); }
+.cp-check.checked + .cp-task-body .cp-task-name { text-decoration:line-through;color:var(--text-muted); }
+.cp-task-detail { font-size:.72rem;color:var(--text-muted);margin-top:2px; }
+.cp-tags { display:flex;gap:4px;margin-top:5px;flex-wrap:wrap; }
+.cp-tag { font-size:.6rem;padding:2px 7px;font-weight:600;letter-spacing:.02em; }
+.cp-tag-ig { background:rgba(197,160,85,0.15);color:var(--gold); }
+.cp-tag-tt { background:rgba(197,160,85,0.08);color:var(--gold-deep); }
+.cp-tag-fb { background:rgba(11,110,63,0.15);color:var(--emerald-light); }
+.cp-tag-st { background:rgba(197,160,85,0.06);color:var(--text-muted); }
+
+.cp-guide { background:var(--bg-card);border:1px solid rgba(197,160,85,0.1);padding:16px;margin-bottom:12px; }
+.cp-guide h4 { font-family:var(--font-title);font-size:.85rem;color:var(--diamond);letter-spacing:1px;margin-bottom:8px;font-weight:400; }
+.cp-guide ul { list-style:none;padding:0; }
+.cp-guide li { font-size:.78rem;color:var(--text-muted);padding:3px 0 3px 16px;position:relative; }
+.cp-guide li::before { content:'→';position:absolute;left:0;color:var(--gold-deep); }
+
+.cp-script { background:var(--bg-card);border:1px solid rgba(197,160,85,0.1);margin-bottom:12px;overflow:hidden; }
+.cp-script-head { padding:14px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s; }
+.cp-script-head:hover { background:var(--bg-card-hover); }
+.cp-script-head h4 { font-family:var(--font-title);font-size:.88rem;color:var(--diamond);font-weight:400;letter-spacing:1px; }
+.cp-script-arrow { color:var(--text-muted);font-size:.7rem;transition:transform .2s; }
+.cp-script.open .cp-script-arrow { transform:rotate(180deg); }
+.cp-script-body { display:none;padding:0 16px 16px;font-size:.78rem;color:var(--text-muted);line-height:1.6; }
+.cp-script.open .cp-script-body { display:block; }
+.cp-step { padding:5px 0;border-bottom:1px solid rgba(197,160,85,0.06); }
+.cp-step:last-child { border-bottom:none; }
+.cp-step strong { color:var(--diamond); }
+.cp-tip { background:rgba(197,160,85,0.05);border-left:3px solid var(--gold-deep);padding:8px 12px;margin-top:8px;font-size:.75rem; }
+
+.cp-copy { background:var(--bg-card);border:1px solid rgba(197,160,85,0.1);margin-bottom:12px;overflow:hidden; }
+.cp-copy-head { padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(197,160,85,0.06); }
+.cp-copy-head h4 { font-size:.78rem;font-weight:600;color:var(--diamond); }
+.cp-copy-btn { font-size:.65rem;font-weight:600;color:var(--gold);background:rgba(197,160,85,0.1);border:none;padding:4px 10px;cursor:pointer;font-family:var(--font-body);transition:background .15s;letter-spacing:1px;text-transform:uppercase; }
+.cp-copy-btn:hover { background:rgba(197,160,85,0.2); }
+.cp-copy-btn.copied { color:var(--green);background:rgba(46,204,113,0.1); }
+.cp-copy-text { padding:12px 16px;font-size:.78rem;line-height:1.7;color:var(--text-muted);white-space:pre-wrap;word-break:break-word; }
+
+.cp-promo { background:var(--bg-card);border:1px solid var(--gold-deep);padding:20px;margin-bottom:12px; }
+.cp-promo h4 { font-family:var(--font-title);font-size:1rem;color:var(--gold);letter-spacing:2px;margin-bottom:6px;font-weight:500; }
+.cp-promo-price { font-size:1.5rem;font-weight:700;color:var(--diamond);font-variant-numeric:tabular-nums; }
+.cp-promo-old { font-size:.85rem;color:var(--text-muted);text-decoration:line-through;margin-left:6px;font-weight:400; }
+.cp-promo-detail { margin-top:8px;font-size:.78rem;color:var(--text-muted);line-height:1.6; }
+
 /* ==================== RESPONSIVE ADMIN ==================== */
 @media (max-width: 768px) {
   .admin-layout.active {
@@ -632,23 +704,28 @@ body {
 
     <nav class="sidebar-nav">
       <div class="sidebar-section">Principal</div>
-      <div class="sidebar-link active" onclick="showPanel('dashboard')">
+      <div class="sidebar-link active" onclick="showPanel('dashboard',this)">
         <span class="sidebar-link-icon">&#9632;</span> Dashboard
       </div>
 
       <div class="sidebar-section">Gestión</div>
-      <div class="sidebar-link" onclick="showPanel('products')">
+      <div class="sidebar-link" onclick="showPanel('products',this)">
         <span class="sidebar-link-icon">&#10022;</span> Productos
       </div>
-      <div class="sidebar-link" onclick="showPanel('orders')">
+      <div class="sidebar-link" onclick="showPanel('orders',this)">
         <span class="sidebar-link-icon">&#9993;</span> Pedidos
       </div>
-      <div class="sidebar-link" onclick="showPanel('clients')">
+      <div class="sidebar-link" onclick="showPanel('clients',this)">
         <span class="sidebar-link-icon">&#9823;</span> Clientes
       </div>
 
+      <div class="sidebar-section">Marketing</div>
+      <div class="sidebar-link" onclick="showPanel('contenido',this)">
+        <span class="sidebar-link-icon">&#9998;</span> Contenido
+      </div>
+
       <div class="sidebar-section">Reportes</div>
-      <div class="sidebar-link" onclick="showPanel('reports')">
+      <div class="sidebar-link" onclick="showPanel('reports',this)">
         <span class="sidebar-link-icon">&#9783;</span> Reportes
       </div>
     </nav>
@@ -823,6 +900,229 @@ body {
           <tbody id="clientsTableBody"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ==================== CONTENT PLAN PANEL ==================== -->
+    <div class="panel" id="panel-contenido">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Plan de contenido</h1>
+          <p class="page-subtitle">Lanzamiento + Día del Amor y la Amistad · Sep 8–19</p>
+        </div>
+      </div>
+
+      <div class="cp-progress">
+        <div class="cp-progress-track"><div class="cp-progress-fill" id="cpFill"></div></div>
+        <div class="cp-progress-label" id="cpLabel">0%</div>
+      </div>
+
+      <div class="cp-tabs" id="cpTabs">
+        <div class="cp-tab active" onclick="switchCpTab('cp-calendario',this)">Calendario</div>
+        <div class="cp-tab" onclick="switchCpTab('cp-fotos',this)">Fotos</div>
+        <div class="cp-tab" onclick="switchCpTab('cp-videos',this)">Videos</div>
+        <div class="cp-tab" onclick="switchCpTab('cp-textos',this)">Textos</div>
+        <div class="cp-tab" onclick="switchCpTab('cp-promos',this)">Promos</div>
+      </div>
+
+      <!-- CALENDARIO -->
+      <div class="cp-inner active" id="cp-calendario">
+
+        <div class="day-card-admin" id="dc1">
+          <div class="day-head"><span class="day-date-label">Día 1 · Sep 8 — Hoy</span><span class="day-tag day-tag-urgent">Hoy</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c1"></div><div class="cp-task-body"><div class="cp-task-name">Post teaser: Logo + "Próximamente"</div><div class="cp-task-detail">Fondo negro, logo centrado. Generar expectativa.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc2">
+          <div class="day-head"><span class="day-date-label">Día 2 · Sep 9</span><span class="day-tag day-tag-normal">Producto estrella</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c2"></div><div class="cp-task-body"><div class="cp-task-name">Post: Foto Cadena Gucci</div><div class="cp-task-detail">Producto estrella sobre tela negra, luz lateral de ventana.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c3"></div><div class="cp-task-body"><div class="cp-task-name">Reel 1: Unboxing de una pieza</div><div class="cp-task-detail">15-30 seg. Manos abriendo caja, close-up del brillo.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc3">
+          <div class="day-head"><span class="day-date-label">Día 3 · Sep 10</span><span class="day-tag day-tag-normal">Variedad</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c4"></div><div class="cp-task-body"><div class="cp-task-name">Post: Collage de 3 dijes</div><div class="cp-task-detail">Foto cenital, dijes en línea sobre fondo negro.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c5"></div><div class="cp-task-body"><div class="cp-task-name">Stories: Encuesta "¿Cuál te gusta más?"</div><div class="cp-task-detail">3 stories, cada una con un dije + sticker de encuesta.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc4">
+          <div class="day-head"><span class="day-date-label">Día 4 · Sep 11</span><span class="day-tag day-tag-normal">Emoción</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c6"></div><div class="cp-task-body"><div class="cp-task-name">Post: Frase + producto de fondo</div><div class="cp-task-detail">"Lo que vale, permanece." — Pieza sobre superficie elegante.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c7"></div><div class="cp-task-body"><div class="cp-task-name">Reel 2: "El regalo perfecto existe"</div><div class="cp-task-detail">15-20 seg. Transiciones rápidas entre 3-4 piezas.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc5">
+          <div class="day-head"><span class="day-date-label">Día 5 · Sep 12</span><span class="day-tag day-tag-normal">Detalle</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c8"></div><div class="cp-task-body"><div class="cp-task-name">Post: Topos Esmeralda close-up</div><div class="cp-task-detail">Macro con buena luz. Sobre pétalo de rosa si tienes.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c9"></div><div class="cp-task-body"><div class="cp-task-name">Story: Countdown al Amor y Amistad</div><div class="cp-task-detail">Sticker de cuenta regresiva apuntando al 19 de Sep.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc6">
+          <div class="day-head"><span class="day-date-label">Día 6 · Sep 13</span><span class="day-tag day-tag-normal">Guía</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c10"></div><div class="cp-task-body"><div class="cp-task-name">Post: Carrusel "¿Ya sabes qué regalar?"</div><div class="cp-task-detail">4-5 slides. Cada una con un producto + precio.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c11"></div><div class="cp-task-body"><div class="cp-task-name">Reel 3: Video de presentación (Gemini)</div><div class="cp-task-detail">Editar los 4 clips en CapCut. Agregar texto + música.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc7">
+          <div class="day-head"><span class="day-date-label">Día 7 · Sep 14</span><span class="day-tag day-tag-normal">Promoción</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c12"></div><div class="cp-task-body"><div class="cp-task-name">Post: Revelar PROMO Amor y Amistad</div><div class="cp-task-detail">Cadena Gucci + Dije = $280.000. Diseño impactante.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c13"></div><div class="cp-task-body"><div class="cp-task-name">Stories: Detrás de cámaras</div><div class="cp-task-detail">Mostrar piezas en la mesa, armando combos, preparando pedidos.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc8">
+          <div class="day-head"><span class="day-date-label">Día 8 · Sep 15</span><span class="day-tag day-tag-normal">Precios</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c14"></div><div class="cp-task-body"><div class="cp-task-name">Post: Guía de regalos por precio</div><div class="cp-task-detail">3 rangos: Menos de $80K / Menos de $150K / $150K+</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c15"></div><div class="cp-task-body"><div class="cp-task-name">Reel 4: "Menos de $100K"</div><div class="cp-task-detail">Mostrar piezas económicas una por una con nombre y precio.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc9">
+          <div class="day-head"><span class="day-date-label">Día 9 · Sep 16</span><span class="day-tag day-tag-normal">Confianza</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c16"></div><div class="cp-task-body"><div class="cp-task-name">Post: Testimonio / reseña</div><div class="cp-task-detail">Foto de alguien usando una pieza + cita. Familia o amiga.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc10">
+          <div class="day-head"><span class="day-date-label">Día 10 · Sep 17</span><span class="day-tag day-tag-urgent">Faltan 2 días</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c17"></div><div class="cp-task-body"><div class="cp-task-name">Reel 5: Countdown "Faltan 2 días"</div><div class="cp-task-detail">10 seg. Texto grande + piezas rápidas + CTA urgente.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG Reel</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc11">
+          <div class="day-head"><span class="day-date-label">Día 11 · Sep 18</span><span class="day-tag day-tag-urgent">Último día</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c18"></div><div class="cp-task-body"><div class="cp-task-name">Stories: "Últimas horas para pedir"</div><div class="cp-task-detail">Urgencia. Mostrar piezas disponibles + link de WhatsApp.</div><div class="cp-tags"><span class="cp-tag cp-tag-st">Stories</span></div></div></div>
+        </div>
+
+        <div class="day-card-admin" id="dc12">
+          <div class="day-head"><span class="day-date-label">Día 12 · Sep 19</span><span class="day-tag day-tag-holiday">Amor y Amistad</span></div>
+          <div class="cp-task"><div class="cp-check" data-cp="c19"></div><div class="cp-task-body"><div class="cp-task-name">Post especial: Feliz Día del Amor y Amistad</div><div class="cp-task-detail">Diseño celebratorio. Reforzar marca + agradecimiento.</div><div class="cp-tags"><span class="cp-tag cp-tag-ig">IG</span><span class="cp-tag cp-tag-fb">FB</span><span class="cp-tag cp-tag-tt">TT</span></div></div></div>
+        </div>
+      </div>
+
+      <!-- FOTOS -->
+      <div class="cp-inner" id="cp-fotos">
+        <div class="cp-guide"><h4>Setup básico (una sola vez)</h4><ul><li>Consigue tela negra o cartulina negra grande</li><li>Ubícate cerca de una ventana (luz lateral, no directa)</li><li>Pon un vaso con agua cerca — refleja luz extra</li><li>Limpia cada pieza antes de fotografiarla</li><li>Usa el modo retrato del celular para desenfocar el fondo</li></ul></div>
+        <div class="cp-guide"><h4>Foto 1 — Teaser "Próximamente"</h4><ul><li>Fondo negro, logo de SÉFIRA centrado</li><li>Puedes mostrar el logo desde otro celular sobre la tela</li><li>O imprímelo si puedes</li><li>Texto va en el post, no en la foto</li></ul></div>
+        <div class="cp-guide"><h4>Foto 2 — Cadena Gucci (producto estrella)</h4><ul><li>Cadena extendida en forma de S o U sobre tela negra</li><li>Luz de ventana lateral para que brille el oro</li><li>Acércate para que se vean los eslabones</li><li>Toma varias y escoge la mejor</li></ul></div>
+        <div class="cp-guide"><h4>Foto 3 — Collage de dijes</h4><ul><li>6 dijes organizados en círculo o línea</li><li>Foto cenital (desde arriba, perpendicular)</li><li>Misma distancia entre cada dije</li><li>Fondo negro, bien iluminados</li></ul></div>
+        <div class="cp-guide"><h4>Foto 4 — Frase + producto</h4><ul><li>Una pieza sobre superficie elegante: libro, mármol, madera oscura</li><li>Composición descentrada (pieza a un lado, espacio para texto)</li><li>La frase se agrega en el diseño del post (Canva)</li></ul></div>
+        <div class="cp-guide"><h4>Foto 5 — Topos Esmeralda (close-up)</h4><ul><li>Lo más cerca posible, que se vea el color verde</li><li>Sobre algo romántico: pétalo de rosa, seda</li><li>Buena luz para que brille la piedra</li><li>Si el celular tiene modo macro, úsalo</li></ul></div>
+        <div class="cp-guide"><h4>Foto 6 — Carrusel de productos</h4><ul><li>4-5 fotos individuales, una por producto</li><li>MISMO fondo negro y misma iluminación en todas</li><li>Misma distancia y ángulo — consistencia es clave</li></ul></div>
+        <div class="cp-guide"><h4>Foto 7 — Combo promocional</h4><ul><li>Cadena + dije juntos, como se usarían</li><li>Puedes ponerlos sobre una cajita bonita</li><li>Transmitir "esto es un regalo listo"</li></ul></div>
+        <div class="cp-guide"><h4>Foto 8 — Guía por precio (3 grupos)</h4><ul><li>Grupo 1: Piezas bajo $80K juntas en una foto</li><li>Grupo 2: Piezas bajo $150K</li><li>Grupo 3: Piezas de $150K+</li><li>Mismo setup para las 3 fotos</li></ul></div>
+        <div class="cp-guide"><h4>Foto 9 — Testimonio</h4><ul><li>Alguien de confianza usando una pieza (mamá, hermana, amiga)</li><li>Natural, no posada — que se vea real</li><li>Buena luz, fondo limpio</li><li>Pídele una frase: "Me encantó la calidad" — Nombre</li></ul></div>
+      </div>
+
+      <!-- VIDEOS -->
+      <div class="cp-inner" id="cp-videos">
+        <div class="cp-script" id="scr1"><div class="cp-script-head"><h4>Reel 1 — Unboxing (15-30 seg)</h4><span class="cp-script-arrow">▼</span></div><div class="cp-script-body"><div class="cp-step"><strong>Música:</strong> Piano suave, tipo lujo (busca "luxury" en CapCut)</div><div class="cp-step"><strong>Escena 1:</strong> Manos abriendo una caja o bolsa negra elegante (3 seg)</div><div class="cp-step"><strong>Escena 2:</strong> Sacar la pieza lentamente, que la cámara capte el brillo (5 seg)</div><div class="cp-step"><strong>Escena 3:</strong> Close-up de la pieza con luz natural, gírala despacio (5 seg)</div><div class="cp-step"><strong>Texto en pantalla:</strong> "Oro suizo 18K ✨"</div><div class="cp-step"><strong>Final:</strong> Logo SÉFIRA + @sefira.joyeria (3 seg)</div><div class="cp-tip">Si no tienes caja elegante, usa una tela negra y dobla como si fuera un envoltorio.</div></div></div>
+
+        <div class="cp-script" id="scr2"><div class="cp-script-head"><h4>Reel 2 — "El regalo perfecto" (15-20 seg)</h4><span class="cp-script-arrow">▼</span></div><div class="cp-script-body"><div class="cp-step"><strong>Audio:</strong> Trending o música romántica</div><div class="cp-step"><strong>Texto inicial:</strong> "¿Buscas el regalo perfecto para Amor y Amistad?" (3 seg)</div><div class="cp-step"><strong>Transiciones:</strong> Cortes rápidos mostrando 3-4 piezas diferentes (8 seg)</div><div class="cp-step"><strong>Texto final:</strong> "Oro suizo 18K desde $45.000"</div><div class="cp-step"><strong>CTA:</strong> "Escríbenos al WhatsApp" o "Link en bio"</div><div class="cp-tip">Usa la transición "deslizar" en CapCut entre cada pieza.</div></div></div>
+
+        <div class="cp-script" id="scr3"><div class="cp-script-head"><h4>Reel 3 — Video de presentación (30-45 seg)</h4><span class="cp-script-arrow">▼</span></div><div class="cp-script-body"><div class="cp-step"><strong>Este es el video generado con Gemini</strong></div><div class="cp-step"><strong>Clip 1:</strong> Taller de joyería / piezas en proceso (10 seg)</div><div class="cp-step"><strong>Clip 2:</strong> Piezas terminadas brillando con luz natural (8 seg)</div><div class="cp-step"><strong>Clip 3:</strong> Persona usando las joyas en situación elegante (8 seg)</div><div class="cp-step"><strong>Clip 4:</strong> Logo SÉFIRA con fondo elegante (5 seg)</div><div class="cp-step"><strong>Edición:</strong> Únelos en CapCut, agrega música épica y texto</div><div class="cp-tip">Si Gemini no da buenos resultados, graba tú mismo: close-ups de las piezas con música elegante tienen el mismo efecto.</div></div></div>
+
+        <div class="cp-script" id="scr4"><div class="cp-script-head"><h4>Reel 4 — "Menos de $100K" (20 seg)</h4><span class="cp-script-arrow">▼</span></div><div class="cp-script-body"><div class="cp-step"><strong>Audio:</strong> "Cosas que puedes comprar con menos de $100K" (o trending)</div><div class="cp-step">→ Dije Inicial M — $45.000 (2 seg)</div><div class="cp-step">→ Dije Inicial S — $45.000 (2 seg)</div><div class="cp-step">→ Dije Trébol — $48.000 (2 seg)</div><div class="cp-step">→ Balines Lisos — $50.000 (2 seg)</div><div class="cp-step">→ Topos Esmeralda — $65.000 (2 seg)</div><div class="cp-step">→ Dije Virgen — $65.000 (2 seg)</div><div class="cp-step"><strong>Texto final:</strong> "El regalo perfecto SÍ existe — Oro suizo 18K"</div><div class="cp-tip">Cada pieza con nombre y precio en texto. Cortes rápidos al ritmo de la música.</div></div></div>
+
+        <div class="cp-script" id="scr5"><div class="cp-script-head"><h4>Reel 5 — Countdown final (10 seg)</h4><span class="cp-script-arrow">▼</span></div><div class="cp-script-body"><div class="cp-step"><strong>Audio:</strong> Algo energético, con urgencia</div><div class="cp-step"><strong>Texto grande:</strong> "FALTAN 2 DÍAS" (3 seg)</div><div class="cp-step"><strong>Subtexto:</strong> "Para el Día del Amor y la Amistad" (2 seg)</div><div class="cp-step"><strong>Montaje rápido:</strong> 3-4 piezas con flash (3 seg)</div><div class="cp-step"><strong>CTA:</strong> "¿Ya tienes el regalo? Escríbenos YA" (2 seg)</div><div class="cp-tip">Este reel es corto a propósito. La urgencia vende. Máximo 10-12 segundos.</div></div></div>
+      </div>
+
+      <!-- TEXTOS -->
+      <div class="cp-inner" id="cp-textos">
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Post 1 — Teaser (Sep 8)</h4><button class="cp-copy-btn" data-cpcopy="cpt1">Copiar</button></div><div class="cp-copy-text" id="cpt1">Algo especial está llegando... ✨
+
+Joyería de oro suizo 18K, diseñada para quienes valoran lo auténtico.
+
+Muy pronto.
+
+#SÉFIRA #JoyeríaDeOro #OroSuizo18K #Próximamente #JoyeríaColombia</div></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Post 2 — Cadena Gucci (Sep 9)</h4><button class="cp-copy-btn" data-cpcopy="cpt2">Copiar</button></div><div class="cp-copy-text" id="cpt2">Cadena Gucci 60cm · Oro suizo 18K
+
+La pieza que eleva cualquier look. Peso, brillo y calidad que se siente al instante.
+
+$255.000
+
+📲 Escríbenos para pedirla: link en bio
+
+#SÉFIRA #CadenaDeOro #OroSuizo #Gucci #JoyeríaFina #Colombia</div></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Post 3 — Collage dijes (Sep 10)</h4><button class="cp-copy-btn" data-cpcopy="cpt3">Copiar</button></div><div class="cp-copy-text" id="cpt3">Cada dije cuenta una historia. ¿Cuál es la tuya?
+
+✨ Dije Trébol — $48.000
+✨ Dije Infinito — $55.000
+✨ Dije Caballo — $70.000
+
+Oro suizo 18K · Hecho para durar.
+
+📲 Pide el tuyo: link en bio
+
+#SÉFIRA #DijesDeOro #Joyería #OroSuizo18K #Regalos</div></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Post 4 — Frase + producto (Sep 11)</h4><button class="cp-copy-btn" data-cpcopy="cpt4">Copiar</button></div><div class="cp-copy-text" id="cpt4">"Lo que vale, permanece."
+
+Oro suizo 18K — SÉFIRA
+
+#SÉFIRA #Joyería #FrasesDeVida #OroSuizo #Elegancia</div></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Post 7 — Promo revelada (Sep 14)</h4><button class="cp-copy-btn" data-cpcopy="cpt5">Copiar</button></div><div class="cp-copy-text" id="cpt5">💛 ESPECIAL AMOR Y AMISTAD 💛
+
+Cadena Gucci 60cm + Dije a tu elección
+✨ $280.000 ✨
+(Ahorra hasta $23.000)
+
+Oro suizo 18K — El regalo que SÍ vale la pena.
+
+📲 Pide el tuyo: link en bio
+⏰ Válido hasta Sep 19
+
+#AmorYAmistad #SÉFIRA #RegalosPerfectos #OroSuizo18K #JoyeríaColombia #Promoción</div></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Post 8 — Guía de precios (Sep 15)</h4><button class="cp-copy-btn" data-cpcopy="cpt6">Copiar</button></div><div class="cp-copy-text" id="cpt6">🎁 GUÍA DE REGALOS — Amor y Amistad
+
+💰 Menos de $80.000:
+→ Dije Inicial M o S — $45.000
+→ Dije Trébol — $48.000
+→ Balines Lisos — $50.000
+→ Dije Infinito — $55.000
+→ Topos Esmeralda — $65.000
+→ Dije Virgen — $65.000
+
+💰 Menos de $150.000:
+→ Dije Caballo — $70.000
+→ Rondeles Diamantados — $90.000
+→ Barriles — $115.000
+
+💰 Premium:
+→ Cadena Gucci 60cm — $255.000
+
+Todo en oro suizo 18K ✨
+
+📲 WhatsApp: link en bio
+
+#SÉFIRA #GuíaDeRegalos #AmorYAmistad #JoyeríaDeOro</div></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Post 12 — Día del Amor (Sep 19)</h4><button class="cp-copy-btn" data-cpcopy="cpt7">Copiar</button></div><div class="cp-copy-text" id="cpt7">Feliz Día del Amor y la Amistad 💛💚
+
+Porque las personas especiales merecen regalos que duran para siempre.
+
+Gracias a quienes confiaron en SÉFIRA para celebrar este día. Esto apenas comienza.
+
+Oro suizo 18K — SÉFIRA ✨
+
+#FelizDíaDelAmorYLaAmistad #SÉFIRA #Joyería #Gratitud #OroSuizo18K</div></div>
+
+        <div style="border-top:1px solid rgba(197,160,85,0.1);margin:24px 0;"></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Hashtags principales (usar siempre)</h4><button class="cp-copy-btn" data-cpcopy="cpth1">Copiar</button></div><div class="cp-copy-text" id="cpth1">#SÉFIRA #JoyeríaDeOro #OroSuizo18K #JoyeríaColombia #Oro18K #JoyeríaFina</div></div>
+
+        <div class="cp-copy"><div class="cp-copy-head"><h4>Hashtags Amor y Amistad</h4><button class="cp-copy-btn" data-cpcopy="cpth2">Copiar</button></div><div class="cp-copy-text" id="cpth2">#AmorYAmistad #AmorYAmistad2026 #RegalosPerfectos #RegalosParaElla #DíaDelAmorYLaAmistad</div></div>
+      </div>
+
+      <!-- PROMOS -->
+      <div class="cp-inner" id="cp-promos">
+        <div class="cp-promo"><h4>Combo Amor y Amistad</h4><div class="cp-promo-price">$280.000 <span class="cp-promo-old">$303.000</span></div><div class="cp-promo-detail">Cadena Gucci 60cm + Dije a elección del cliente.<br>Ahorro de $18.000 a $23.000 según el dije.<br><strong style="color:var(--diamond);">Comunicar desde Sep 14.</strong></div></div>
+
+        <div class="cp-promo"><h4>Pack Mejor Amiga</h4><div class="cp-promo-price">$80.000 <span class="cp-promo-old">$90.000</span></div><div class="cp-promo-detail">2 dijes iguales (uno para ti, uno para tu amiga).<br>Aplica con Dije Inicial M o S ($45K c/u).<br><strong style="color:var(--diamond);">Ideal para stories y reels.</strong></div></div>
+
+        <div class="cp-promo"><h4>Compra 2, el 3ro con 30% OFF</h4><div class="cp-promo-price">30% dcto en el 3er dije</div><div class="cp-promo-detail">Compra 2 dijes cualquiera y el tercero tiene 30% de descuento.<br>Ejemplo: Trébol $48K + Infinito $55K + Virgen $45.500 = $148.500<br><strong style="color:var(--diamond);">Mover volumen de dijes.</strong></div></div>
+      </div>
+
     </div>
 
     <!-- ==================== REPORTS PANEL ==================== -->
@@ -1104,11 +1404,12 @@ if (sessionStorage.getItem('sefira_auth') === 'true') {
 }
 
 // ==================== NAVIGATION ====================
-function showPanel(name) {
+function showPanel(name, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if (el) el.classList.add('active');
+  else if (event && event.currentTarget) event.currentTarget.classList.add('active');
 
   if (name === 'dashboard') updateDashboard();
   if (name === 'products') renderProductsTable();
@@ -1477,6 +1778,86 @@ function updateReports() {
     </div>
   `;
 }
+
+// ==================== CONTENT PLAN ====================
+function switchCpTab(tabId, el) {
+  document.querySelectorAll('.cp-tab').forEach(function(x) { x.classList.remove('active'); });
+  document.querySelectorAll('.cp-inner').forEach(function(x) { x.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+(function() {
+  // Load checks
+  var cpChecks = {};
+  try { cpChecks = JSON.parse(localStorage.getItem('sefira_cp_checks') || '{}'); } catch(e) {}
+  var allChecks = document.querySelectorAll('.cp-check');
+  var totalTasks = allChecks.length;
+
+  function updateCpProgress() {
+    var done = 0;
+    for (var k in cpChecks) { if (cpChecks[k]) done++; }
+    var pct = totalTasks > 0 ? Math.round((done / totalTasks) * 100) : 0;
+    var fill = document.getElementById('cpFill');
+    var label = document.getElementById('cpLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (label) label.textContent = pct + '%';
+  }
+
+  allChecks.forEach(function(chk) {
+    var id = chk.getAttribute('data-cp');
+    if (cpChecks[id]) chk.classList.add('checked');
+    chk.addEventListener('click', function() {
+      var isChecked = chk.classList.toggle('checked');
+      cpChecks[id] = isChecked;
+      try { localStorage.setItem('sefira_cp_checks', JSON.stringify(cpChecks)); } catch(e) {}
+      updateCpProgress();
+      var card = chk.closest('.day-card-admin');
+      if (card) {
+        var cardChecks = card.querySelectorAll('.cp-check');
+        var allDone = true;
+        cardChecks.forEach(function(c) { if (!c.classList.contains('checked')) allDone = false; });
+        if (allDone) card.classList.add('completed'); else card.classList.remove('completed');
+      }
+    });
+  });
+
+  // Init day completion
+  document.querySelectorAll('.day-card-admin').forEach(function(card) {
+    var cardChecks = card.querySelectorAll('.cp-check');
+    var allDone = true;
+    cardChecks.forEach(function(c) { if (!c.classList.contains('checked')) allDone = false; });
+    if (allDone) card.classList.add('completed');
+  });
+  updateCpProgress();
+
+  // Script accordions
+  document.querySelectorAll('.cp-script-head').forEach(function(h) {
+    h.addEventListener('click', function() { h.parentElement.classList.toggle('open'); });
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.cp-copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var el = document.getElementById(btn.getAttribute('data-cpcopy'));
+      if (!el) return;
+      var txt = el.textContent;
+      try {
+        navigator.clipboard.writeText(txt).then(function() {
+          btn.textContent = 'Copiado';
+          btn.classList.add('copied');
+          setTimeout(function() { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1500);
+        });
+      } catch(e) {
+        var ta = document.createElement('textarea');
+        ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        btn.textContent = 'Copiado'; btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1500);
+      }
+    });
+  });
+})();
 
 // ==================== INIT ====================
 if (sessionStorage.getItem('sefira_auth') === 'true') {
