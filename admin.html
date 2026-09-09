@@ -740,6 +740,32 @@ body {
   .main-content { margin-left: 0; padding: 1rem; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .form-row { grid-template-columns: 1fr; }
+
+  /* Content plan mobile fixes */
+  .cp-tabs { gap: 0; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+  .cp-tab { padding: 8px 12px; font-size: .62rem; letter-spacing: 1px; }
+  .day-card-admin { padding: 12px; }
+  .day-head { flex-wrap: wrap; gap: 6px; }
+  .day-date-label { font-size: .65rem; }
+  .cp-task { gap: 8px; padding: 6px 0; }
+  .cp-task-name { font-size: .76rem; }
+  .cp-task-detail { font-size: .68rem; }
+  .cp-tags { gap: 3px; }
+  .cp-tag { font-size: .55rem; padding: 2px 5px; }
+  .cp-guide { padding: 12px; }
+  .cp-guide h4 { font-size: .78rem; }
+  .cp-guide li { font-size: .72rem; }
+  .cp-script-head { padding: 10px 12px; }
+  .cp-script-head h4 { font-size: .78rem; }
+  .cp-script-body { padding: 0 12px 12px; font-size: .72rem; }
+  .cp-copy-head { padding: 10px 12px; }
+  .cp-copy-head h4 { font-size: .72rem; }
+  .cp-copy-text { padding: 10px 12px; font-size: .72rem; }
+  .cp-promo { padding: 14px; }
+  .cp-promo h4 { font-size: .88rem; }
+  .cp-promo-price { font-size: 1.2rem; }
+  .cp-promo-detail { font-size: .72rem; }
+  .cp-progress { gap: 8px; }
 }
 </style>
 </head>
@@ -1296,8 +1322,10 @@ Oro suizo 18K — SÉFIRA ✨
         <input type="text" id="pGoldType" placeholder="Suizo" value="Suizo">
       </div>
       <div class="form-group">
-        <label>URL de foto</label>
-        <input type="text" id="pImage" placeholder="https://...">
+        <label>Imagen del producto</label>
+        <input type="file" id="pImageFile" accept="image/*" onchange="previewProductImage(this)" style="font-size:.78rem;color:var(--text-muted);background:var(--bg-card);border:1px solid rgba(197,160,85,0.15);padding:8px;width:100%;box-sizing:border-box;">
+        <input type="hidden" id="pImage">
+        <div id="pImagePreview" style="margin-top:8px;display:none;"><img id="pImagePreviewImg" style="max-width:120px;max-height:120px;border:1px solid rgba(197,160,85,0.15);object-fit:cover;"></div>
       </div>
     </div>
     <div class="form-group">
@@ -1439,22 +1467,22 @@ function saveData(key, data) {
 }
 
 let adminProducts = loadData('products', [
-  { id: 'SEF-001', name: 'Róndeles Verdes x3', category: 'accesorios', price: 135000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 3 róndeles verdes en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-002', name: 'Balines Diamantados #3 x10', category: 'accesorios', price: 105000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #3.', stock: 15, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-003', name: 'Balines Diamantados #4 x10', category: 'accesorios', price: 130000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #4.', stock: 12, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-004', name: 'Balines Diamantados #5 x10', category: 'accesorios', price: 140000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #5.', stock: 10, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-005', name: 'Balines Diamantados #6 x10', category: 'accesorios', price: 170000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #6.', stock: 8, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 72000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8.', stock: 10, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-007', name: 'Balines Lisos #3 x10', category: 'accesorios', price: 50000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines lisos talla #3.', stock: 20, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-008', name: 'Cadena Gucci 60cm', category: 'cadenas', price: 255000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K.', stock: 5, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-009', name: 'Topos Esmeralda Broche Rosca', category: 'aretes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos con piedra esmeralda y broche de rosca.', stock: 15, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-010', name: 'Barriles x10', category: 'accesorios', price: 160000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 barriles en oro suizo 18K.', stock: 8, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-011', name: 'Dije Inicial M', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial M en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-012', name: 'Dije Inicial S', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial S en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-013', name: 'Dije Trébol', category: 'dijes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije trébol de la suerte en oro suizo 18K.', stock: 12, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-014', name: 'Dije Caballo', category: 'dijes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con figura de caballo en oro suizo 18K.', stock: 6, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-015', name: 'Dije Infinito Grande', category: 'dijes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije infinito grande en oro suizo 18K.', stock: 8, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-016', name: 'Dije Virgen Tallada', category: 'dijes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije de la Virgen tallada en oro suizo 18K.', stock: 10, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-001', name: 'Róndeles Verdes x3', category: 'accesorios', price: 135000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 3 róndeles verdes en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_hwnit4hwnit4hwni.jpg', status: 'activo' },
+  { id: 'SEF-002', name: 'Balines Diamantados #3 x10', category: 'accesorios', price: 105000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #3.', stock: 15, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
+  { id: 'SEF-003', name: 'Balines Diamantados #4 x10', category: 'accesorios', price: 130000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #4.', stock: 12, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
+  { id: 'SEF-004', name: 'Balines Diamantados #5 x10', category: 'accesorios', price: 140000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #5.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
+  { id: 'SEF-005', name: 'Balines Diamantados #6 x10', category: 'accesorios', price: 170000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #6.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
+  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 72000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
+  { id: 'SEF-007', name: 'Balines Lisos #3 x10', category: 'accesorios', price: 50000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines lisos talla #3.', stock: 20, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
+  { id: 'SEF-008', name: 'Cadena Gucci 60cm', category: 'cadenas', price: 255000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K.', stock: 5, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg', status: 'activo' },
+  { id: 'SEF-009', name: 'Topos Esmeralda Broche Rosca', category: 'aretes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos con piedra esmeralda y broche de rosca.', stock: 15, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', status: 'activo' },
+  { id: 'SEF-010', name: 'Barriles x10', category: 'accesorios', price: 160000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 barriles en oro suizo 18K.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg', status: 'activo' },
+  { id: 'SEF-011', name: 'Dije Inicial M', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial M en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', status: 'activo' },
+  { id: 'SEF-012', name: 'Dije Inicial S', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial S en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', status: 'activo' },
+  { id: 'SEF-013', name: 'Dije Trébol', category: 'dijes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije trébol de la suerte en oro suizo 18K.', stock: 12, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_jl0l7njl0l7njl0l.jpg', status: 'activo' },
+  { id: 'SEF-014', name: 'Dije Caballo', category: 'dijes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con figura de caballo en oro suizo 18K.', stock: 6, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_z6uf1lz6uf1lz6uf.jpg', status: 'activo' },
+  { id: 'SEF-015', name: 'Dije Infinito Grande', category: 'dijes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije infinito grande en oro suizo 18K.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg', status: 'activo' },
+  { id: 'SEF-016', name: 'Dije Virgen Tallada', category: 'dijes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije de la Virgen tallada en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_grgkz2grgkz2grgk.jpg', status: 'activo' },
 ]);
 
 let adminOrders = loadData('orders', []);
@@ -1612,6 +1640,20 @@ function renderProductsTable() {
 function filterAdminProducts(term) { prodSearchTerm = term; renderProductsTable(); }
 function filterAdminCategory(cat) { prodCategoryFilter = cat; renderProductsTable(); }
 
+function previewProductImage(input) {
+  const preview = document.getElementById('pImagePreview');
+  const img = document.getElementById('pImagePreviewImg');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('pImage').value = e.target.result;
+      img.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
 function openProductForm(product) {
   document.getElementById('productFormTitle').textContent = product ? 'Editar producto' : 'Nuevo producto';
   document.getElementById('editProductId').value = product ? product.id : '';
@@ -1623,6 +1665,15 @@ function openProductForm(product) {
   document.getElementById('pWeight').value = product ? product.weight : '';
   document.getElementById('pGoldType').value = product ? product.goldType : 'Suizo';
   document.getElementById('pImage').value = product ? product.image : '';
+  document.getElementById('pImageFile').value = '';
+  const preview = document.getElementById('pImagePreview');
+  const img = document.getElementById('pImagePreviewImg');
+  if (product && product.image) {
+    img.src = product.image;
+    preview.style.display = 'block';
+  } else {
+    preview.style.display = 'none';
+  }
   document.getElementById('pSizes').value = product ? (product.sizes || []).join(', ') : '';
   document.getElementById('pDescription').value = product ? product.description : '';
   document.getElementById('pStatus').value = product ? product.status : 'activo';
