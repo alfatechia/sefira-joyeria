@@ -1656,7 +1656,7 @@ let adminProducts = loadData('products', [
   { id: 'SEF-003', name: 'Balines Diamantados #4 x10', category: 'accesorios', price: 130000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #4.', stock: 12, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
   { id: 'SEF-004', name: 'Balines Diamantados #5 x10', category: 'accesorios', price: 140000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #5.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
   { id: 'SEF-005', name: 'Balines Diamantados #6 x10', category: 'accesorios', price: 170000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #6.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
-  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 72000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
+  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 90000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
   { id: 'SEF-007', name: 'Balines Lisos #3 x10', category: 'accesorios', price: 50000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines lisos talla #3.', stock: 20, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
   { id: 'SEF-008', name: 'Cadena Gucci 60cm', category: 'cadenas', price: 255000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K.', stock: 5, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg', status: 'activo' },
   { id: 'SEF-009', name: 'Topos Esmeralda Broche Rosca', category: 'aretes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos con piedra esmeralda y broche de rosca.', stock: 15, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', status: 'activo' },
@@ -1667,6 +1667,9 @@ let adminProducts = loadData('products', [
   { id: 'SEF-014', name: 'Dije Caballo', category: 'dijes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con figura de caballo en oro suizo 18K.', stock: 6, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_z6uf1lz6uf1lz6uf.jpg', status: 'activo' },
   { id: 'SEF-015', name: 'Dije Infinito Grande', category: 'dijes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije infinito grande en oro suizo 18K.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg', status: 'activo' },
   { id: 'SEF-016', name: 'Dije Virgen Tallada', category: 'dijes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije de la Virgen tallada en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_grgkz2grgkz2grgk.jpg', status: 'activo' },
+  { id: 'SEF-017', name: 'Topos Oro Grande', category: 'aretes', price: 60000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos de oro suizo 18K tamaño grande. Elegancia clásica.', stock: 1, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-018', name: 'Topos Oro Mediano', category: 'aretes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos de oro suizo 18K tamaño mediano. Perfectos para el día a día.', stock: 1, sizes: [], image: '', status: 'activo' },
+  { id: 'SEF-019', name: 'Topos Oro Pequeño', category: 'aretes', price: 42000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos de oro suizo 18K tamaño pequeño. Delicados y versátiles.', stock: 1, sizes: [], image: '', status: 'activo' },
 ]);
 
 let adminOrders = loadData('orders', []);
@@ -2237,13 +2240,20 @@ function switchCpTab(tabId, el) {
 })();
 
 // ==================== INVENTORY ====================
+var FACTURA_COSTS = {
+  'SEF-002': 105000, 'SEF-003': 130000, 'SEF-004': 140000, 'SEF-005': 170000,
+  'SEF-006': 78000, 'SEF-007': 50000, 'SEF-008': 255000, 'SEF-009': 65000,
+  'SEF-010': 160000, 'SEF-011': 45000, 'SEF-012': 45000, 'SEF-013': 45000,
+  'SEF-014': 0, 'SEF-015': 70000, 'SEF-016': 65000,
+  'SEF-017': 50000, 'SEF-018': 40000, 'SEF-019': 35000
+};
 let inventoryData = loadData('inventory', []);
 let inventoryMovements = loadData('inv_movements', []);
 let invSearchTerm = '';
 
 function renderInventoryTable() {
   let items = inventoryData.length > 0 ? [...inventoryData] : adminProducts.map(function(p) {
-    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: 0, price: p.price, notes: '' };
+    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: FACTURA_COSTS[p.id] ? 'Factura Imperiale Sep 2026' : '' };
   });
   if (invSearchTerm) items = items.filter(function(i) { return i.name.toLowerCase().includes(invSearchTerm.toLowerCase()); });
 
