@@ -446,6 +446,32 @@ body {
   object-fit: cover;
 }
 
+.icon-btn {
+  background: none;
+  border: 1px solid rgba(197,160,85,0.2);
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(197,160,85,0.08);
+}
+
+.icon-btn.danger:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(226,75,74,0.08);
+}
+
 .badge {
   display: inline-block;
   padding: 3px 10px;
@@ -861,6 +887,9 @@ body {
       <div class="sidebar-section">Finanzas</div>
       <div class="sidebar-link" onclick="showPanel('inventory',this)">
         <span class="sidebar-link-icon">&#9879;</span> Inventario
+      </div>
+      <div class="sidebar-link" onclick="showPanel('manillas',this)">
+        <span class="sidebar-link-icon">&#9733;</span> Manillas
       </div>
 
       <div class="sidebar-section">Reportes</div>
@@ -1297,7 +1326,7 @@ Oro suizo 18K — SÉFIRA ✨
         <div class="stat-card"><div class="stat-label">Productos bajo stock</div><div class="stat-value" id="invLowStock">0</div></div>
       </div>
 
-      <h3 style="font-family:var(--font-title);color:var(--diamond);margin:2rem 0 1rem;font-size:1rem;letter-spacing:1px;">Inventario de productos</h3>
+      <h3 style="font-family:var(--font-title);color:var(--diamond);margin:2rem 0 1rem;font-size:1rem;letter-spacing:1px;">Inventario de piezas</h3>
       <div class="toolbar">
         <input type="text" class="search-input" placeholder="Buscar en inventario..." oninput="filterInventory(this.value)">
       </div>
@@ -1307,13 +1336,11 @@ Oro suizo 18K — SÉFIRA ✨
             <tr>
               <th>Foto</th>
               <th>Producto</th>
-              <th>Stock</th>
-              <th>Mín.</th>
-              <th>Costo unit.</th>
-              <th>Precio venta</th>
-              <th>Margen</th>
+              <th>Cant.</th>
+              <th>Costo unidad</th>
+              <th>Costo total</th>
               <th>Estado</th>
-              <th>Acciones</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="inventoryTableBody"></tbody>
@@ -1412,6 +1439,111 @@ Oro suizo 18K — SÉFIRA ✨
           <button class="btn btn-outline" onclick="closeMovementForm()">Cancelar</button>
           <button class="btn btn-gold" onclick="saveMovement()">Registrar</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ==================== MANILLAS PANEL ==================== -->
+    <div class="panel" id="panel-manillas">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Armador de Manillas</h1>
+          <p class="page-subtitle">Crea pulseras, calcula costos y precio de venta automáticamente</p>
+        </div>
+        <button class="btn btn-gold" onclick="newManilla()">+ Nueva manilla</button>
+      </div>
+
+      <div class="inv-summary">
+        <div class="stat-card"><div class="stat-label">Manillas creadas</div><div class="stat-value" id="manTotalCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">Costo total piezas</div><div class="stat-value" id="manTotalCost">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Valor total venta</div><div class="stat-value" id="manTotalSale">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Ganancia total</div><div class="stat-value" id="manTotalProfit">$0</div></div>
+      </div>
+
+      <div id="manillaBuilder" style="display:none;background:var(--bg-card);border:1px solid rgba(197,160,85,0.12);border-radius:8px;padding:1.5rem;margin-bottom:2rem;">
+        <h3 style="font-family:var(--font-title);color:var(--diamond);font-size:1rem;letter-spacing:1px;margin-bottom:1rem;">Armar manilla</h3>
+        <div class="form-group">
+          <label>Nombre de la manilla</label>
+          <input type="text" id="manName" placeholder="Ej: Manilla Esmeralda Deluxe">
+        </div>
+        <input type="hidden" id="manEditId">
+
+        <div style="display:flex;gap:0.8rem;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;">
+          <div class="form-group" style="flex:2;margin-bottom:0;">
+            <label>Agregar pieza</label>
+            <select id="manPieceSelect">
+              <option value="">Seleccionar pieza...</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:0.5;margin-bottom:0;">
+            <label>Cant.</label>
+            <input type="number" id="manPieceQty" value="1" min="1" style="width:70px;">
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="addPieceToManilla()" style="margin-bottom:0;height:38px;">Agregar</button>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="admin-table" id="manPiecesTable">
+            <thead>
+              <tr>
+                <th>Pieza</th>
+                <th>Cant.</th>
+                <th>Costo unit.</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="manPiecesBody">
+              <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1.5rem;">Agrega piezas para armar la manilla</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background:var(--bg-dark);border:1px solid rgba(197,160,85,0.15);border-radius:6px;padding:1rem;margin-top:1rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+            <span style="color:var(--text-muted);font-size:0.8rem;">Costo piezas</span>
+            <span id="manCostPieces" style="font-size:0.85rem;">$0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+            <span style="color:var(--text-muted);font-size:0.8rem;">Mano de obra</span>
+            <span style="font-size:0.85rem;">$10,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;border-top:1px solid rgba(197,160,85,0.1);padding-top:0.5rem;">
+            <span style="color:var(--text-muted);font-size:0.8rem;">Costo total</span>
+            <span id="manCostTotal" style="font-size:0.85rem;font-weight:600;">$10,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+            <span style="color:var(--text-muted);font-size:0.8rem;">Margen (40%)</span>
+            <span id="manMargin" style="font-size:0.85rem;color:var(--green);">$0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:var(--gold);font-weight:600;font-size:0.9rem;">PRECIO DE VENTA</span>
+            <span id="manSalePrice" style="font-size:1.1rem;font-weight:700;color:var(--gold);">$14,000</span>
+          </div>
+        </div>
+
+        <div class="form-actions" style="margin-top:1rem;">
+          <button class="btn btn-outline" onclick="cancelManilla()">Cancelar</button>
+          <button class="btn btn-gold" onclick="saveManilla()">Guardar manilla</button>
+        </div>
+      </div>
+
+      <h3 style="font-family:var(--font-title);color:var(--diamond);margin:1rem 0;font-size:1rem;letter-spacing:1px;">Manillas guardadas</h3>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Piezas</th>
+              <th>Costo</th>
+              <th>Precio venta</th>
+              <th>Ganancia</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="manillasTableBody">
+            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No hay manillas creadas</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -1757,6 +1889,7 @@ function showPanel(name, el) {
   if (name === 'orders') renderOrdersTable();
   if (name === 'clients') renderClientsTable();
   if (name === 'inventory') { renderInventoryTable(); renderMovementsTable(); }
+  if (name === 'manillas') renderManillasTable();
   if (name === 'reports') updateReports();
 }
 
@@ -2258,22 +2391,22 @@ function renderInventoryTable() {
   if (invSearchTerm) items = items.filter(function(i) { return i.name.toLowerCase().includes(invSearchTerm.toLowerCase()); });
 
   document.getElementById('inventoryTableBody').innerHTML = items.map(function(item) {
-    var margin = item.cost > 0 ? Math.round((item.price - item.cost) / item.price * 100) : 0;
-    var stockStatus = item.stock <= 0 ? 'agotado' : item.stock <= item.minStock ? 'bajo' : 'ok';
+    var unitCost = item.cost > 0 ? item.cost : 0;
+    var qty = item.stock;
+    var totalCost = unitCost * qty;
+    var stockStatus = qty <= 0 ? 'agotado' : qty <= item.minStock ? 'bajo' : 'ok';
     var badgeClass = stockStatus === 'agotado' ? 'badge-inactive' : stockStatus === 'bajo' ? 'badge-warning' : 'badge-active';
     var badgeText = stockStatus === 'agotado' ? 'Agotado' : stockStatus === 'bajo' ? 'Bajo' : 'En stock';
     return '<tr>' +
       '<td><div class="table-img">' + (item.image ? '<img src="' + item.image + '" alt="' + item.name + '">' : 'FOTO') + '</div></td>' +
       '<td style="color:var(--diamond);font-weight:500;">' + item.name + '</td>' +
-      '<td>' + item.stock + '</td>' +
-      '<td>' + item.minStock + '</td>' +
-      '<td>' + (item.cost > 0 ? '$' + item.cost.toLocaleString('es-CO') : '—') + '</td>' +
-      '<td style="color:var(--gold);">$' + item.price.toLocaleString('es-CO') + '</td>' +
-      '<td>' + (item.cost > 0 ? margin + '%' : '—') + '</td>' +
+      '<td>' + qty + '</td>' +
+      '<td>' + (unitCost > 0 ? '$' + unitCost.toLocaleString('es-CO') : '—') + '</td>' +
+      '<td style="color:var(--gold);">' + (totalCost > 0 ? '$' + totalCost.toLocaleString('es-CO') : '—') + '</td>' +
       '<td><span class="badge ' + badgeClass + '">' + badgeText + '</span></td>' +
       '<td><div class="table-actions">' +
-        '<button class="btn btn-outline btn-sm" onclick="editInventoryItem(\'' + item.id + '\')">Editar</button>' +
-        '<button class="btn btn-outline btn-sm" onclick="openMovementForm(\'' + item.id + '\')">Movimiento</button>' +
+        '<button class="icon-btn" onclick="editInventoryItem(\'' + item.id + '\')" title="Editar">&#9998;</button>' +
+        '<button class="icon-btn" onclick="openMovementForm(\'' + item.id + '\')" title="Movimiento">&#8693;</button>' +
       '</div></td>' +
     '</tr>';
   }).join('');
@@ -2438,6 +2571,177 @@ function renderMovementsTable() {
   }).join('');
 }
 
+// ==================== MANILLAS ====================
+var MANO_OBRA = 10000;
+var MARGEN_PCT = 0.40;
+let manillasData = loadData('manillas', []);
+let currentManillaPieces = [];
+
+function getInventoryItems() {
+  if (inventoryData.length > 0) return inventoryData;
+  return adminProducts.map(function(p) {
+    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: '' };
+  });
+}
+
+function newManilla() {
+  currentManillaPieces = [];
+  document.getElementById('manName').value = '';
+  document.getElementById('manEditId').value = '';
+  populateManPieceSelect();
+  renderManillaPieces();
+  document.getElementById('manillaBuilder').style.display = 'block';
+}
+
+function populateManPieceSelect() {
+  var items = getInventoryItems();
+  document.getElementById('manPieceSelect').innerHTML = '<option value="">Seleccionar pieza...</option>' +
+    items.filter(function(i) { return i.cost > 0; }).map(function(i) {
+      var unitCost = i.cost;
+      return '<option value="' + i.id + '">' + i.name + ' — $' + unitCost.toLocaleString('es-CO') + '/set</option>';
+    }).join('');
+  document.getElementById('manPieceQty').value = 1;
+}
+
+function addPieceToManilla() {
+  var select = document.getElementById('manPieceSelect');
+  var id = select.value;
+  if (!id) return;
+  var qty = parseInt(document.getElementById('manPieceQty').value) || 1;
+  var items = getInventoryItems();
+  var piece = items.find(function(i) { return i.id === id; });
+  if (!piece) return;
+
+  var existing = currentManillaPieces.find(function(p) { return p.id === id; });
+  if (existing) { existing.qty += qty; }
+  else { currentManillaPieces.push({ id: id, name: piece.name, cost: piece.cost, qty: qty }); }
+
+  select.value = '';
+  document.getElementById('manPieceQty').value = 1;
+  renderManillaPieces();
+}
+
+function removePieceFromManilla(id) {
+  currentManillaPieces = currentManillaPieces.filter(function(p) { return p.id !== id; });
+  renderManillaPieces();
+}
+
+function renderManillaPieces() {
+  var body = document.getElementById('manPiecesBody');
+  if (currentManillaPieces.length === 0) {
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1.5rem;">Agrega piezas para armar la manilla</td></tr>';
+  } else {
+    body.innerHTML = currentManillaPieces.map(function(p) {
+      var sub = p.cost * p.qty;
+      return '<tr>' +
+        '<td style="color:var(--diamond);">' + p.name + '</td>' +
+        '<td>' + p.qty + '</td>' +
+        '<td>$' + p.cost.toLocaleString('es-CO') + '</td>' +
+        '<td style="color:var(--gold);">$' + sub.toLocaleString('es-CO') + '</td>' +
+        '<td><button class="icon-btn danger" onclick="removePieceFromManilla(\'' + p.id + '\')" title="Quitar">&times;</button></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  var costPieces = currentManillaPieces.reduce(function(s, p) { return s + (p.cost * p.qty); }, 0);
+  var costTotal = costPieces + MANO_OBRA;
+  var margin = Math.round(costTotal * MARGEN_PCT);
+  var salePrice = costTotal + margin;
+
+  document.getElementById('manCostPieces').textContent = '$' + costPieces.toLocaleString('es-CO');
+  document.getElementById('manCostTotal').textContent = '$' + costTotal.toLocaleString('es-CO');
+  document.getElementById('manMargin').textContent = '$' + margin.toLocaleString('es-CO');
+  document.getElementById('manSalePrice').textContent = '$' + salePrice.toLocaleString('es-CO');
+}
+
+function cancelManilla() {
+  currentManillaPieces = [];
+  document.getElementById('manillaBuilder').style.display = 'none';
+}
+
+function saveManilla() {
+  var name = document.getElementById('manName').value.trim();
+  if (!name) { alert('Dale un nombre a la manilla'); return; }
+  if (currentManillaPieces.length === 0) { alert('Agrega al menos una pieza'); return; }
+
+  var costPieces = currentManillaPieces.reduce(function(s, p) { return s + (p.cost * p.qty); }, 0);
+  var costTotal = costPieces + MANO_OBRA;
+  var salePrice = costTotal + Math.round(costTotal * MARGEN_PCT);
+
+  var editId = document.getElementById('manEditId').value;
+  var manilla = {
+    id: editId || 'MAN-' + Date.now(),
+    name: name,
+    pieces: currentManillaPieces.map(function(p) { return { id: p.id, name: p.name, cost: p.cost, qty: p.qty }; }),
+    costPieces: costPieces,
+    manoObra: MANO_OBRA,
+    costTotal: costTotal,
+    salePrice: salePrice,
+    date: new Date().toISOString().split('T')[0]
+  };
+
+  if (editId) {
+    var idx = manillasData.findIndex(function(m) { return m.id === editId; });
+    if (idx >= 0) manillasData[idx] = manilla;
+  } else {
+    manillasData.push(manilla);
+  }
+
+  saveData('manillas', manillasData);
+  currentManillaPieces = [];
+  document.getElementById('manillaBuilder').style.display = 'none';
+  renderManillasTable();
+}
+
+function editManilla(id) {
+  var m = manillasData.find(function(man) { return man.id === id; });
+  if (!m) return;
+  document.getElementById('manName').value = m.name;
+  document.getElementById('manEditId').value = m.id;
+  currentManillaPieces = m.pieces.map(function(p) { return { id: p.id, name: p.name, cost: p.cost, qty: p.qty }; });
+  populateManPieceSelect();
+  renderManillaPieces();
+  document.getElementById('manillaBuilder').style.display = 'block';
+}
+
+function deleteManilla(id) {
+  if (!confirm('¿Eliminar esta manilla?')) return;
+  manillasData = manillasData.filter(function(m) { return m.id !== id; });
+  saveData('manillas', manillasData);
+  renderManillasTable();
+}
+
+function renderManillasTable() {
+  var body = document.getElementById('manillasTableBody');
+  if (manillasData.length === 0) {
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No hay manillas creadas</td></tr>';
+  } else {
+    body.innerHTML = manillasData.map(function(m) {
+      var totalPieces = m.pieces.reduce(function(s, p) { return s + p.qty; }, 0);
+      var ganancia = m.salePrice - m.costTotal;
+      return '<tr>' +
+        '<td style="color:var(--diamond);font-weight:500;">' + m.name + '</td>' +
+        '<td>' + totalPieces + ' piezas</td>' +
+        '<td>$' + m.costTotal.toLocaleString('es-CO') + '</td>' +
+        '<td style="color:var(--gold);font-weight:600;">$' + m.salePrice.toLocaleString('es-CO') + '</td>' +
+        '<td style="color:var(--green);">$' + ganancia.toLocaleString('es-CO') + '</td>' +
+        '<td><div class="table-actions">' +
+          '<button class="icon-btn" onclick="editManilla(\'' + m.id + '\')" title="Editar">&#9998;</button>' +
+          '<button class="icon-btn danger" onclick="deleteManilla(\'' + m.id + '\')" title="Eliminar">&times;</button>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  var count = manillasData.length;
+  var totalCost = manillasData.reduce(function(s, m) { return s + m.costTotal; }, 0);
+  var totalSale = manillasData.reduce(function(s, m) { return s + m.salePrice; }, 0);
+  document.getElementById('manTotalCount').textContent = count;
+  document.getElementById('manTotalCost').textContent = '$' + totalCost.toLocaleString('es-CO');
+  document.getElementById('manTotalSale').textContent = '$' + totalSale.toLocaleString('es-CO');
+  document.getElementById('manTotalProfit').textContent = '$' + (totalSale - totalCost).toLocaleString('es-CO');
+}
+
 // ==================== INIT ====================
 if (sessionStorage.getItem('sefira_auth') === 'true') {
   updateDashboard();
@@ -2446,6 +2750,7 @@ if (sessionStorage.getItem('sefira_auth') === 'true') {
   renderClientsTable();
   renderInventoryTable();
   renderMovementsTable();
+  renderManillasTable();
 }
 </script>
 
