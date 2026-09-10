@@ -2082,6 +2082,16 @@ addToCart = function(id) {
 })();
 
 // ==================== INIT ====================
+try {
+  var catalogManillas = JSON.parse(localStorage.getItem('sefira_catalog_manillas') || '[]');
+  if (catalogManillas.length > 0) {
+    catalogManillas.forEach(function(m) {
+      if (!products.find(function(p) { return p.id === m.id; })) {
+        products.push(m);
+      }
+    });
+  }
+} catch(e) {}
 renderProducts(products);
 </script>
 

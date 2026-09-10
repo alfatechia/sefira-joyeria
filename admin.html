@@ -1466,6 +1466,12 @@ Oro suizo 18K — SÉFIRA ✨
           <input type="text" id="manName" placeholder="Ej: Manilla Esmeralda Deluxe">
         </div>
         <input type="hidden" id="manEditId">
+        <div class="form-group">
+          <label>Foto del producto terminado</label>
+          <input type="file" id="manImageFile" accept="image/*" onchange="previewManImage(this)">
+          <input type="hidden" id="manImage">
+          <div id="manImagePreview" style="display:none;margin-top:8px;"><img id="manImagePreviewImg" style="max-width:180px;border-radius:8px;border:1px solid rgba(197,160,85,0.2);"></div>
+        </div>
 
         <div style="display:flex;gap:0.8rem;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;">
           <div class="form-group" style="flex:2;margin-bottom:0;">
@@ -1521,6 +1527,18 @@ Oro suizo 18K — SÉFIRA ✨
           </div>
         </div>
 
+        <div style="margin-top:1rem;padding:0.8rem;border:1px solid rgba(197,160,85,0.15);border-radius:6px;background:var(--bg-dark);">
+          <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:0.5rem;">Destino del producto</label>
+          <div style="display:flex;gap:0.8rem;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.82rem;">
+              <input type="radio" name="manDestino" value="catalogo" id="manDestCatalogo" checked> Publicar al catálogo
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.82rem;">
+              <input type="radio" name="manDestino" value="interno" id="manDestInterno"> Solo interno
+            </label>
+          </div>
+        </div>
+
         <div class="form-actions" style="margin-top:1rem;">
           <button class="btn btn-outline" onclick="cancelManilla()">Cancelar</button>
           <button class="btn btn-gold" onclick="saveManilla()">Guardar manilla</button>
@@ -1532,16 +1550,18 @@ Oro suizo 18K — SÉFIRA ✨
         <table class="admin-table">
           <thead>
             <tr>
+              <th>Foto</th>
               <th>Nombre</th>
               <th>Piezas</th>
               <th>Costo</th>
-              <th>Precio venta</th>
+              <th>Precio</th>
               <th>Ganancia</th>
+              <th>Destino</th>
               <th></th>
             </tr>
           </thead>
           <tbody id="manillasTableBody">
-            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No hay manillas creadas</td></tr>
+            <tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:2rem;">No hay manillas creadas</td></tr>
           </tbody>
         </table>
       </div>
@@ -2584,10 +2604,28 @@ function getInventoryItems() {
   });
 }
 
+function previewManImage(input) {
+  var preview = document.getElementById('manImagePreview');
+  var img = document.getElementById('manImagePreviewImg');
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('manImage').value = e.target.result;
+      img.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
 function newManilla() {
   currentManillaPieces = [];
   document.getElementById('manName').value = '';
   document.getElementById('manEditId').value = '';
+  document.getElementById('manImageFile').value = '';
+  document.getElementById('manImage').value = '';
+  document.getElementById('manImagePreview').style.display = 'none';
+  document.getElementById('manDestCatalogo').checked = true;
   populateManPieceSelect();
   renderManillaPieces();
   document.getElementById('manillaBuilder').style.display = 'block';
@@ -2667,16 +2705,20 @@ function saveManilla() {
   var costPieces = currentManillaPieces.reduce(function(s, p) { return s + (p.cost * p.qty); }, 0);
   var costTotal = costPieces + MANO_OBRA;
   var salePrice = costTotal + Math.round(costTotal * MARGEN_PCT);
+  var image = document.getElementById('manImage').value || '';
+  var destino = document.querySelector('input[name="manDestino"]:checked').value;
 
   var editId = document.getElementById('manEditId').value;
   var manilla = {
     id: editId || 'MAN-' + Date.now(),
     name: name,
+    image: image,
     pieces: currentManillaPieces.map(function(p) { return { id: p.id, name: p.name, cost: p.cost, qty: p.qty }; }),
     costPieces: costPieces,
     manoObra: MANO_OBRA,
     costTotal: costTotal,
     salePrice: salePrice,
+    destino: destino,
     date: new Date().toISOString().split('T')[0]
   };
 
@@ -2688,9 +2730,31 @@ function saveManilla() {
   }
 
   saveData('manillas', manillasData);
+  syncManillasCatalog();
   currentManillaPieces = [];
   document.getElementById('manillaBuilder').style.display = 'none';
   renderManillasTable();
+}
+
+function syncManillasCatalog() {
+  var catalogManillas = loadData('catalog_manillas', []);
+  catalogManillas = manillasData.filter(function(m) { return m.destino === 'catalogo'; }).map(function(m) {
+    return {
+      id: m.id,
+      name: m.name,
+      category: 'pulseras',
+      price: m.salePrice,
+      karat: '18K',
+      weight: '—',
+      goldType: 'Suizo',
+      description: 'Manilla artesanal con ' + m.pieces.map(function(p) { return p.qty + ' ' + p.name; }).join(', ') + '. Hecha a mano en oro suizo 18K.',
+      stock: 1,
+      sizes: [],
+      image: m.image || '',
+      fromManilla: m.id
+    };
+  });
+  saveData('catalog_manillas', catalogManillas);
 }
 
 function editManilla(id) {
@@ -2698,6 +2762,14 @@ function editManilla(id) {
   if (!m) return;
   document.getElementById('manName').value = m.name;
   document.getElementById('manEditId').value = m.id;
+  document.getElementById('manImage').value = m.image || '';
+  document.getElementById('manImageFile').value = '';
+  var preview = document.getElementById('manImagePreview');
+  var previewImg = document.getElementById('manImagePreviewImg');
+  if (m.image) { previewImg.src = m.image; preview.style.display = 'block'; }
+  else { preview.style.display = 'none'; }
+  if (m.destino === 'interno') document.getElementById('manDestInterno').checked = true;
+  else document.getElementById('manDestCatalogo').checked = true;
   currentManillaPieces = m.pieces.map(function(p) { return { id: p.id, name: p.name, cost: p.cost, qty: p.qty }; });
   populateManPieceSelect();
   renderManillaPieces();
@@ -2708,23 +2780,29 @@ function deleteManilla(id) {
   if (!confirm('¿Eliminar esta manilla?')) return;
   manillasData = manillasData.filter(function(m) { return m.id !== id; });
   saveData('manillas', manillasData);
+  syncManillasCatalog();
   renderManillasTable();
 }
 
 function renderManillasTable() {
   var body = document.getElementById('manillasTableBody');
   if (manillasData.length === 0) {
-    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No hay manillas creadas</td></tr>';
+    body.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:2rem;">No hay manillas creadas</td></tr>';
   } else {
     body.innerHTML = manillasData.map(function(m) {
       var totalPieces = m.pieces.reduce(function(s, p) { return s + p.qty; }, 0);
       var ganancia = m.salePrice - m.costTotal;
+      var destinoBadge = m.destino === 'catalogo'
+        ? '<span class="badge badge-active">Catálogo</span>'
+        : '<span class="badge badge-shipped">Interno</span>';
       return '<tr>' +
+        '<td><div class="table-img">' + (m.image ? '<img src="' + m.image + '" alt="' + m.name + '">' : '—') + '</div></td>' +
         '<td style="color:var(--diamond);font-weight:500;">' + m.name + '</td>' +
         '<td>' + totalPieces + ' piezas</td>' +
         '<td>$' + m.costTotal.toLocaleString('es-CO') + '</td>' +
         '<td style="color:var(--gold);font-weight:600;">$' + m.salePrice.toLocaleString('es-CO') + '</td>' +
         '<td style="color:var(--green);">$' + ganancia.toLocaleString('es-CO') + '</td>' +
+        '<td>' + destinoBadge + '</td>' +
         '<td><div class="table-actions">' +
           '<button class="icon-btn" onclick="editManilla(\'' + m.id + '\')" title="Editar">&#9998;</button>' +
           '<button class="icon-btn danger" onclick="deleteManilla(\'' + m.id + '\')" title="Eliminar">&times;</button>' +
