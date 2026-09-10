@@ -357,7 +357,7 @@ body {
 }
 
 /* ==================== DASHBOARD ==================== */
-.stats-grid {
+.stats-grid, .inv-summary {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
@@ -471,6 +471,12 @@ body {
   background: rgba(226, 75, 74, 0.15);
   color: var(--red);
   border: 1px solid rgba(226, 75, 74, 0.3);
+}
+
+.badge-warning {
+  background: rgba(243, 156, 18, 0.15);
+  color: #f39c12;
+  border: 1px solid rgba(243, 156, 18, 0.3);
 }
 
 .badge-shipped {
@@ -850,6 +856,11 @@ body {
       <div class="sidebar-section">Marketing</div>
       <div class="sidebar-link" onclick="showPanel('contenido',this)">
         <span class="sidebar-link-icon">&#9998;</span> Contenido
+      </div>
+
+      <div class="sidebar-section">Finanzas</div>
+      <div class="sidebar-link" onclick="showPanel('inventory',this)">
+        <span class="sidebar-link-icon">&#9879;</span> Inventario
       </div>
 
       <div class="sidebar-section">Reportes</div>
@@ -1269,6 +1280,141 @@ Oro suizo 18K — SÉFIRA ✨
 
     </div>
 
+    <!-- ==================== INVENTORY PANEL ==================== -->
+    <div class="panel" id="panel-inventory">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Inventario y Contabilidad</h1>
+          <p class="page-subtitle">Control de stock, costos y ganancias</p>
+        </div>
+        <button class="btn btn-gold" onclick="openInventoryForm()">+ Agregar producto</button>
+      </div>
+
+      <div class="inv-summary">
+        <div class="stat-card"><div class="stat-label">Valor total inventario</div><div class="stat-value" id="invTotalValue">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Costo total</div><div class="stat-value" id="invTotalCost">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Ganancia potencial</div><div class="stat-value" id="invTotalProfit">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Productos bajo stock</div><div class="stat-value" id="invLowStock">0</div></div>
+      </div>
+
+      <h3 style="font-family:var(--font-title);color:var(--diamond);margin:2rem 0 1rem;font-size:1rem;letter-spacing:1px;">Inventario de productos</h3>
+      <div class="toolbar">
+        <input type="text" class="search-input" placeholder="Buscar en inventario..." oninput="filterInventory(this.value)">
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Producto</th>
+              <th>Stock</th>
+              <th>Mín.</th>
+              <th>Costo unit.</th>
+              <th>Precio venta</th>
+              <th>Margen</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="inventoryTableBody"></tbody>
+        </table>
+      </div>
+
+      <h3 style="font-family:var(--font-title);color:var(--diamond);margin:2rem 0 1rem;font-size:1rem;letter-spacing:1px;">Movimientos recientes</h3>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Tipo</th>
+              <th>Cantidad</th>
+              <th>Nota</th>
+            </tr>
+          </thead>
+          <tbody id="movementsTableBody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">Sin movimientos registrados</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==================== INVENTORY FORM MODAL ==================== -->
+    <div class="admin-modal-overlay" id="inventoryModal">
+      <div class="admin-modal">
+        <h3 id="inventoryFormTitle">Agregar al inventario</h3>
+        <input type="hidden" id="editInvId">
+        <div class="form-group">
+          <label>Producto</label>
+          <select id="invProductSelect">
+            <option value="">Seleccionar producto...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Imagen del producto</label>
+          <input type="file" id="invImageFile" accept="image/*" onchange="previewInvImage(this)">
+          <input type="hidden" id="invImage">
+          <div id="invImagePreview" style="display:none;margin-top:8px;"><img id="invImagePreviewImg" style="max-width:200px;border-radius:8px;border:1px solid rgba(197,160,85,0.2);"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Stock actual</label>
+            <input type="number" id="invStock" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label>Stock mínimo</label>
+            <input type="number" id="invMinStock" placeholder="5" min="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Costo unitario (COP)</label>
+            <input type="number" id="invCost" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Precio de venta (COP)</label>
+            <input type="number" id="invPrice" placeholder="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notas</label>
+          <textarea id="invNotes" placeholder="Proveedor, lote, observaciones..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-outline" onclick="closeInventoryForm()">Cancelar</button>
+          <button class="btn btn-gold" onclick="saveInventoryItem()">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== STOCK MOVEMENT MODAL ==================== -->
+    <div class="admin-modal-overlay" id="movementModal">
+      <div class="admin-modal">
+        <h3>Registrar movimiento</h3>
+        <input type="hidden" id="mvProductId">
+        <div class="form-group">
+          <label>Tipo de movimiento</label>
+          <select id="mvType">
+            <option value="entrada">Entrada (compra/restock)</option>
+            <option value="salida">Salida (venta)</option>
+            <option value="ajuste">Ajuste de inventario</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cantidad</label>
+          <input type="number" id="mvQty" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>Nota</label>
+          <input type="text" id="mvNote" placeholder="Razón del movimiento...">
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-outline" onclick="closeMovementForm()">Cancelar</button>
+          <button class="btn btn-gold" onclick="saveMovement()">Registrar</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== REPORTS PANEL ==================== -->
     <div class="panel" id="panel-reports">
       <div class="page-header">
@@ -1607,6 +1753,7 @@ function showPanel(name, el) {
   if (name === 'products') renderProductsTable();
   if (name === 'orders') renderOrdersTable();
   if (name === 'clients') renderClientsTable();
+  if (name === 'inventory') { renderInventoryTable(); renderMovementsTable(); }
   if (name === 'reports') updateReports();
 }
 
@@ -2089,12 +2236,206 @@ function switchCpTab(tabId, el) {
   });
 })();
 
+// ==================== INVENTORY ====================
+let inventoryData = loadData('inventory', []);
+let inventoryMovements = loadData('inv_movements', []);
+let invSearchTerm = '';
+
+function renderInventoryTable() {
+  let items = inventoryData.length > 0 ? [...inventoryData] : adminProducts.map(function(p) {
+    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: 0, price: p.price, notes: '' };
+  });
+  if (invSearchTerm) items = items.filter(function(i) { return i.name.toLowerCase().includes(invSearchTerm.toLowerCase()); });
+
+  document.getElementById('inventoryTableBody').innerHTML = items.map(function(item) {
+    var margin = item.cost > 0 ? Math.round((item.price - item.cost) / item.price * 100) : 0;
+    var stockStatus = item.stock <= 0 ? 'agotado' : item.stock <= item.minStock ? 'bajo' : 'ok';
+    var badgeClass = stockStatus === 'agotado' ? 'badge-inactive' : stockStatus === 'bajo' ? 'badge-warning' : 'badge-active';
+    var badgeText = stockStatus === 'agotado' ? 'Agotado' : stockStatus === 'bajo' ? 'Bajo' : 'En stock';
+    return '<tr>' +
+      '<td><div class="table-img">' + (item.image ? '<img src="' + item.image + '" alt="' + item.name + '">' : 'FOTO') + '</div></td>' +
+      '<td style="color:var(--diamond);font-weight:500;">' + item.name + '</td>' +
+      '<td>' + item.stock + '</td>' +
+      '<td>' + item.minStock + '</td>' +
+      '<td>' + (item.cost > 0 ? '$' + item.cost.toLocaleString('es-CO') : '—') + '</td>' +
+      '<td style="color:var(--gold);">$' + item.price.toLocaleString('es-CO') + '</td>' +
+      '<td>' + (item.cost > 0 ? margin + '%' : '—') + '</td>' +
+      '<td><span class="badge ' + badgeClass + '">' + badgeText + '</span></td>' +
+      '<td><div class="table-actions">' +
+        '<button class="btn btn-outline btn-sm" onclick="editInventoryItem(\'' + item.id + '\')">Editar</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="openMovementForm(\'' + item.id + '\')">Movimiento</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+
+  // Update summary
+  var totalValue = items.reduce(function(s, i) { return s + (i.price * i.stock); }, 0);
+  var totalCost = items.reduce(function(s, i) { return s + (i.cost * i.stock); }, 0);
+  var lowStock = items.filter(function(i) { return i.stock <= i.minStock; }).length;
+  document.getElementById('invTotalValue').textContent = '$' + totalValue.toLocaleString('es-CO');
+  document.getElementById('invTotalCost').textContent = '$' + totalCost.toLocaleString('es-CO');
+  document.getElementById('invTotalProfit').textContent = '$' + (totalValue - totalCost).toLocaleString('es-CO');
+  document.getElementById('invLowStock').textContent = lowStock;
+}
+
+function filterInventory(term) { invSearchTerm = term; renderInventoryTable(); }
+
+function previewInvImage(input) {
+  var preview = document.getElementById('invImagePreview');
+  var img = document.getElementById('invImagePreviewImg');
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('invImage').value = e.target.result;
+      img.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function openInventoryForm(item) {
+  document.getElementById('inventoryFormTitle').textContent = item ? 'Editar producto' : 'Agregar al inventario';
+  document.getElementById('editInvId').value = item ? item.id : '';
+  var select = document.getElementById('invProductSelect');
+  select.innerHTML = '<option value="">Seleccionar producto...</option>' +
+    adminProducts.map(function(p) { return '<option value="' + p.id + '"' + (item && item.id === p.id ? ' selected' : '') + '>' + p.name + '</option>'; }).join('');
+  select.disabled = !!item;
+  document.getElementById('invStock').value = item ? item.stock : '';
+  document.getElementById('invMinStock').value = item ? item.minStock : 5;
+  document.getElementById('invCost').value = item ? (item.cost || '') : '';
+  document.getElementById('invPrice').value = item ? item.price : '';
+  document.getElementById('invNotes').value = item ? (item.notes || '') : '';
+  document.getElementById('invImageFile').value = '';
+  document.getElementById('invImage').value = item ? (item.image || '') : '';
+  var preview = document.getElementById('invImagePreview');
+  var previewImg = document.getElementById('invImagePreviewImg');
+  if (item && item.image) { previewImg.src = item.image; preview.style.display = 'block'; }
+  else { preview.style.display = 'none'; }
+  document.getElementById('inventoryModal').classList.add('active');
+}
+
+function closeInventoryForm() { document.getElementById('inventoryModal').classList.remove('active'); }
+
+function saveInventoryItem() {
+  var editId = document.getElementById('editInvId').value;
+  var productId = editId || document.getElementById('invProductSelect').value;
+  if (!productId) { alert('Selecciona un producto'); return; }
+  var product = adminProducts.find(function(p) { return p.id === productId; });
+  if (!product) { alert('Producto no encontrado'); return; }
+
+  var item = {
+    id: productId,
+    name: product.name,
+    image: document.getElementById('invImage').value || product.image,
+    stock: parseInt(document.getElementById('invStock').value) || 0,
+    minStock: parseInt(document.getElementById('invMinStock').value) || 5,
+    cost: parseInt(document.getElementById('invCost').value) || 0,
+    price: parseInt(document.getElementById('invPrice').value) || product.price,
+    notes: document.getElementById('invNotes').value
+  };
+
+  if (inventoryData.length === 0) {
+    inventoryData = adminProducts.map(function(p) {
+      return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: 0, price: p.price, notes: '' };
+    });
+  }
+  var idx = inventoryData.findIndex(function(i) { return i.id === item.id; });
+  if (idx >= 0) inventoryData[idx] = item; else inventoryData.push(item);
+
+  // Sync stock back to products
+  var pIdx = adminProducts.findIndex(function(p) { return p.id === item.id; });
+  if (pIdx >= 0) { adminProducts[pIdx].stock = item.stock; adminProducts[pIdx].price = item.price; }
+  if (item.image && !item.image.startsWith('data:')) {
+    if (pIdx >= 0) adminProducts[pIdx].image = item.image;
+  }
+
+  saveData('inventory', inventoryData);
+  saveData('products', adminProducts);
+  closeInventoryForm();
+  renderInventoryTable();
+  renderProductsTable();
+  updateDashboard();
+}
+
+function editInventoryItem(id) {
+  var item = inventoryData.find(function(i) { return i.id === id; });
+  if (!item) {
+    var p = adminProducts.find(function(pr) { return pr.id === id; });
+    if (p) item = { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: 0, price: p.price, notes: '' };
+  }
+  if (item) openInventoryForm(item);
+}
+
+function openMovementForm(productId) {
+  document.getElementById('mvProductId').value = productId;
+  document.getElementById('mvType').value = 'entrada';
+  document.getElementById('mvQty').value = '';
+  document.getElementById('mvNote').value = '';
+  document.getElementById('movementModal').classList.add('active');
+}
+
+function closeMovementForm() { document.getElementById('movementModal').classList.remove('active'); }
+
+function saveMovement() {
+  var productId = document.getElementById('mvProductId').value;
+  var type = document.getElementById('mvType').value;
+  var qty = parseInt(document.getElementById('mvQty').value) || 0;
+  var note = document.getElementById('mvNote').value;
+  if (qty <= 0) { alert('La cantidad debe ser mayor a 0'); return; }
+
+  var product = adminProducts.find(function(p) { return p.id === productId; });
+  if (!product) return;
+
+  if (type === 'entrada') product.stock += qty;
+  else if (type === 'salida') product.stock = Math.max(0, product.stock - qty);
+  else product.stock = qty;
+
+  // Update inventory data too
+  if (inventoryData.length > 0) {
+    var invItem = inventoryData.find(function(i) { return i.id === productId; });
+    if (invItem) invItem.stock = product.stock;
+    saveData('inventory', inventoryData);
+  }
+
+  inventoryMovements.unshift({
+    date: new Date().toISOString().split('T')[0],
+    productId: productId,
+    productName: product.name,
+    type: type,
+    qty: qty,
+    note: note
+  });
+  if (inventoryMovements.length > 50) inventoryMovements = inventoryMovements.slice(0, 50);
+
+  saveData('products', adminProducts);
+  saveData('inv_movements', inventoryMovements);
+  closeMovementForm();
+  renderInventoryTable();
+  renderMovementsTable();
+  renderProductsTable();
+  updateDashboard();
+}
+
+function renderMovementsTable() {
+  if (inventoryMovements.length === 0) {
+    document.getElementById('movementsTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">Sin movimientos registrados</td></tr>';
+    return;
+  }
+  document.getElementById('movementsTableBody').innerHTML = inventoryMovements.slice(0, 20).map(function(mv) {
+    var typeLabel = mv.type === 'entrada' ? '<span style="color:var(--green);">+Entrada</span>' : mv.type === 'salida' ? '<span style="color:#e74c3c;">-Salida</span>' : '<span style="color:var(--gold);">Ajuste</span>';
+    return '<tr><td>' + mv.date + '</td><td>' + mv.productName + '</td><td>' + typeLabel + '</td><td>' + mv.qty + '</td><td style="color:var(--text-muted);">' + (mv.note || '—') + '</td></tr>';
+  }).join('');
+}
+
 // ==================== INIT ====================
 if (sessionStorage.getItem('sefira_auth') === 'true') {
   updateDashboard();
   renderProductsTable();
   renderOrdersTable();
   renderClientsTable();
+  renderInventoryTable();
+  renderMovementsTable();
 }
 </script>
 
