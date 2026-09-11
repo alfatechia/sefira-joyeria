@@ -1369,24 +1369,22 @@ Oro suizo 18K — SÉFIRA ✨
     <!-- ==================== INVENTORY FORM MODAL ==================== -->
     <div class="admin-modal-overlay" id="inventoryModal">
       <div class="admin-modal">
-        <h3 id="inventoryFormTitle">Agregar al inventario</h3>
+        <h3 id="inventoryFormTitle">Agregar pieza al inventario</h3>
         <input type="hidden" id="editInvId">
         <div class="form-group">
-          <label>Producto</label>
-          <select id="invProductSelect">
-            <option value="">Seleccionar producto...</option>
-          </select>
+          <label>Nombre de la pieza</label>
+          <input type="text" id="invName" placeholder="Ej: Balines Diamantados #3 x10">
         </div>
         <div class="form-group">
-          <label>Imagen del producto</label>
+          <label>Imagen</label>
           <input type="file" id="invImageFile" accept="image/*" onchange="previewInvImage(this)">
           <input type="hidden" id="invImage">
           <div id="invImagePreview" style="display:none;margin-top:8px;"><img id="invImagePreviewImg" style="max-width:200px;border-radius:8px;border:1px solid rgba(197,160,85,0.2);"></div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Stock actual</label>
-            <input type="number" id="invStock" placeholder="0" min="0">
+            <label>Cantidad</label>
+            <input type="number" id="invStock" placeholder="0" min="0" oninput="calcInvCosts('unit')">
           </div>
           <div class="form-group">
             <label>Stock mínimo</label>
@@ -1396,11 +1394,11 @@ Oro suizo 18K — SÉFIRA ✨
         <div class="form-row">
           <div class="form-group">
             <label>Costo unitario (COP)</label>
-            <input type="number" id="invCost" placeholder="0">
+            <input type="number" id="invCost" placeholder="0" oninput="calcInvCosts('unit')">
           </div>
           <div class="form-group">
-            <label>Precio de venta (COP)</label>
-            <input type="number" id="invPrice" placeholder="0">
+            <label>Costo total (COP)</label>
+            <input type="number" id="invCostTotal" placeholder="0" oninput="calcInvCosts('total')">
           </div>
         </div>
         <div class="form-group">
@@ -2427,6 +2425,7 @@ function renderInventoryTable() {
       '<td><div class="table-actions">' +
         '<button class="icon-btn" onclick="editInventoryItem(\'' + item.id + '\')" title="Editar">&#9998;</button>' +
         '<button class="icon-btn" onclick="openMovementForm(\'' + item.id + '\')" title="Movimiento">&#8693;</button>' +
+        '<button class="icon-btn danger" onclick="deleteInventoryItem(\'' + item.id + '\')" title="Eliminar">&times;</button>' +
       '</div></td>' +
     '</tr>';
   }).join('');
@@ -2457,17 +2456,26 @@ function previewInvImage(input) {
   }
 }
 
+function calcInvCosts(source) {
+  var qty = parseInt(document.getElementById('invStock').value) || 0;
+  if (qty <= 0) return;
+  if (source === 'unit') {
+    var unitCost = parseInt(document.getElementById('invCost').value) || 0;
+    document.getElementById('invCostTotal').value = unitCost * qty;
+  } else if (source === 'total') {
+    var totalCost = parseInt(document.getElementById('invCostTotal').value) || 0;
+    document.getElementById('invCost').value = Math.round(totalCost / qty);
+  }
+}
+
 function openInventoryForm(item) {
-  document.getElementById('inventoryFormTitle').textContent = item ? 'Editar producto' : 'Agregar al inventario';
+  document.getElementById('inventoryFormTitle').textContent = item ? 'Editar pieza' : 'Agregar pieza al inventario';
   document.getElementById('editInvId').value = item ? item.id : '';
-  var select = document.getElementById('invProductSelect');
-  select.innerHTML = '<option value="">Seleccionar producto...</option>' +
-    adminProducts.map(function(p) { return '<option value="' + p.id + '"' + (item && item.id === p.id ? ' selected' : '') + '>' + p.name + '</option>'; }).join('');
-  select.disabled = !!item;
+  document.getElementById('invName').value = item ? item.name : '';
   document.getElementById('invStock').value = item ? item.stock : '';
   document.getElementById('invMinStock').value = item ? item.minStock : 5;
   document.getElementById('invCost').value = item ? (item.cost || '') : '';
-  document.getElementById('invPrice').value = item ? item.price : '';
+  document.getElementById('invCostTotal').value = (item && item.cost && item.stock) ? (item.cost * item.stock) : '';
   document.getElementById('invNotes').value = item ? (item.notes || '') : '';
   document.getElementById('invImageFile').value = '';
   document.getElementById('invImage').value = item ? (item.image || '') : '';
@@ -2482,52 +2490,57 @@ function closeInventoryForm() { document.getElementById('inventoryModal').classL
 
 function saveInventoryItem() {
   var editId = document.getElementById('editInvId').value;
-  var productId = editId || document.getElementById('invProductSelect').value;
-  if (!productId) { alert('Selecciona un producto'); return; }
-  var product = adminProducts.find(function(p) { return p.id === productId; });
-  if (!product) { alert('Producto no encontrado'); return; }
+  var name = document.getElementById('invName').value.trim();
+  if (!name) { alert('Escribe el nombre de la pieza'); return; }
 
   var item = {
-    id: productId,
-    name: product.name,
-    image: document.getElementById('invImage').value || product.image,
+    id: editId || 'INV-' + Date.now(),
+    name: name,
+    image: document.getElementById('invImage').value || '',
     stock: parseInt(document.getElementById('invStock').value) || 0,
     minStock: parseInt(document.getElementById('invMinStock').value) || 5,
     cost: parseInt(document.getElementById('invCost').value) || 0,
-    price: parseInt(document.getElementById('invPrice').value) || product.price,
+    price: 0,
     notes: document.getElementById('invNotes').value
   };
 
   if (inventoryData.length === 0) {
     inventoryData = adminProducts.map(function(p) {
-      return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: 0, price: p.price, notes: '' };
+      return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: FACTURA_COSTS[p.id] ? 'Factura Imperiale Sep 2026' : '' };
     });
   }
   var idx = inventoryData.findIndex(function(i) { return i.id === item.id; });
   if (idx >= 0) inventoryData[idx] = item; else inventoryData.push(item);
 
-  // Sync stock back to products
-  var pIdx = adminProducts.findIndex(function(p) { return p.id === item.id; });
-  if (pIdx >= 0) { adminProducts[pIdx].stock = item.stock; adminProducts[pIdx].price = item.price; }
-  if (item.image && !item.image.startsWith('data:')) {
-    if (pIdx >= 0) adminProducts[pIdx].image = item.image;
-  }
-
   saveData('inventory', inventoryData);
-  saveData('products', adminProducts);
   closeInventoryForm();
   renderInventoryTable();
-  renderProductsTable();
-  updateDashboard();
 }
 
 function editInventoryItem(id) {
-  var item = inventoryData.find(function(i) { return i.id === id; });
-  if (!item) {
-    var p = adminProducts.find(function(pr) { return pr.id === id; });
-    if (p) item = { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: 0, price: p.price, notes: '' };
-  }
+  var items = inventoryData.length > 0 ? inventoryData : adminProducts.map(function(p) {
+    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: FACTURA_COSTS[p.id] ? 'Factura Imperiale Sep 2026' : '' };
+  });
+  var item = items.find(function(i) { return i.id === id; });
   if (item) openInventoryForm(item);
+}
+
+function deleteInventoryItem(id) {
+  var items = inventoryData.length > 0 ? inventoryData : adminProducts.map(function(p) {
+    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: '' };
+  });
+  var item = items.find(function(i) { return i.id === id; });
+  var nombre = item ? item.name : id;
+  if (!confirm('¿Estás seguro de eliminar "' + nombre + '" del inventario?\n\nEsta acción no se puede deshacer.')) return;
+
+  if (inventoryData.length === 0) {
+    inventoryData = adminProducts.map(function(p) {
+      return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: '' };
+    });
+  }
+  inventoryData = inventoryData.filter(function(i) { return i.id !== id; });
+  saveData('inventory', inventoryData);
+  renderInventoryTable();
 }
 
 function openMovementForm(productId) {
