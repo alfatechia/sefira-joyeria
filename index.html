@@ -1715,6 +1715,8 @@ header { z-index: 1000; }
 // ==================== CONFIG ====================
 const WHATSAPP_NUMBER = '573022609363';
 const CURRENCY = 'COP';
+// >>> PEGA AQUÍ tu URL de Google Apps Script <<<
+const SHEETS_API_URL = '';
 
 // ==================== CATÁLOGO SÉFIRA ====================
 let products = [
@@ -1914,15 +1916,33 @@ function toggleCart() {
   document.getElementById('cartOverlay').classList.toggle('open');
 }
 
+// >>> PEGA AQUÍ tu URL del webhook n8n para pedidos <<<
+const N8N_PEDIDO_WEBHOOK = '';
+
 function checkoutWhatsApp() {
   if (cart.length === 0) return;
 
   let msg = '¡Hola SÉFIRA! Me gustaría hacer el siguiente pedido:\n\n';
+  const productList = [];
   cart.forEach(i => {
     msg += `• ${i.name} (x${i.qty}) - $${(i.price * i.qty).toLocaleString('es-CO')}\n`;
+    productList.push(`${i.name} x${i.qty}`);
   });
   const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
   msg += `\n💰 Total: $${total.toLocaleString('es-CO')}\n\n¿Me pueden confirmar disponibilidad y costo de envío?`;
+
+  if (N8N_PEDIDO_WEBHOOK) {
+    fetch(N8N_PEDIDO_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pedidoId: 'WEB-' + Date.now(),
+        productos: productList.join(', '),
+        total: total.toLocaleString('es-CO'),
+        fecha: new Date().toISOString()
+      })
+    }).catch(() => {});
+  }
 
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 }
@@ -2083,16 +2103,39 @@ addToCart = function(id) {
 
 // ==================== INIT ====================
 try {
-  var catalogManillas = JSON.parse(localStorage.getItem('sefira_catalog_manillas') || '[]');
-  if (catalogManillas.length > 0) {
-    catalogManillas.forEach(function(m) {
-      if (!products.find(function(p) { return p.id === m.id; })) {
-        products.push(m);
-      }
+  var catalogPublic = JSON.parse(localStorage.getItem('sefira_catalog_public') || '[]');
+  if (catalogPublic.length > 0) {
+    catalogPublic.forEach(function(cp) {
+      var existing = products.findIndex(function(p) { return p.id === cp.id; });
+      if (existing >= 0) { products[existing] = cp; }
+      else { products.push(cp); }
     });
   }
 } catch(e) {}
-renderProducts(products);
+// ==================== CARGA DESDE GOOGLE SHEETS ====================
+(async function loadFromSheets() {
+  if (!SHEETS_API_URL) { renderProducts(products); return; }
+  try {
+    const res = await fetch(SHEETS_API_URL + '?action=products');
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) {
+      products = data.map(p => ({
+        id: p.id,
+        name: p.nombre || p.name,
+        category: p.categoria || p.category,
+        price: Number(p.precio || p.price) || 0,
+        karat: p.kilates || p.karat || '18K',
+        weight: p.peso || p.weight || '—',
+        goldType: p.tipoOro || p.goldType || 'Suizo',
+        description: p.descripcion || p.description || '',
+        stock: Number(p.stock) || 0,
+        sizes: Array.isArray(p.tallas) ? p.tallas : (p.sizes || []),
+        image: p.imagen || p.image || ''
+      }));
+    }
+  } catch(e) { /* fallback a datos hardcodeados */ }
+  renderProducts(products);
+})();
 </script>
 
 <canvas id="glowCursorCanvas" class="glow-cursor-canvas" aria-hidden="true"></canvas>

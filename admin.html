@@ -870,7 +870,7 @@ body {
 
       <div class="sidebar-section">Gestión</div>
       <div class="sidebar-link" onclick="showPanel('products',this)">
-        <span class="sidebar-link-icon">&#10022;</span> Productos
+        <span class="sidebar-link-icon">&#10022;</span> Catálogo
       </div>
       <div class="sidebar-link" onclick="showPanel('orders',this)">
         <span class="sidebar-link-icon">&#9993;</span> Pedidos
@@ -917,6 +917,12 @@ body {
         <span style="font-size:0.7rem;color:var(--text-muted);" id="dashDate"></span>
       </div>
 
+      <div id="sheetsButtons" style="display:flex;gap:0.8rem;margin-bottom:1.5rem;">
+        <button id="syncBtn" class="btn btn-gold" onclick="syncFromSheets()" style="font-size:0.7rem;padding:0.6rem 1.2rem;">Sync Google Sheets</button>
+        <button id="syncUpBtn" class="btn btn-outline" onclick="syncToSheets()" style="font-size:0.7rem;padding:0.6rem 1.2rem;">Subir a Sheets</button>
+        <span id="sheetsStatus" style="font-size:0.65rem;color:var(--text-muted);align-self:center;"></span>
+      </div>
+
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-label">Productos activos</div>
@@ -956,8 +962,8 @@ body {
     <div class="panel" id="panel-products">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Productos</h1>
-          <p class="page-subtitle">Gestión del catálogo de SÉFIRA</p>
+          <h1 class="page-title">Catálogo Público</h1>
+          <p class="page-subtitle">Productos visibles para los clientes en la tienda</p>
         </div>
         <button class="btn btn-gold" onclick="openProductForm()">+ Nuevo producto</button>
       </div>
@@ -976,19 +982,17 @@ body {
         </select>
       </div>
 
-      <div class="data-table-container">
-        <table class="data-table">
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
           <thead>
             <tr>
               <th>Foto</th>
               <th>Nombre</th>
               <th>Categoría</th>
               <th>Precio</th>
-              <th>Quilates</th>
-              <th>Peso</th>
-              <th>Stock</th>
               <th>Estado</th>
-              <th>Acciones</th>
+              <th>Origen</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="productsTableBody"></tbody>
@@ -1791,13 +1795,130 @@ const ADMIN_USERS = {
 };
 let selectedUserId = null;
 
-// ==================== DATA (localStorage persistence) ====================
+// >>> PEGA AQUÍ tu URL de Google Apps Script <<<
+const SHEETS_API_URL = '';
+
+// ==================== DATA (localStorage + Google Sheets) ====================
 function loadData(key, fallback) {
   try { return JSON.parse(localStorage.getItem('sefira_' + key)) || fallback; }
   catch { return fallback; }
 }
 function saveData(key, data) {
   localStorage.setItem('sefira_' + key, JSON.stringify(data));
+}
+
+async function sheetsGet(action) {
+  if (!SHEETS_API_URL) return null;
+  try {
+    const res = await fetch(SHEETS_API_URL + '?action=' + action);
+    const data = await res.json();
+    return Array.isArray(data) ? data : null;
+  } catch { return null; }
+}
+
+async function sheetsPost(body) {
+  if (!SHEETS_API_URL) return null;
+  try {
+    const res = await fetch(SHEETS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  } catch { return null; }
+}
+
+function mapSheetProduct(p) {
+  return {
+    id: p.id, name: p.nombre || p.name, category: p.categoria || p.category,
+    price: Number(p.precio || p.price) || 0, karat: p.kilates || p.karat || '18K',
+    weight: p.peso || p.weight || '—', goldType: p.tipoOro || p.goldType || 'Suizo',
+    description: p.descripcion || p.description || '', stock: Number(p.stock) || 0,
+    sizes: Array.isArray(p.tallas) ? p.tallas : (p.sizes || []),
+    image: p.imagen || p.image || '', status: p.estado || p.status || 'activo'
+  };
+}
+
+function productToSheet(p) {
+  return {
+    id: p.id, nombre: p.name, categoria: p.category, precio: p.price,
+    kilates: p.karat, peso: p.weight, tipoOro: p.goldType,
+    descripcion: p.description, stock: p.stock,
+    tallas: (p.sizes || []).join(', '), imagen: p.image, estado: p.status || 'activo'
+  };
+}
+
+async function syncFromSheets() {
+  const btn = document.getElementById('syncBtn');
+  if (btn) { btn.textContent = 'Sincronizando...'; btn.disabled = true; }
+
+  const sheetProducts = await sheetsGet('products');
+  if (sheetProducts && sheetProducts.length > 0) {
+    adminProducts = sheetProducts.map(mapSheetProduct);
+    saveData('products', adminProducts);
+    renderProductsTable();
+  }
+
+  const sheetOrders = await sheetsGet('orders');
+  if (sheetOrders && sheetOrders.length > 0) {
+    adminOrders = sheetOrders;
+    saveData('orders', adminOrders);
+    renderOrdersTable();
+  }
+
+  const sheetClients = await sheetsGet('clients');
+  if (sheetClients && sheetClients.length > 0) {
+    adminClients = sheetClients;
+    saveData('clients', adminClients);
+    renderClientsTable();
+  }
+
+  if (btn) { btn.textContent = 'Sync Google Sheets'; btn.disabled = false; }
+  updateDashboard();
+  showToast('Datos sincronizados desde Google Sheets');
+}
+
+async function syncToSheets() {
+  const btn = document.getElementById('syncUpBtn');
+  if (btn) { btn.textContent = 'Subiendo...'; btn.disabled = true; }
+
+  await sheetsPost({
+    action: 'syncAll',
+    data: {
+      products: adminProducts.map(productToSheet),
+      orders: adminOrders,
+      clients: adminClients
+    }
+  });
+
+  if (btn) { btn.textContent = 'Subir a Sheets'; btn.disabled = false; }
+  showToast('Datos subidos a Google Sheets');
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('syncToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'syncToast';
+    toast.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:var(--emerald);color:#fff;padding:0.8rem 1.5rem;font-size:0.8rem;letter-spacing:1px;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+}
+
+function updateSheetsStatus() {
+  const el = document.getElementById('sheetsStatus');
+  const btns = document.getElementById('sheetsButtons');
+  if (!el || !btns) return;
+  if (SHEETS_API_URL) {
+    el.textContent = 'Google Sheets conectado';
+    el.style.color = 'var(--green)';
+  } else {
+    el.textContent = 'Sin conexión a Sheets (configura SHEETS_API_URL)';
+    el.style.color = 'var(--yellow)';
+  }
 }
 
 let adminProducts = loadData('products', [
@@ -1849,6 +1970,8 @@ function attemptLogin() {
     renderProductsTable();
     renderOrdersTable();
     renderClientsTable();
+    if (SHEETS_API_URL) syncFromSheets();
+    updateSheetsStatus();
   } else {
     document.getElementById('loginError').style.display = 'block';
     setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
@@ -1891,6 +2014,12 @@ if (sessionStorage.getItem('sefira_auth') === 'true') {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminLayout').classList.add('active');
     showLoggedUser(savedUser);
+    updateDashboard();
+    renderProductsTable();
+    renderOrdersTable();
+    renderClientsTable();
+    if (SHEETS_API_URL) syncFromSheets();
+    updateSheetsStatus();
   }
 }
 
@@ -1952,28 +2081,34 @@ let prodSearchTerm = '';
 let prodCategoryFilter = 'todos';
 
 function renderProductsTable() {
+  var catalogManillas = loadData('catalog_manillas', []);
   let items = [...adminProducts];
+  catalogManillas.forEach(function(cm) {
+    if (!items.find(function(p) { return p.id === cm.id; })) {
+      cm.status = cm.status || 'activo';
+      cm._fromManilla = true;
+      items.push(cm);
+    }
+  });
   if (prodCategoryFilter !== 'todos') items = items.filter(p => p.category === prodCategoryFilter);
   if (prodSearchTerm) items = items.filter(p => p.name.toLowerCase().includes(prodSearchTerm.toLowerCase()));
 
-  document.getElementById('productsTableBody').innerHTML = items.map(p => `
-    <tr>
-      <td><div class="table-img">${p.image ? `<img src="${p.image}" alt="${p.name}">` : 'FOTO'}</div></td>
-      <td style="color:var(--diamond);font-weight:500;">${p.name}</td>
-      <td style="text-transform:capitalize;">${p.category}</td>
-      <td style="color:var(--gold);">$${p.price.toLocaleString('es-CO')}</td>
-      <td>${p.karat}</td>
-      <td>${p.weight}</td>
-      <td>${p.stock}</td>
-      <td><span class="badge badge-${p.status === 'activo' ? 'active' : 'inactive'}">${p.status}</span></td>
-      <td>
-        <div class="table-actions">
-          <button class="btn btn-outline btn-sm" onclick="editProduct('${p.id}')">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Eliminar</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  document.getElementById('productsTableBody').innerHTML = items.map(function(p) {
+    var statusBadge = p.status === 'activo' ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>';
+    var origen = p._fromManilla ? '<span class="badge badge-shipped">Manilla</span>' : '<span class="badge badge-pending">Directo</span>';
+    return '<tr>' +
+      '<td><div class="table-img">' + (p.image ? '<img src="' + p.image + '" alt="' + p.name + '">' : 'FOTO') + '</div></td>' +
+      '<td style="color:var(--diamond);font-weight:500;">' + p.name + '</td>' +
+      '<td style="text-transform:capitalize;">' + p.category + '</td>' +
+      '<td style="color:var(--gold);">$' + p.price.toLocaleString('es-CO') + '</td>' +
+      '<td>' + statusBadge + '</td>' +
+      '<td>' + origen + '</td>' +
+      '<td><div class="table-actions">' +
+        '<button class="icon-btn" onclick="editProduct(\'' + p.id + '\')" title="Editar">&#9998;</button>' +
+        '<button class="icon-btn danger" onclick="deleteProduct(\'' + p.id + '\')" title="Eliminar">&times;</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
 }
 
 function filterAdminProducts(term) { prodSearchTerm = term; renderProductsTable(); }
@@ -2022,8 +2157,8 @@ function openProductForm(product) {
 function closeProductForm() { document.getElementById('productModal').classList.remove('active'); }
 
 function saveProduct() {
-  const editId = document.getElementById('editProductId').value;
-  const product = {
+  var editId = document.getElementById('editProductId').value;
+  var product = {
     id: editId || 'PROD-' + String(Date.now()).slice(-6),
     name: document.getElementById('pName').value,
     category: document.getElementById('pCategory').value,
@@ -2040,30 +2175,71 @@ function saveProduct() {
 
   if (!product.name) { alert('El nombre es obligatorio'); return; }
 
-  if (editId) {
-    const idx = adminProducts.findIndex(p => p.id === editId);
-    if (idx >= 0) adminProducts[idx] = product;
+  if (editId && editId.startsWith('MAN-')) {
+    var cm = loadData('catalog_manillas', []);
+    var cmIdx = cm.findIndex(function(m) { return m.id === editId; });
+    if (cmIdx >= 0) {
+      Object.assign(cm[cmIdx], { name: product.name, category: product.category, price: product.price, image: product.image, description: product.description, stock: product.stock, status: product.status, karat: product.karat, weight: product.weight, goldType: product.goldType, sizes: product.sizes });
+      saveData('catalog_manillas', cm);
+    }
   } else {
-    adminProducts.push(product);
+    if (editId) {
+      var idx = adminProducts.findIndex(function(p) { return p.id === editId; });
+      if (idx >= 0) adminProducts[idx] = product;
+    } else {
+      adminProducts.push(product);
+    }
+    saveData('products', adminProducts);
   }
 
-  saveData('products', adminProducts);
+  syncCatalogPublic();
   closeProductForm();
   renderProductsTable();
   updateDashboard();
 }
 
 function editProduct(id) {
-  const p = adminProducts.find(x => x.id === id);
+  var p = adminProducts.find(function(x) { return x.id === id; });
+  if (!p) {
+    var cm = loadData('catalog_manillas', []);
+    p = cm.find(function(x) { return x.id === id; });
+  }
   if (p) openProductForm(p);
 }
 
 function deleteProduct(id) {
-  if (!confirm('¿Eliminar este producto?')) return;
-  adminProducts = adminProducts.filter(p => p.id !== id);
-  saveData('products', adminProducts);
+  var allItems = [...adminProducts];
+  var cm = loadData('catalog_manillas', []);
+  cm.forEach(function(c) { if (!allItems.find(function(p) { return p.id === c.id; })) allItems.push(c); });
+  var item = allItems.find(function(p) { return p.id === id; });
+  var nombre = item ? item.name : id;
+  if (!confirm('¿Eliminar "' + nombre + '" del catálogo?\n\nYa no será visible para los clientes.')) return;
+
+  if (id.startsWith('MAN-')) {
+    cm = cm.filter(function(c) { return c.id !== id; });
+    saveData('catalog_manillas', cm);
+    var manilla = manillasData.find(function(m) { return m.id === id; });
+    if (manilla) { manilla.destino = 'interno'; saveData('manillas', manillasData); }
+  } else {
+    adminProducts = adminProducts.filter(function(p) { return p.id !== id; });
+    saveData('products', adminProducts);
+  }
+
+  syncCatalogPublic();
   renderProductsTable();
   updateDashboard();
+}
+
+function syncCatalogPublic() {
+  var allCatalog = [];
+  adminProducts.forEach(function(p) {
+    if (p.status === 'activo') allCatalog.push(p);
+  });
+  var cm = loadData('catalog_manillas', []);
+  cm.forEach(function(m) {
+    if (!m.status || m.status === 'activo') allCatalog.push(m);
+  });
+  saveData('catalog_public', allCatalog);
 }
 
 // ==================== ORDERS TABLE ====================
@@ -2145,6 +2321,7 @@ function saveOrder() {
   }
 
   saveData('orders', adminOrders);
+  sheetsPost({ action: 'saveOrder', data: order });
   closeOrderForm();
   renderOrdersTable();
   updateDashboard();
@@ -2159,6 +2336,7 @@ function deleteOrder(id) {
   if (!confirm('¿Eliminar este pedido?')) return;
   adminOrders = adminOrders.filter(o => o.id !== id);
   saveData('orders', adminOrders);
+  sheetsPost({ action: 'deleteOrder', id: id });
   renderOrdersTable();
   updateDashboard();
 }
@@ -2234,6 +2412,7 @@ function saveClient() {
   }
 
   saveData('clients', adminClients);
+  sheetsPost({ action: 'saveClient', data: client });
   closeClientForm();
   renderClientsTable();
   updateDashboard();
@@ -2248,6 +2427,7 @@ function deleteClient(id) {
   if (!confirm('¿Eliminar este cliente?')) return;
   adminClients = adminClients.filter(c => c.id !== id);
   saveData('clients', adminClients);
+  sheetsPost({ action: 'deleteClient', id: id });
   renderClientsTable();
   updateDashboard();
 }
