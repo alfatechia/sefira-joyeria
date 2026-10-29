@@ -2105,11 +2105,7 @@ addToCart = function(id) {
 try {
   var catalogPublic = JSON.parse(localStorage.getItem('sefira_catalog_public') || '[]');
   if (catalogPublic.length > 0) {
-    catalogPublic.forEach(function(cp) {
-      var existing = products.findIndex(function(p) { return p.id === cp.id; });
-      if (existing >= 0) { products[existing] = cp; }
-      else { products.push(cp); }
-    });
+    products = catalogPublic;
   }
 } catch(e) {}
 // ==================== CARGA DESDE GOOGLE SHEETS ====================

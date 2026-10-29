@@ -870,7 +870,7 @@ body {
 
       <div class="sidebar-section">Gestión</div>
       <div class="sidebar-link" onclick="showPanel('products',this)">
-        <span class="sidebar-link-icon">&#10022;</span> Catálogo
+        <span class="sidebar-link-icon">&#10022;</span> Catálogo de Venta
       </div>
       <div class="sidebar-link" onclick="showPanel('orders',this)">
         <span class="sidebar-link-icon">&#9993;</span> Pedidos
@@ -886,7 +886,7 @@ body {
 
       <div class="sidebar-section">Finanzas</div>
       <div class="sidebar-link" onclick="showPanel('inventory',this)">
-        <span class="sidebar-link-icon">&#9879;</span> Inventario
+        <span class="sidebar-link-icon">&#9879;</span> Inventario Insumos
       </div>
       <div class="sidebar-link" onclick="showPanel('manillas',this)">
         <span class="sidebar-link-icon">&#9733;</span> Manillas
@@ -962,8 +962,8 @@ body {
     <div class="panel" id="panel-products">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Catálogo Público</h1>
-          <p class="page-subtitle">Productos visibles para los clientes en la tienda</p>
+          <h1 class="page-title">Catálogo de Venta</h1>
+          <p class="page-subtitle">Productos terminados visibles para los clientes en la tienda</p>
         </div>
         <button class="btn btn-gold" onclick="openProductForm()">+ Nuevo producto</button>
       </div>
@@ -1029,9 +1029,9 @@ body {
               <th>ID Pedido</th>
               <th>Fecha</th>
               <th>Cliente</th>
-              <th>WhatsApp</th>
               <th>Productos</th>
               <th>Total</th>
+              <th>Pago</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -1317,20 +1317,20 @@ Oro suizo 18K — SÉFIRA ✨
     <div class="panel" id="panel-inventory">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Inventario y Contabilidad</h1>
-          <p class="page-subtitle">Control de stock, costos y ganancias</p>
+          <h1 class="page-title">Inventario Insumos</h1>
+          <p class="page-subtitle">Materia prima e insumos para armar productos. Acá se lleva la contabilidad.</p>
         </div>
-        <button class="btn btn-gold" onclick="openInventoryForm()">+ Agregar producto</button>
+        <button class="btn btn-gold" onclick="openInventoryForm()">+ Agregar insumo</button>
       </div>
 
       <div class="inv-summary">
-        <div class="stat-card"><div class="stat-label">Valor total inventario</div><div class="stat-value" id="invTotalValue">$0</div></div>
-        <div class="stat-card"><div class="stat-label">Costo total</div><div class="stat-value" id="invTotalCost">$0</div></div>
-        <div class="stat-card"><div class="stat-label">Ganancia potencial</div><div class="stat-value" id="invTotalProfit">$0</div></div>
-        <div class="stat-card"><div class="stat-label">Productos bajo stock</div><div class="stat-value" id="invLowStock">0</div></div>
+        <div class="stat-card"><div class="stat-label">Total unidades</div><div class="stat-value" id="invTotalValue">0</div></div>
+        <div class="stat-card"><div class="stat-label">Costo total invertido</div><div class="stat-value" id="invTotalCost">$0</div></div>
+        <div class="stat-card"><div class="stat-label">Tipos de insumos</div><div class="stat-value" id="invTotalProfit">0</div></div>
+        <div class="stat-card"><div class="stat-label">Insumos bajo stock</div><div class="stat-value" id="invLowStock">0</div></div>
       </div>
 
-      <h3 style="font-family:var(--font-title);color:var(--diamond);margin:2rem 0 1rem;font-size:1rem;letter-spacing:1px;">Inventario de piezas</h3>
+      <h3 style="font-family:var(--font-title);color:var(--diamond);margin:2rem 0 1rem;font-size:1rem;letter-spacing:1px;">Insumos y materiales</h3>
       <div class="toolbar">
         <input type="text" class="search-input" placeholder="Buscar en inventario..." oninput="filterInventory(this.value)">
       </div>
@@ -1373,7 +1373,7 @@ Oro suizo 18K — SÉFIRA ✨
     <!-- ==================== INVENTORY FORM MODAL ==================== -->
     <div class="admin-modal-overlay" id="inventoryModal">
       <div class="admin-modal">
-        <h3 id="inventoryFormTitle">Agregar pieza al inventario</h3>
+        <h3 id="inventoryFormTitle">Agregar insumo al inventario</h3>
         <input type="hidden" id="editInvId">
         <div class="form-group">
           <label>Nombre de la pieza</label>
@@ -1519,13 +1519,30 @@ Oro suizo 18K — SÉFIRA ✨
             <span style="color:var(--text-muted);font-size:0.8rem;">Costo total</span>
             <span id="manCostTotal" style="font-size:0.85rem;font-weight:600;">$10,000</span>
           </div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
-            <span style="color:var(--text-muted);font-size:0.8rem;">Margen (40%)</span>
+          <div id="manAutoMarginRow" style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+            <span style="color:var(--text-muted);font-size:0.8rem;">Margen (50%)</span>
             <span id="manMargin" style="font-size:0.85rem;color:var(--green);">$0</span>
           </div>
-          <div style="display:flex;justify-content:space-between;">
+          <div id="manAutoSaleRow" style="display:flex;justify-content:space-between;">
             <span style="color:var(--gold);font-weight:600;font-size:0.9rem;">PRECIO DE VENTA</span>
-            <span id="manSalePrice" style="font-size:1.1rem;font-weight:700;color:var(--gold);">$14,000</span>
+            <span id="manSalePrice" style="font-size:1.1rem;font-weight:700;color:var(--gold);">$0</span>
+          </div>
+          <div style="margin-top:0.8rem;padding-top:0.5rem;border-top:1px solid rgba(197,160,85,0.1);">
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.78rem;color:var(--text-muted);">
+              <input type="checkbox" id="manManualPrice" onchange="toggleManManualPrice()"> Precio manual
+            </label>
+          </div>
+          <div id="manManualPriceBox" style="display:none;margin-top:0.5rem;">
+            <div style="display:flex;align-items:center;gap:0.8rem;">
+              <div style="flex:1;">
+                <label style="font-size:0.7rem;color:var(--text-muted);">Precio de venta manual</label>
+                <input type="number" id="manManualPriceInput" placeholder="350000" oninput="calcManManualProfit()" style="width:100%;padding:8px;background:var(--bg-card);border:1px solid rgba(197,160,85,0.2);color:var(--text-light);font-size:0.85rem;margin-top:4px;">
+              </div>
+              <div style="text-align:center;min-width:100px;">
+                <span style="font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);">Ganancia</span>
+                <div id="manManualProfitDisplay" style="font-family:var(--font-title);font-size:1rem;color:var(--green);margin-top:0.2rem;">$0</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1636,14 +1653,44 @@ Oro suizo 18K — SÉFIRA ✨
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>Precio (COP)</label>
-        <input type="number" id="pPrice" placeholder="850000">
+        <label>Costo (lo que te sale - COP)</label>
+        <input type="number" id="pCost" placeholder="200000" oninput="calcProductSalePrice()">
       </div>
       <div class="form-group">
         <label>Stock disponible</label>
         <input type="number" id="pStock" placeholder="5">
       </div>
     </div>
+    <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;">
+      <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.78rem;color:var(--text-muted);">
+        <input type="checkbox" id="pManualPrice" onchange="toggleManualPrice()"> Precio manual
+      </label>
+    </div>
+    <div id="pAutoPriceBox" style="background:rgba(197,160,85,0.08);padding:0.8rem 1rem;border:1px solid rgba(197,160,85,0.15);margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <span style="font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">Precio de venta (costo + 50%)</span>
+        <div id="pSalePriceDisplay" style="font-family:var(--font-title);font-size:1.3rem;color:var(--gold);margin-top:0.2rem;">$0</div>
+      </div>
+      <div>
+        <span style="font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">Ganancia</span>
+        <div id="pProfitDisplay" style="font-family:var(--font-title);font-size:1.1rem;color:var(--green);margin-top:0.2rem;">$0</div>
+      </div>
+    </div>
+    <div id="pManualPriceBox" style="display:none;margin-bottom:1rem;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Precio de venta manual (COP)</label>
+          <input type="number" id="pManualPriceInput" placeholder="350000" oninput="calcManualProfit()">
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end;">
+          <div style="background:rgba(46,204,113,0.08);padding:0.6rem 1rem;border:1px solid rgba(46,204,113,0.15);width:100%;text-align:center;">
+            <span style="font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">Ganancia</span>
+            <div id="pManualProfitDisplay" style="font-family:var(--font-title);font-size:1.1rem;color:var(--green);margin-top:0.2rem;">$0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="pPrice">
     <div class="form-row">
       <div class="form-group">
         <label>Quilates</label>
@@ -1690,7 +1737,7 @@ Oro suizo 18K — SÉFIRA ✨
 
 <!-- ==================== ORDER FORM MODAL ==================== -->
 <div class="admin-modal-overlay" id="orderModal">
-  <div class="admin-modal">
+  <div class="admin-modal" style="max-width:700px;">
     <h3 id="orderFormTitle">Nuevo pedido</h3>
     <input type="hidden" id="editOrderId">
     <div class="form-row">
@@ -1703,14 +1750,41 @@ Oro suizo 18K — SÉFIRA ✨
         <input type="text" id="oWhatsApp" placeholder="+57 300 000 0000">
       </div>
     </div>
+
     <div class="form-group">
-      <label>Productos (descripción)</label>
-      <textarea id="oProducts" placeholder="Ej: 1x Anillo Serpiente Dorada, 1x Cadena Eslabón Imperial"></textarea>
+      <label>Productos del pedido</label>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
+        <select id="oProductSelect" style="flex:1;">
+          <option value="">— Seleccionar producto —</option>
+        </select>
+        <input type="number" id="oProductQty" placeholder="Cant." min="1" value="1" style="width:70px;">
+        <button class="btn btn-gold btn-sm" onclick="addOrderProduct()" style="white-space:nowrap;">+ Agregar</button>
+      </div>
+      <div id="orderProductsList" style="display:flex;flex-direction:column;gap:0.4rem;"></div>
+      <input type="hidden" id="oProducts">
     </div>
+
+    <div style="background:rgba(197,160,85,0.08);padding:1rem;border:1px solid rgba(197,160,85,0.15);margin-bottom:1rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;text-align:center;">
+        <div>
+          <div style="font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);">Costo insumos</div>
+          <div id="oSumCost" style="font-family:var(--font-title);font-size:1.1rem;color:var(--text-muted);margin-top:0.2rem;">$0</div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);">Precio venta</div>
+          <div id="oSumTotal" style="font-family:var(--font-title);font-size:1.3rem;color:var(--gold);margin-top:0.2rem;">$0</div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);">Ganancia</div>
+          <div id="oSumProfit" style="font-family:var(--font-title);font-size:1.1rem;color:var(--green);margin-top:0.2rem;">$0</div>
+        </div>
+      </div>
+    </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Total (COP)</label>
-        <input type="number" id="oTotal" placeholder="850000">
+        <label>Precio total venta (COP)</label>
+        <input type="number" id="oTotal" placeholder="Se calcula automático" onchange="recalcOrderTotals()">
       </div>
       <div class="form-group">
         <label>Estado</label>
@@ -1722,6 +1796,27 @@ Oro suizo 18K — SÉFIRA ✨
           <option value="cancelado">Cancelado</option>
         </select>
       </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Método de pago</label>
+        <select id="oPago">
+          <option value="nequi">Nequi</option>
+          <option value="efectivo">Efectivo</option>
+          <option value="transferencia">Transferencia bancaria</option>
+          <option value="daviplata">Daviplata</option>
+          <option value="usdt">USDT (Cripto)</option>
+          <option value="mixto">Mixto (varios métodos)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Abono recibido (COP)</label>
+        <input type="number" id="oAbono" placeholder="0" value="0" onchange="recalcOrderTotals()">
+      </div>
+    </div>
+    <div id="oSaldoRow" style="text-align:right;margin-bottom:1rem;display:none;">
+      <span style="color:var(--text-muted);font-size:0.75rem;">Saldo pendiente: </span>
+      <span id="oSaldo" style="color:var(--red);font-weight:600;">$0</span>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -1793,7 +1888,7 @@ const ADMIN_USERS = {
   sofia: { name: 'Sofía Zuleta Taborda', initials: 'SZ', password: 'sofia2026' },
   mariajose: { name: 'María José Zuleta Taborda', initials: 'MJ', password: 'mariajose2026' },
 };
-let selectedUserId = null;
+var selectedUserId = null;
 
 // >>> PEGA AQUÍ tu URL de Google Apps Script <<<
 const SHEETS_API_URL = '';
@@ -1921,30 +2016,21 @@ function updateSheetsStatus() {
   }
 }
 
-let adminProducts = loadData('products', [
-  { id: 'SEF-001', name: 'Róndeles Verdes x3', category: 'accesorios', price: 135000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 3 róndeles verdes en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_hwnit4hwnit4hwni.jpg', status: 'activo' },
-  { id: 'SEF-002', name: 'Balines Diamantados #3 x10', category: 'accesorios', price: 105000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #3.', stock: 15, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
-  { id: 'SEF-003', name: 'Balines Diamantados #4 x10', category: 'accesorios', price: 130000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #4.', stock: 12, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
-  { id: 'SEF-004', name: 'Balines Diamantados #5 x10', category: 'accesorios', price: 140000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #5.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
-  { id: 'SEF-005', name: 'Balines Diamantados #6 x10', category: 'accesorios', price: 170000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #6.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
-  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 90000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
-  { id: 'SEF-007', name: 'Balines Lisos #3 x10', category: 'accesorios', price: 50000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines lisos talla #3.', stock: 20, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', status: 'activo' },
-  { id: 'SEF-008', name: 'Cadena Gucci 60cm', category: 'cadenas', price: 255000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K.', stock: 5, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg', status: 'activo' },
-  { id: 'SEF-009', name: 'Topos Esmeralda Broche Rosca', category: 'aretes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos con piedra esmeralda y broche de rosca.', stock: 15, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', status: 'activo' },
-  { id: 'SEF-010', name: 'Barriles x10', category: 'accesorios', price: 160000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 barriles en oro suizo 18K.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg', status: 'activo' },
-  { id: 'SEF-011', name: 'Dije Inicial M', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial M en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', status: 'activo' },
-  { id: 'SEF-012', name: 'Dije Inicial S', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial S en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', status: 'activo' },
-  { id: 'SEF-013', name: 'Dije Trébol', category: 'dijes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije trébol de la suerte en oro suizo 18K.', stock: 12, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_jl0l7njl0l7njl0l.jpg', status: 'activo' },
-  { id: 'SEF-014', name: 'Dije Caballo', category: 'dijes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con figura de caballo en oro suizo 18K.', stock: 6, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_z6uf1lz6uf1lz6uf.jpg', status: 'activo' },
-  { id: 'SEF-015', name: 'Dije Infinito Grande', category: 'dijes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije infinito grande en oro suizo 18K.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg', status: 'activo' },
-  { id: 'SEF-016', name: 'Dije Virgen Tallada', category: 'dijes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije de la Virgen tallada en oro suizo 18K.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_grgkz2grgkz2grgk.jpg', status: 'activo' },
-  { id: 'SEF-017', name: 'Topos Oro Grande', category: 'aretes', price: 60000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos de oro suizo 18K tamaño grande. Elegancia clásica.', stock: 1, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-018', name: 'Topos Oro Mediano', category: 'aretes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos de oro suizo 18K tamaño mediano. Perfectos para el día a día.', stock: 1, sizes: [], image: '', status: 'activo' },
-  { id: 'SEF-019', name: 'Topos Oro Pequeño', category: 'aretes', price: 42000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos de oro suizo 18K tamaño pequeño. Delicados y versátiles.', stock: 1, sizes: [], image: '', status: 'activo' },
-]);
+// Migración v3: separar inventario de catálogo + cargar insumos
+if (!localStorage.getItem('sefira_migration_v3')) {
+  localStorage.removeItem('sefira_products');
+  localStorage.removeItem('sefira_catalog_public');
+  localStorage.removeItem('sefira_catalog_manillas');
+  localStorage.removeItem('sefira_inventory');
+  localStorage.removeItem('sefira_manillas');
+  localStorage.removeItem('sefira_migration_v2');
+  localStorage.setItem('sefira_migration_v3', 'done');
+}
 
-let adminOrders = loadData('orders', []);
-let adminClients = loadData('clients', []);
+var adminProducts = loadData('products', []);
+
+var adminOrders = loadData('orders', []);
+var adminClients = loadData('clients', []);
 
 // ==================== LOGIN ====================
 function selectUser(el, userId) {
@@ -2077,8 +2163,8 @@ function updateDashboard() {
 }
 
 // ==================== PRODUCTS TABLE ====================
-let prodSearchTerm = '';
-let prodCategoryFilter = 'todos';
+var prodSearchTerm = '';
+var prodCategoryFilter = 'todos';
 
 function renderProductsTable() {
   var catalogManillas = loadData('catalog_manillas', []);
@@ -2092,6 +2178,11 @@ function renderProductsTable() {
   });
   if (prodCategoryFilter !== 'todos') items = items.filter(p => p.category === prodCategoryFilter);
   if (prodSearchTerm) items = items.filter(p => p.name.toLowerCase().includes(prodSearchTerm.toLowerCase()));
+
+  if (items.length === 0) {
+    document.getElementById('productsTableBody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:3rem;">No hay productos en el catálogo. Agrega productos con "+ Nuevo producto" o publica manillas desde el Armador de Manillas.</td></tr>';
+    return;
+  }
 
   document.getElementById('productsTableBody').innerHTML = items.map(function(p) {
     var statusBadge = p.status === 'activo' ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>';
@@ -2128,20 +2219,69 @@ function previewProductImage(input) {
   }
 }
 
+function calcProductSalePrice() {
+  var cost = parseInt(document.getElementById('pCost').value) || 0;
+  var isManual = document.getElementById('pManualPrice').checked;
+  if (isManual) {
+    calcManualProfit();
+    return;
+  }
+  var margin = Math.round(cost * MARGEN_PCT);
+  var salePrice = cost + margin;
+  document.getElementById('pPrice').value = salePrice;
+  document.getElementById('pSalePriceDisplay').textContent = '$' + salePrice.toLocaleString('es-CO');
+  document.getElementById('pProfitDisplay').textContent = '$' + margin.toLocaleString('es-CO');
+}
+
+function toggleManualPrice() {
+  var isManual = document.getElementById('pManualPrice').checked;
+  document.getElementById('pAutoPriceBox').style.display = isManual ? 'none' : 'flex';
+  document.getElementById('pManualPriceBox').style.display = isManual ? 'block' : 'none';
+  if (isManual) {
+    var autoPrice = parseInt(document.getElementById('pPrice').value) || 0;
+    document.getElementById('pManualPriceInput').value = autoPrice || '';
+    calcManualProfit();
+  } else {
+    calcProductSalePrice();
+  }
+}
+
+function calcManualProfit() {
+  var cost = parseInt(document.getElementById('pCost').value) || 0;
+  var manualPrice = parseInt(document.getElementById('pManualPriceInput').value) || 0;
+  var profit = manualPrice - cost;
+  document.getElementById('pPrice').value = manualPrice;
+  document.getElementById('pManualProfitDisplay').textContent = '$' + profit.toLocaleString('es-CO');
+  document.getElementById('pManualProfitDisplay').style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
 function openProductForm(product) {
   document.getElementById('productFormTitle').textContent = product ? 'Editar producto' : 'Nuevo producto';
   document.getElementById('editProductId').value = product ? product.id : '';
   document.getElementById('pName').value = product ? product.name : '';
   document.getElementById('pCategory').value = product ? product.category : 'anillos';
-  document.getElementById('pPrice').value = product ? product.price : '';
+  document.getElementById('pCost').value = product ? (product.cost || '') : '';
   document.getElementById('pStock').value = product ? product.stock : '';
+  var isManual = false;
+  if (product && product.cost && product.price) {
+    var expectedAuto = product.cost + Math.round(product.cost * MARGEN_PCT);
+    isManual = product.price !== expectedAuto;
+  }
+  document.getElementById('pManualPrice').checked = isManual;
+  if (isManual && product) {
+    document.getElementById('pManualPriceInput').value = product.price;
+  } else {
+    document.getElementById('pManualPriceInput').value = '';
+  }
+  document.getElementById('pAutoPriceBox').style.display = isManual ? 'none' : 'flex';
+  document.getElementById('pManualPriceBox').style.display = isManual ? 'block' : 'none';
   document.getElementById('pKarat').value = product ? product.karat : '18K';
   document.getElementById('pWeight').value = product ? product.weight : '';
   document.getElementById('pGoldType').value = product ? product.goldType : 'Suizo';
   document.getElementById('pImage').value = product ? product.image : '';
   document.getElementById('pImageFile').value = '';
-  const preview = document.getElementById('pImagePreview');
-  const img = document.getElementById('pImagePreviewImg');
+  var preview = document.getElementById('pImagePreview');
+  var img = document.getElementById('pImagePreviewImg');
   if (product && product.image) {
     img.src = product.image;
     preview.style.display = 'block';
@@ -2151,6 +2291,7 @@ function openProductForm(product) {
   document.getElementById('pSizes').value = product ? (product.sizes || []).join(', ') : '';
   document.getElementById('pDescription').value = product ? product.description : '';
   document.getElementById('pStatus').value = product ? product.status : 'activo';
+  calcProductSalePrice();
   document.getElementById('productModal').classList.add('active');
 }
 
@@ -2158,17 +2299,21 @@ function closeProductForm() { document.getElementById('productModal').classList.
 
 function saveProduct() {
   var editId = document.getElementById('editProductId').value;
+  var cost = parseInt(document.getElementById('pCost').value) || 0;
+  var isManual = document.getElementById('pManualPrice').checked;
+  var salePrice = isManual ? (parseInt(document.getElementById('pManualPriceInput').value) || 0) : (cost + Math.round(cost * MARGEN_PCT));
   var product = {
     id: editId || 'PROD-' + String(Date.now()).slice(-6),
     name: document.getElementById('pName').value,
     category: document.getElementById('pCategory').value,
-    price: parseInt(document.getElementById('pPrice').value) || 0,
+    cost: cost,
+    price: salePrice,
     stock: parseInt(document.getElementById('pStock').value) || 0,
     karat: document.getElementById('pKarat').value,
     weight: document.getElementById('pWeight').value,
     goldType: document.getElementById('pGoldType').value,
     image: document.getElementById('pImage').value,
-    sizes: document.getElementById('pSizes').value.split(',').map(s => s.trim()).filter(Boolean),
+    sizes: document.getElementById('pSizes').value.split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     description: document.getElementById('pDescription').value,
     status: document.getElementById('pStatus').value,
   };
@@ -2243,8 +2388,16 @@ function syncCatalogPublic() {
 }
 
 // ==================== ORDERS TABLE ====================
-let orderSearchTerm = '';
-let orderStatusFilter = 'todos';
+var orderSearchTerm = '';
+var orderStatusFilter = 'todos';
+var currentOrderItems = [];
+
+function getOrderProductsText(o) {
+  if (o.items && o.items.length > 0) {
+    return o.items.map(function(it) { return it.qty + 'x ' + it.name; }).join(', ');
+  }
+  return o.products || '—';
+}
 
 function renderOrdersTable() {
   let items = [...adminOrders];
@@ -2259,52 +2412,181 @@ function renderOrdersTable() {
     return;
   }
 
-  document.getElementById('ordersTableBody').innerHTML = items.map(o => `
-    <tr>
-      <td style="color:var(--gold);">${o.id}</td>
-      <td>${o.date || '—'}</td>
-      <td style="color:var(--diamond);">${o.client}</td>
-      <td>${o.whatsapp || '—'}</td>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${o.products || '—'}</td>
-      <td style="color:var(--gold);font-weight:500;">$${(o.total||0).toLocaleString('es-CO')}</td>
-      <td><span class="badge badge-${o.status === 'pendiente' ? 'pending' : o.status === 'enviado' ? 'shipped' : o.status === 'entregado' ? 'active' : o.status === 'cancelado' ? 'inactive' : 'active'}">${o.status}</span></td>
-      <td>
-        <div class="table-actions">
-          <button class="btn btn-outline btn-sm" onclick="editOrder('${o.id}')">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">Eliminar</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  document.getElementById('ordersTableBody').innerHTML = items.map(function(o) {
+    var productsText = getOrderProductsText(o);
+    var saldo = (o.total || 0) - (o.abono || 0);
+    var pagoLabel = o.pago ? o.pago.toUpperCase() : '—';
+    var saldoBadge = saldo > 0 && o.status !== 'cancelado' ? '<span style="color:var(--red);font-size:0.65rem;display:block;">Saldo: $' + saldo.toLocaleString('es-CO') + '</span>' : '';
+    return '<tr>' +
+      '<td style="color:var(--gold);">' + o.id + '</td>' +
+      '<td>' + (o.date || '—') + '</td>' +
+      '<td style="color:var(--diamond);">' + o.client + '</td>' +
+      '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + productsText + '</td>' +
+      '<td style="color:var(--gold);font-weight:500;">$' + (o.total||0).toLocaleString('es-CO') + saldoBadge + '</td>' +
+      '<td style="font-size:0.7rem;color:var(--text-muted);">' + pagoLabel + '</td>' +
+      '<td><span class="badge badge-' + (o.status === 'pendiente' ? 'pending' : o.status === 'enviado' ? 'shipped' : o.status === 'entregado' ? 'active' : o.status === 'cancelado' ? 'inactive' : 'active') + '">' + o.status + '</span></td>' +
+      '<td><div class="table-actions">' +
+        '<button class="btn btn-outline btn-sm" onclick="editOrder(\'' + o.id + '\')">Editar</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteOrder(\'' + o.id + '\')">Eliminar</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
 }
 
 function filterAdminOrders(term) { orderSearchTerm = term; renderOrdersTable(); }
 function filterOrderStatus(status) { orderStatusFilter = status; renderOrdersTable(); }
+
+function getAllCatalogProducts() {
+  var all = [];
+  adminProducts.forEach(function(p) { if (p.status === 'activo') all.push(p); });
+  var cm = loadData('catalog_manillas', []);
+  cm.forEach(function(m) { if (!all.find(function(x) { return x.id === m.id; })) all.push(m); });
+  return all;
+}
+
+function populateOrderProductSelect() {
+  var sel = document.getElementById('oProductSelect');
+  var products = getAllCatalogProducts();
+  sel.innerHTML = '<option value="">— Seleccionar producto —</option>';
+  products.forEach(function(p) {
+    var stockLabel = typeof p.stock === 'number' ? ' (Stock: ' + p.stock + ')' : '';
+    sel.innerHTML += '<option value="' + p.id + '">$' + (p.price||0).toLocaleString('es-CO') + ' — ' + p.name + stockLabel + '</option>';
+  });
+}
+
+function addOrderProduct() {
+  var sel = document.getElementById('oProductSelect');
+  var qtyInput = document.getElementById('oProductQty');
+  var productId = sel.value;
+  var qty = parseInt(qtyInput.value) || 1;
+  if (!productId) { alert('Seleccioná un producto'); return; }
+
+  var products = getAllCatalogProducts();
+  var product = products.find(function(p) { return p.id === productId; });
+  if (!product) return;
+
+  var existing = currentOrderItems.find(function(it) { return it.productId === productId; });
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    currentOrderItems.push({
+      productId: productId,
+      name: product.name,
+      price: product.price || 0,
+      cost: product.cost || 0,
+      qty: qty
+    });
+  }
+
+  sel.value = '';
+  qtyInput.value = '1';
+  renderOrderItems();
+  recalcOrderTotals();
+}
+
+function removeOrderProduct(idx) {
+  currentOrderItems.splice(idx, 1);
+  renderOrderItems();
+  recalcOrderTotals();
+}
+
+function renderOrderItems() {
+  var container = document.getElementById('orderProductsList');
+  if (currentOrderItems.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-muted);font-size:0.75rem;padding:0.5rem;">Ningún producto agregado</div>';
+    return;
+  }
+  container.innerHTML = currentOrderItems.map(function(it, idx) {
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.7rem;background:rgba(197,160,85,0.06);border:1px solid rgba(197,160,85,0.1);">' +
+      '<div style="flex:1;">' +
+        '<span style="color:var(--diamond);font-size:0.8rem;">' + it.qty + 'x</span> ' +
+        '<span style="color:var(--text-light);font-size:0.8rem;">' + it.name + '</span>' +
+      '</div>' +
+      '<span style="color:var(--gold);font-size:0.8rem;margin-right:0.8rem;">$' + (it.price * it.qty).toLocaleString('es-CO') + '</span>' +
+      '<button onclick="removeOrderProduct(' + idx + ')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:1rem;">×</button>' +
+    '</div>';
+  }).join('');
+}
+
+function recalcOrderTotals() {
+  var totalCost = 0;
+  var totalPrice = 0;
+  currentOrderItems.forEach(function(it) {
+    totalCost += (it.cost || 0) * it.qty;
+    totalPrice += (it.price || 0) * it.qty;
+  });
+
+  var manualTotal = parseInt(document.getElementById('oTotal').value) || 0;
+  if (manualTotal > 0 && currentOrderItems.length > 0) {
+    totalPrice = manualTotal;
+  } else if (currentOrderItems.length > 0) {
+    document.getElementById('oTotal').value = totalPrice;
+  }
+
+  var profit = totalPrice - totalCost;
+  var abono = parseInt(document.getElementById('oAbono').value) || 0;
+  var saldo = totalPrice - abono;
+
+  document.getElementById('oSumCost').textContent = '$' + totalCost.toLocaleString('es-CO');
+  document.getElementById('oSumTotal').textContent = '$' + totalPrice.toLocaleString('es-CO');
+  document.getElementById('oSumProfit').textContent = '$' + profit.toLocaleString('es-CO');
+  document.getElementById('oSumProfit').style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+
+  var saldoRow = document.getElementById('oSaldoRow');
+  if (abono > 0 && saldo > 0) {
+    saldoRow.style.display = 'block';
+    document.getElementById('oSaldo').textContent = '$' + saldo.toLocaleString('es-CO');
+  } else {
+    saldoRow.style.display = 'none';
+  }
+}
 
 function openOrderForm(order) {
   document.getElementById('orderFormTitle').textContent = order ? 'Editar pedido' : 'Nuevo pedido';
   document.getElementById('editOrderId').value = order ? order.id : '';
   document.getElementById('oClient').value = order ? order.client : '';
   document.getElementById('oWhatsApp').value = order ? order.whatsapp : '';
-  document.getElementById('oProducts').value = order ? order.products : '';
   document.getElementById('oTotal').value = order ? order.total : '';
   document.getElementById('oStatus').value = order ? order.status : 'pendiente';
+  document.getElementById('oPago').value = order && order.pago ? order.pago : 'nequi';
+  document.getElementById('oAbono').value = order && order.abono ? order.abono : 0;
   document.getElementById('oMedio').value = order ? order.medio : 'whatsapp';
   document.getElementById('oDate').value = order ? order.date : new Date().toISOString().split('T')[0];
   document.getElementById('oNotes').value = order ? order.notes : '';
+
+  currentOrderItems = order && order.items ? JSON.parse(JSON.stringify(order.items)) : [];
+  populateOrderProductSelect();
+  renderOrderItems();
+  recalcOrderTotals();
   document.getElementById('orderModal').classList.add('active');
 }
 
-function closeOrderForm() { document.getElementById('orderModal').classList.remove('active'); }
+function closeOrderForm() {
+  currentOrderItems = [];
+  document.getElementById('orderModal').classList.remove('active');
+}
 
 function saveOrder() {
-  const editId = document.getElementById('editOrderId').value;
-  const order = {
+  var editId = document.getElementById('editOrderId').value;
+  var totalPrice = parseInt(document.getElementById('oTotal').value) || 0;
+  var abono = parseInt(document.getElementById('oAbono').value) || 0;
+  var totalCost = 0;
+  currentOrderItems.forEach(function(it) { totalCost += (it.cost || 0) * it.qty; });
+
+  var productsText = currentOrderItems.map(function(it) { return it.qty + 'x ' + it.name; }).join(', ');
+
+  var order = {
     id: editId || 'PED-' + String(Date.now()).slice(-6),
     client: document.getElementById('oClient').value,
     whatsapp: document.getElementById('oWhatsApp').value,
-    products: document.getElementById('oProducts').value,
-    total: parseInt(document.getElementById('oTotal').value) || 0,
+    products: productsText,
+    items: JSON.parse(JSON.stringify(currentOrderItems)),
+    total: totalPrice,
+    cost: totalCost,
+    profit: totalPrice - totalCost,
+    pago: document.getElementById('oPago').value,
+    abono: abono,
+    saldo: totalPrice - abono,
     status: document.getElementById('oStatus').value,
     medio: document.getElementById('oMedio').value,
     date: document.getElementById('oDate').value,
@@ -2313,12 +2595,25 @@ function saveOrder() {
 
   if (!order.client) { alert('El nombre del cliente es obligatorio'); return; }
 
+  var oldOrder = editId ? adminOrders.find(function(o) { return o.id === editId; }) : null;
+
   if (editId) {
-    const idx = adminOrders.findIndex(o => o.id === editId);
-    if (idx >= 0) adminOrders[idx] = order;
+    var idx = adminOrders.findIndex(function(o) { return o.id === editId; });
+    if (idx >= 0) {
+      if (oldOrder && oldOrder.items && oldOrder.status !== 'cancelado') {
+        oldOrder.items.forEach(function(it) { restoreStock(it.productId, it.qty); });
+      }
+      adminOrders[idx] = order;
+    }
   } else {
     adminOrders.push(order);
   }
+
+  if (order.status !== 'cancelado' && order.items.length > 0) {
+    order.items.forEach(function(it) { deductStock(it.productId, it.qty); });
+  }
+
+  updateClientFromOrder(order);
 
   saveData('orders', adminOrders);
   sheetsPost({ action: 'saveOrder', data: order });
@@ -2327,14 +2622,74 @@ function saveOrder() {
   updateDashboard();
 }
 
+function deductStock(productId, qty) {
+  var p = adminProducts.find(function(x) { return x.id === productId; });
+  if (p) {
+    p.stock = Math.max(0, (p.stock || 0) - qty);
+    saveData('products', adminProducts);
+    syncCatalogPublic();
+    return;
+  }
+  var cm = loadData('catalog_manillas', []);
+  var m = cm.find(function(x) { return x.id === productId; });
+  if (m) {
+    m.stock = Math.max(0, (m.stock || 0) - qty);
+    saveData('catalog_manillas', cm);
+    syncCatalogPublic();
+  }
+}
+
+function restoreStock(productId, qty) {
+  var p = adminProducts.find(function(x) { return x.id === productId; });
+  if (p) {
+    p.stock = (p.stock || 0) + qty;
+    saveData('products', adminProducts);
+    syncCatalogPublic();
+    return;
+  }
+  var cm = loadData('catalog_manillas', []);
+  var m = cm.find(function(x) { return x.id === productId; });
+  if (m) {
+    m.stock = (m.stock || 0) + qty;
+    saveData('catalog_manillas', cm);
+    syncCatalogPublic();
+  }
+}
+
+function updateClientFromOrder(order) {
+  var client = adminClients.find(function(c) {
+    return c.name.toLowerCase() === order.client.toLowerCase();
+  });
+  if (client) {
+    client.totalPurchased = (client.totalPurchased || 0) + order.total;
+    client.lastPurchase = order.date;
+    if (order.whatsapp && !client.whatsapp) client.whatsapp = order.whatsapp;
+  } else {
+    adminClients.push({
+      id: 'CLI-' + String(Date.now()).slice(-6),
+      name: order.client,
+      whatsapp: order.whatsapp || '',
+      email: '',
+      totalPurchased: order.total,
+      lastPurchase: order.date,
+      notes: ''
+    });
+  }
+  saveData('clients', adminClients);
+}
+
 function editOrder(id) {
-  const o = adminOrders.find(x => x.id === id);
+  var o = adminOrders.find(function(x) { return x.id === id; });
   if (o) openOrderForm(o);
 }
 
 function deleteOrder(id) {
   if (!confirm('¿Eliminar este pedido?')) return;
-  adminOrders = adminOrders.filter(o => o.id !== id);
+  var order = adminOrders.find(function(o) { return o.id === id; });
+  if (order && order.items && order.status !== 'cancelado') {
+    order.items.forEach(function(it) { restoreStock(it.productId, it.qty); });
+  }
+  adminOrders = adminOrders.filter(function(o) { return o.id !== id; });
   saveData('orders', adminOrders);
   sheetsPost({ action: 'deleteOrder', id: id });
   renderOrdersTable();
@@ -2342,7 +2697,7 @@ function deleteOrder(id) {
 }
 
 // ==================== CLIENTS TABLE ====================
-let clientSearchTerm = '';
+var clientSearchTerm = '';
 
 function renderClientsTable() {
   let items = [...adminClients];
@@ -2578,15 +2933,40 @@ var FACTURA_COSTS = {
   'SEF-014': 0, 'SEF-015': 70000, 'SEF-016': 65000,
   'SEF-017': 50000, 'SEF-018': 40000, 'SEF-019': 35000
 };
-let inventoryData = loadData('inventory', []);
-let inventoryMovements = loadData('inv_movements', []);
-let invSearchTerm = '';
+var inventoryData = loadData('inventory', [
+  { id: 'INV-001', name: 'Balín Diamantado #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 105000, notes: '' },
+  { id: 'INV-002', name: 'Balín Diamantado #4 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 130000, notes: '' },
+  { id: 'INV-003', name: 'Balín Diamantado #5 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 140000, notes: '' },
+  { id: 'INV-004', name: 'Balín Diamantado #6 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 170000, notes: '' },
+  { id: 'INV-005', name: 'Balín Diamantado #8 x4', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 4, minStock: 3, cost: 78000, notes: '' },
+  { id: 'INV-006', name: 'Balín Liso #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 50000, notes: '' },
+  { id: 'INV-007', name: 'Cadena Gucci 60cm', image: 'assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg', stock: 1, minStock: 2, cost: 255000, notes: '' },
+  { id: 'INV-008', name: 'Topos Esmeralda', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 65000, notes: '' },
+  { id: 'INV-009', name: 'Barriles x10', image: 'assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg', stock: 10, minStock: 5, cost: 160000, notes: '' },
+  { id: 'INV-010', name: 'Dije Inicial M', image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
+  { id: 'INV-011', name: 'Dije Inicial S', image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
+  { id: 'INV-012', name: 'Dije Infinito', image: 'assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg', stock: 1, minStock: 2, cost: 70000, notes: '' },
+  { id: 'INV-013', name: 'Dije Virgen', image: 'assets/img/productos/Gemini_Generated_Image_grgkz2grgkz2grgk.jpg', stock: 1, minStock: 2, cost: 65000, notes: '' },
+  { id: 'INV-014', name: 'Topos Oro Grande', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 50000, notes: '' },
+  { id: 'INV-015', name: 'Topos Oro Mediano', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 40000, notes: '' },
+  { id: 'INV-016', name: 'Topos Oro Pequeño', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 35000, notes: '' },
+  { id: 'INV-017', name: 'Dije Trébol', image: 'assets/img/productos/Gemini_Generated_Image_jl0l7njl0l7njl0l.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
+]);
+var inventoryMovements = loadData('inv_movements', []);
+var invSearchTerm = '';
 
 function renderInventoryTable() {
-  let items = inventoryData.length > 0 ? [...inventoryData] : adminProducts.map(function(p) {
-    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: FACTURA_COSTS[p.id] ? 'Factura Imperiale Sep 2026' : '' };
-  });
+  let items = [...inventoryData];
   if (invSearchTerm) items = items.filter(function(i) { return i.name.toLowerCase().includes(invSearchTerm.toLowerCase()); });
+
+  if (items.length === 0) {
+    document.getElementById('inventoryTableBody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:3rem;">No hay insumos registrados. Click en "+ Agregar insumo" para comenzar.</td></tr>';
+    document.getElementById('invTotalValue').textContent = '0 uds';
+    document.getElementById('invTotalCost').textContent = '$0';
+    document.getElementById('invTotalProfit').textContent = '0 tipos';
+    document.getElementById('invLowStock').textContent = '0';
+    return;
+  }
 
   document.getElementById('inventoryTableBody').innerHTML = items.map(function(item) {
     var unitCost = item.cost > 0 ? item.cost : 0;
@@ -2610,13 +2990,12 @@ function renderInventoryTable() {
     '</tr>';
   }).join('');
 
-  // Update summary
-  var totalValue = items.reduce(function(s, i) { return s + (i.price * i.stock); }, 0);
   var totalCost = items.reduce(function(s, i) { return s + (i.cost * i.stock); }, 0);
-  var lowStock = items.filter(function(i) { return i.stock <= i.minStock; }).length;
-  document.getElementById('invTotalValue').textContent = '$' + totalValue.toLocaleString('es-CO');
+  var totalItems = items.reduce(function(s, i) { return s + i.stock; }, 0);
+  var lowStock = items.filter(function(i) { return i.stock <= (i.minStock || 5); }).length;
+  document.getElementById('invTotalValue').textContent = totalItems + ' uds';
   document.getElementById('invTotalCost').textContent = '$' + totalCost.toLocaleString('es-CO');
-  document.getElementById('invTotalProfit').textContent = '$' + (totalValue - totalCost).toLocaleString('es-CO');
+  document.getElementById('invTotalProfit').textContent = items.length + ' tipos';
   document.getElementById('invLowStock').textContent = lowStock;
 }
 
@@ -2649,7 +3028,7 @@ function calcInvCosts(source) {
 }
 
 function openInventoryForm(item) {
-  document.getElementById('inventoryFormTitle').textContent = item ? 'Editar pieza' : 'Agregar pieza al inventario';
+  document.getElementById('inventoryFormTitle').textContent = item ? 'Editar insumo' : 'Agregar insumo al inventario';
   document.getElementById('editInvId').value = item ? item.id : '';
   document.getElementById('invName').value = item ? item.name : '';
   document.getElementById('invStock').value = item ? item.stock : '';
@@ -2684,11 +3063,6 @@ function saveInventoryItem() {
     notes: document.getElementById('invNotes').value
   };
 
-  if (inventoryData.length === 0) {
-    inventoryData = adminProducts.map(function(p) {
-      return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: FACTURA_COSTS[p.id] ? 'Factura Imperiale Sep 2026' : '' };
-    });
-  }
   var idx = inventoryData.findIndex(function(i) { return i.id === item.id; });
   if (idx >= 0) inventoryData[idx] = item; else inventoryData.push(item);
 
@@ -2698,26 +3072,15 @@ function saveInventoryItem() {
 }
 
 function editInventoryItem(id) {
-  var items = inventoryData.length > 0 ? inventoryData : adminProducts.map(function(p) {
-    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: FACTURA_COSTS[p.id] ? 'Factura Imperiale Sep 2026' : '' };
-  });
-  var item = items.find(function(i) { return i.id === id; });
+  var item = inventoryData.find(function(i) { return i.id === id; });
   if (item) openInventoryForm(item);
 }
 
 function deleteInventoryItem(id) {
-  var items = inventoryData.length > 0 ? inventoryData : adminProducts.map(function(p) {
-    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: '' };
-  });
-  var item = items.find(function(i) { return i.id === id; });
+  var item = inventoryData.find(function(i) { return i.id === id; });
   var nombre = item ? item.name : id;
   if (!confirm('¿Estás seguro de eliminar "' + nombre + '" del inventario?\n\nEsta acción no se puede deshacer.')) return;
 
-  if (inventoryData.length === 0) {
-    inventoryData = adminProducts.map(function(p) {
-      return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: '' };
-    });
-  }
   inventoryData = inventoryData.filter(function(i) { return i.id !== id; });
   saveData('inventory', inventoryData);
   renderInventoryTable();
@@ -2740,37 +3103,29 @@ function saveMovement() {
   var note = document.getElementById('mvNote').value;
   if (qty <= 0) { alert('La cantidad debe ser mayor a 0'); return; }
 
-  var product = adminProducts.find(function(p) { return p.id === productId; });
-  if (!product) return;
+  var invItem = inventoryData.find(function(i) { return i.id === productId; });
+  if (!invItem) return;
 
-  if (type === 'entrada') product.stock += qty;
-  else if (type === 'salida') product.stock = Math.max(0, product.stock - qty);
-  else product.stock = qty;
+  if (type === 'entrada') invItem.stock += qty;
+  else if (type === 'salida') invItem.stock = Math.max(0, invItem.stock - qty);
+  else invItem.stock = qty;
 
-  // Update inventory data too
-  if (inventoryData.length > 0) {
-    var invItem = inventoryData.find(function(i) { return i.id === productId; });
-    if (invItem) invItem.stock = product.stock;
-    saveData('inventory', inventoryData);
-  }
+  saveData('inventory', inventoryData);
 
   inventoryMovements.unshift({
     date: new Date().toISOString().split('T')[0],
     productId: productId,
-    productName: product.name,
+    productName: invItem.name,
     type: type,
     qty: qty,
     note: note
   });
   if (inventoryMovements.length > 50) inventoryMovements = inventoryMovements.slice(0, 50);
 
-  saveData('products', adminProducts);
   saveData('inv_movements', inventoryMovements);
   closeMovementForm();
   renderInventoryTable();
   renderMovementsTable();
-  renderProductsTable();
-  updateDashboard();
 }
 
 function renderMovementsTable() {
@@ -2786,15 +3141,12 @@ function renderMovementsTable() {
 
 // ==================== MANILLAS ====================
 var MANO_OBRA = 10000;
-var MARGEN_PCT = 0.40;
-let manillasData = loadData('manillas', []);
-let currentManillaPieces = [];
+var MARGEN_PCT = 0.50;
+var manillasData = loadData('manillas', []);
+var currentManillaPieces = [];
 
 function getInventoryItems() {
-  if (inventoryData.length > 0) return inventoryData;
-  return adminProducts.map(function(p) {
-    return { id: p.id, name: p.name, image: p.image, stock: p.stock, minStock: 5, cost: FACTURA_COSTS[p.id] || 0, price: p.price, notes: '' };
-  });
+  return inventoryData;
 }
 
 function previewManImage(input) {
@@ -2826,10 +3178,14 @@ function newManilla() {
 
 function populateManPieceSelect() {
   var items = getInventoryItems();
-  document.getElementById('manPieceSelect').innerHTML = '<option value="">Seleccionar pieza...</option>' +
+  if (items.length === 0) {
+    document.getElementById('manPieceSelect').innerHTML = '<option value="">Primero agrega insumos en Inventario Insumos</option>';
+    document.getElementById('manPieceQty').value = 1;
+    return;
+  }
+  document.getElementById('manPieceSelect').innerHTML = '<option value="">Seleccionar insumo...</option>' +
     items.filter(function(i) { return i.cost > 0; }).map(function(i) {
-      var unitCost = i.cost;
-      return '<option value="' + i.id + '">' + i.name + ' — $' + unitCost.toLocaleString('es-CO') + '/set</option>';
+      return '<option value="' + i.id + '">' + i.name + ' — $' + i.cost.toLocaleString('es-CO') + '/ud</option>';
     }).join('');
   document.getElementById('manPieceQty').value = 1;
 }
@@ -2876,8 +3232,8 @@ function renderManillaPieces() {
 
   var costPieces = currentManillaPieces.reduce(function(s, p) { return s + (p.cost * p.qty); }, 0);
   var costTotal = costPieces + MANO_OBRA;
-  var margin = Math.round(costTotal * MARGEN_PCT);
-  var salePrice = costTotal + margin;
+  var margin = Math.round(costPieces * MARGEN_PCT);
+  var salePrice = costPieces + margin + MANO_OBRA;
 
   document.getElementById('manCostPieces').textContent = '$' + costPieces.toLocaleString('es-CO');
   document.getElementById('manCostTotal').textContent = '$' + costTotal.toLocaleString('es-CO');
@@ -2885,8 +3241,33 @@ function renderManillaPieces() {
   document.getElementById('manSalePrice').textContent = '$' + salePrice.toLocaleString('es-CO');
 }
 
+function toggleManManualPrice() {
+  var isManual = document.getElementById('manManualPrice').checked;
+  document.getElementById('manAutoMarginRow').style.display = isManual ? 'none' : 'flex';
+  document.getElementById('manAutoSaleRow').style.display = isManual ? 'none' : 'flex';
+  document.getElementById('manManualPriceBox').style.display = isManual ? 'block' : 'none';
+  if (isManual) {
+    var currentAuto = document.getElementById('manSalePrice').textContent.replace(/[^0-9]/g, '');
+    document.getElementById('manManualPriceInput').value = currentAuto || '';
+    calcManManualProfit();
+  }
+}
+
+function calcManManualProfit() {
+  var costPieces = currentManillaPieces.reduce(function(s, p) { return s + (p.cost * p.qty); }, 0);
+  var costTotal = costPieces + MANO_OBRA;
+  var manualPrice = parseInt(document.getElementById('manManualPriceInput').value) || 0;
+  var profit = manualPrice - costTotal;
+  document.getElementById('manManualProfitDisplay').textContent = '$' + profit.toLocaleString('es-CO');
+  document.getElementById('manManualProfitDisplay').style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
 function cancelManilla() {
   currentManillaPieces = [];
+  document.getElementById('manManualPrice').checked = false;
+  document.getElementById('manAutoMarginRow').style.display = 'flex';
+  document.getElementById('manAutoSaleRow').style.display = 'flex';
+  document.getElementById('manManualPriceBox').style.display = 'none';
   document.getElementById('manillaBuilder').style.display = 'none';
 }
 
@@ -2897,7 +3278,8 @@ function saveManilla() {
 
   var costPieces = currentManillaPieces.reduce(function(s, p) { return s + (p.cost * p.qty); }, 0);
   var costTotal = costPieces + MANO_OBRA;
-  var salePrice = costTotal + Math.round(costTotal * MARGEN_PCT);
+  var isManual = document.getElementById('manManualPrice').checked;
+  var salePrice = isManual ? (parseInt(document.getElementById('manManualPriceInput').value) || 0) : (costPieces + Math.round(costPieces * MARGEN_PCT) + MANO_OBRA);
   var image = document.getElementById('manImage').value || '';
   var destino = document.querySelector('input[name="manDestino"]:checked').value;
 
