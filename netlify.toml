@@ -1,11 +1,6 @@
 [build]
   publish = "."
 
-[[redirects]]
-  from = "https://sefira-joyeria.netlify.app/*"
-  to = "https://sefira.co/:splat"
-  status = 301
-  force = true
 
 [[headers]]
   for = "/*"
