@@ -1400,9 +1400,6 @@ header { z-index: 1000; }
     <button class="filter-btn" onclick="filterProducts('cadenas')">Cadenas</button>
     <button class="filter-btn" onclick="filterProducts('pulseras')">Pulseras</button>
     <button class="filter-btn" onclick="filterProducts('aretes')">Aretes</button>
-    <button class="filter-btn" onclick="filterProducts('dijes')">Dijes</button>
-    <button class="filter-btn" onclick="filterProducts('sets')">Sets</button>
-    <button class="filter-btn" onclick="filterProducts('accesorios')">Accesorios</button>
   </div>
 
   <div class="catalog-sort">
@@ -1537,10 +1534,10 @@ header { z-index: 1000; }
     </div>
     <div class="footer-col">
       <h4>Productos</h4>
+      <a href="#catalogo" onclick="filterProducts('anillos')">Anillos</a>
       <a href="#catalogo" onclick="filterProducts('cadenas')">Cadenas</a>
-      <a href="#catalogo" onclick="filterProducts('dijes')">Dijes</a>
+      <a href="#catalogo" onclick="filterProducts('pulseras')">Pulseras</a>
       <a href="#catalogo" onclick="filterProducts('aretes')">Aretes</a>
-      <a href="#catalogo" onclick="filterProducts('accesorios')">Accesorios</a>
     </div>
     <div class="footer-col">
       <h4>Contacto</h4>
@@ -1720,25 +1717,16 @@ const SHEETS_API_URL = '';
 
 // ==================== CATÁLOGO SÉFIRA ====================
 let products = [
-  { id: 'SEF-001', name: 'Róndeles Verdes x3', category: 'accesorios', price: 135000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 3 róndeles verdes en oro suizo 18K. Perfectos para personalizar cadenas y pulseras con un toque de color y elegancia.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_hwnit4hwnit4hwni.jpg' },
-  { id: 'SEF-002', name: 'Balines Diamantados #3 x10', category: 'accesorios', price: 105000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #3 en oro suizo 18K. Acabado facetado que refleja la luz con cada movimiento.', stock: 15, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg' },
-  { id: 'SEF-003', name: 'Balines Diamantados #4 x10', category: 'accesorios', price: 130000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #4 en oro suizo 18K. Mayor presencia y brillo con el corte diamantado.', stock: 12, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg' },
-  { id: 'SEF-004', name: 'Balines Diamantados #5 x10', category: 'accesorios', price: 140000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #5 en oro suizo 18K. Tamaño ideal para cadenas y pulseras con carácter.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg' },
-  { id: 'SEF-005', name: 'Balines Diamantados #6 x10', category: 'accesorios', price: 170000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines diamantados talla #6 en oro suizo 18K. Presencia y brillo en un tamaño generoso.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg' },
-  { id: 'SEF-006', name: 'Balines Diamantados #8 x4', category: 'accesorios', price: 90000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 4 balines diamantados talla #8 en oro suizo 18K. Los más grandes de nuestra colección, impacto visual garantizado.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg' },
-  { id: 'SEF-007', name: 'Balines Lisos #3 x10', category: 'accesorios', price: 50000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 balines lisos talla #3 en oro suizo 18K. Acabado pulido clásico, elegancia sutil y atemporal.', stock: 20, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg' },
-  { id: 'SEF-008', name: 'Cadena Gucci 60cm', category: 'cadenas', price: 255000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K. Eslabones entrelazados con el diseño icónico. Resistente y versátil para uso diario.', stock: 5, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg' },
-  { id: 'SEF-009', name: 'Topos Esmeralda Broche Rosca', category: 'aretes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos con piedra esmeralda y broche de rosca en oro suizo 18K. Seguros, elegantes y con el verde esmeralda que define a SÉFIRA.', stock: 15, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg' },
-  { id: 'SEF-010', name: 'Barriles x10', category: 'accesorios', price: 160000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Set de 10 barriles en oro suizo 18K. Forma cilíndrica elegante para personalizar tus cadenas y pulseras.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg' },
-  { id: 'SEF-011', name: 'Dije Inicial M', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial "M" en oro suizo 18K. Personaliza tu cadena con estilo. Acabado pulido brillante.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg' },
-  { id: 'SEF-012', name: 'Dije Inicial S', category: 'dijes', price: 45000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con la inicial "S" en oro suizo 18K. Lleva tu letra con orgullo. Acabado pulido brillante.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg' },
-  { id: 'SEF-013', name: 'Dije Trébol', category: 'dijes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije en forma de trébol de la suerte en oro suizo 18K. Símbolo de buena fortuna con acabado delicado.', stock: 12, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_jl0l7njl0l7njl0l.jpg' },
-  { id: 'SEF-014', name: 'Dije Caballo', category: 'dijes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije con figura de caballo en oro suizo 18K. Detallado y elegante, símbolo de fuerza y libertad.', stock: 6, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_z6uf1lz6uf1lz6uf.jpg' },
-  { id: 'SEF-015', name: 'Dije Infinito Grande', category: 'dijes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije infinito en tamaño grande, oro suizo 18K. Símbolo de amor eterno. Pieza con presencia que no pasa desapercibida.', stock: 8, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg' },
-  { id: 'SEF-016', name: 'Dije Virgen Tallada', category: 'dijes', price: 65000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Dije de la Virgen con tallado detallado en oro suizo 18K. Pieza de devoción y elegancia con acabado artesanal.', stock: 10, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_grgkz2grgkz2grgk.jpg' },
-  { id: 'SEF-017', name: 'Topos Oro Grande', category: 'aretes', price: 60000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos grandes en oro suizo 18K. Presencia y elegancia en un clásico atemporal. Broche seguro de rosca.', stock: 1, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg' },
-  { id: 'SEF-018', name: 'Topos Oro Mediano', category: 'aretes', price: 48000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos medianos en oro suizo 18K. El tamaño perfecto para uso diario con estilo. Broche seguro de rosca.', stock: 1, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg' },
-  { id: 'SEF-019', name: 'Topos Oro Pequeño', category: 'aretes', price: 42000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos pequeños en oro suizo 18K. Delicados y sutiles, ideales para un look minimalista. Broche seguro de rosca.', stock: 1, sizes: [], image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg' },
+  { id: 'PROD-937628', name: 'Anillo tipo Cartier', category: 'anillos', price: 300000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Anillo tipo Cartier en oro suizo 18K. Diseño clásico y elegante para toda ocasión.', stock: 1, sizes: [], image: 'assets/img/productos/PROD-937628.jpg' },
+  { id: 'PROD-036460', name: 'Topos Grandes', category: 'aretes', price: 90000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos grandes en oro suizo 18K. Presencia y elegancia en un clásico atemporal.', stock: 1, sizes: [], image: 'assets/img/productos/PROD-036460.jpg' },
+  { id: 'PROD-972149', name: 'Cadena Tipo GUCCI 60 CM', category: 'cadenas', price: 382500, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Cadena estilo Gucci de 60cm en oro suizo 18K. Eslabones entrelazados con el diseño icónico.', stock: 1, sizes: [], image: 'assets/img/productos/PROD-972149.jpg' },
+  { id: 'PROD-089828', name: 'Topos Medianos', category: 'aretes', price: 80000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos medianos en oro suizo 18K. El tamaño perfecto para uso diario con estilo.', stock: 1, sizes: [], image: 'assets/img/productos/PROD-089828.jpg' },
+  { id: 'PROD-862749', name: 'Topos Pequeños', category: 'aretes', price: 70000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Topos pequeños en oro suizo 18K. Delicados y sutiles, ideales para un look minimalista.', stock: 1, sizes: [], image: 'assets/img/productos/PROD-862749.jpg' },
+  { id: 'MAN-1793239693039', name: 'Manilla Virgen', category: 'pulseras', price: 292000, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Manilla artesanal con 6 Balín Diamantado #6, 1 Dije Virgen, 2 Balín Diamantado #3. Hecha a mano en oro suizo 18K.', stock: 1, sizes: [], image: 'assets/img/productos/MAN-1793239693039.jpg' },
+  { id: 'MAN-1793239828579', name: 'Manilla Trebol', category: 'pulseras', price: 341500, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Manilla artesanal con 2 Balín Diamantado #6, 2 RONDELES, 4 Balín Diamantado #4, 1 Dije Trébol. Hecha a mano en oro suizo 18K.', stock: 1, sizes: [], image: 'assets/img/productos/MAN-1793239828579.jpg' },
+  { id: 'MAN-1793240018070', name: 'Manilla con Inicial', category: 'pulseras', price: 155500, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Manilla artesanal con 2 Balín Liso #3, 4 Balín Diamantado #3, 1 Dije Inicial M. Hecha a mano en oro suizo 18K.', stock: 1, sizes: [], image: 'assets/img/productos/MAN-1793240018070.jpg' },
+  { id: 'MAN-1793240154352', name: 'Manilla Hilo Rojo', category: 'pulseras', price: 164500, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Manilla artesanal con 3 Balín Diamantado #6, 4 Balín Diamantado #4. Hecha a mano en oro suizo 18K.', stock: 1, sizes: [], image: 'assets/img/productos/MAN-1793240154352.jpg' },
+  { id: 'MAN-1793240262787', name: 'Manilla Virgen Pequeña', category: 'pulseras', price: 233500, karat: '18K', weight: '—', goldType: 'Suizo', description: 'Manilla artesanal con 1 Dije Virgen, 6 Balín Diamantado #5. Hecha a mano en oro suizo 18K.', stock: 1, sizes: [], image: 'assets/img/productos/MAN-1793240262787.jpg' },
 ];
 
 let cart = [];
@@ -2104,8 +2092,9 @@ addToCart = function(id) {
 // ==================== INIT ====================
 try {
   var catalogPublic = JSON.parse(localStorage.getItem('sefira_catalog_public') || '[]');
-  if (catalogPublic.length > 0) {
-    products = catalogPublic;
+  var catalogManillas = JSON.parse(localStorage.getItem('sefira_catalog_manillas') || '[]');
+  if (catalogPublic.length > 0 || catalogManillas.length > 0) {
+    products = catalogPublic.concat(catalogManillas);
   }
 } catch(e) {}
 // ==================== CARGA DESDE GOOGLE SHEETS ====================
