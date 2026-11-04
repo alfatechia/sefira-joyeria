@@ -511,11 +511,6 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.product-card:hover .product-image img {
-  transform: scale(1.08);
 }
 
 .product-placeholder {
@@ -615,6 +610,44 @@ section {
   color: var(--text-muted);
   margin-top: 0.4rem;
   letter-spacing: 1px;
+}
+
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  z-index: 2;
+}
+.badge-nuevo {
+  background: var(--gold);
+  color: var(--bg-dark);
+}
+.badge-artesanal {
+  background: var(--emerald);
+  color: white;
+}
+
+.product-card.animate-in {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: cardFadeIn 0.5s ease forwards;
+}
+@keyframes cardFadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.product-image img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.product-card:hover .product-image img {
+  transform: scale(1.12);
 }
 
 /* ==================== PRODUCT DETAIL MODAL ==================== */
@@ -1808,24 +1841,28 @@ function renderProducts(items) {
     grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:3rem;font-style:italic;">No hay productos en esta categoría aún.</p>';
     return;
   }
-  grid.innerHTML = items.map(p => `
-    <div class="product-card" onclick="openProduct('${p.id}')">
-      <div class="product-image">
-        ${p.image ? `<img src="${p.image}" alt="${p.name}">` : `<span class="product-placeholder">SÉFIRA</span>`}
-        <div class="product-actions-overlay" onclick="event.stopPropagation()">
-          <button class="btn-add-cart" onclick="addToCart('${p.id}')">Agregar</button>
-          <a class="btn-whatsapp-quick" href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola SÉFIRA, me interesa: ' + p.name + ' ($' + p.price.toLocaleString('es-CO') + ')')}" target="_blank" rel="noopener">WhatsApp</a>
-        </div>
-      </div>
-      <div class="product-info">
-        <div class="product-category">${p.category}</div>
-        <h3 class="product-name">${p.name}</h3>
-        <div class="product-specs">${p.karat} · ${p.weight} · Oro ${p.goldType}</div>
-        <div class="product-price">$${p.price.toLocaleString('es-CO')}</div>
-        ${p.sizes.length ? `<span class="product-size-tag">Tallas: ${p.sizes.join(', ')}</span>` : ''}
-      </div>
-    </div>
-  `).join('');
+  grid.innerHTML = items.map(function(p, i) {
+    var badge = '';
+    if (p.id.startsWith('MAN-')) badge = '<span class="product-badge badge-artesanal">Artesanal</span>';
+    else if (p.price >= 300000) badge = '<span class="product-badge badge-nuevo">Premium</span>';
+    return '<div class="product-card animate-in" style="animation-delay:' + (i * 0.08) + 's" onclick="openProduct(\'' + p.id + '\')">' +
+      '<div class="product-image">' +
+        badge +
+        (p.image ? '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy">' : '<span class="product-placeholder">SÉFIRA</span>') +
+        '<div class="product-actions-overlay" onclick="event.stopPropagation()">' +
+          '<button class="btn-add-cart" onclick="addToCart(\'' + p.id + '\')">Agregar</button>' +
+          '<a class="btn-whatsapp-quick" href="https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent('Hola SÉFIRA, me interesa: ' + p.name + ' ($' + p.price.toLocaleString('es-CO') + ')') + '" target="_blank" rel="noopener">WhatsApp</a>' +
+        '</div>' +
+      '</div>' +
+      '<div class="product-info">' +
+        '<div class="product-category">' + p.category + '</div>' +
+        '<h3 class="product-name">' + p.name + '</h3>' +
+        '<div class="product-specs">' + p.karat + ' · ' + p.weight + ' · Oro ' + p.goldType + '</div>' +
+        '<div class="product-price">$' + p.price.toLocaleString('es-CO') + '</div>' +
+        (p.sizes && p.sizes.length ? '<span class="product-size-tag">Tallas: ' + p.sizes.join(', ') + '</span>' : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
 // ==================== FILTER & SORT ====================
