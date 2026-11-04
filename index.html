@@ -1814,7 +1814,7 @@ if(typeof window.__NETLIFY_IDENTITY_API_URL==='undefined'){window.__NETLIFY_IDEN
 const WHATSAPP_NUMBER = '573022609363';
 const CURRENCY = 'COP';
 // >>> PEGA AQUÍ tu URL de Google Apps Script <<<
-const SHEETS_API_URL = '';
+const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbxe7Ue3_5R8griKq0iwU56d7YZfiuyhwiEdCdroDfpH5DbUI1GdW7umSglJufR_ySE/exec';
 
 // ==================== CATÁLOGO SÉFIRA ====================
 let products = [
@@ -2206,7 +2206,7 @@ try {
 (async function loadFromSheets() {
   if (!SHEETS_API_URL) { renderProducts(products); return; }
   try {
-    const res = await fetch(SHEETS_API_URL + '?action=products');
+    const res = await fetch(SHEETS_API_URL);
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) {
       products = data.map(p => ({
