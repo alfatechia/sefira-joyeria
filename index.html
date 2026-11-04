@@ -270,8 +270,9 @@ nav a:hover::after { width: 100%; }
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 9998;
+  z-index: 1;
   user-select: none;
+  transition: opacity 0.25s ease;
 }
 @media (hover: none) {
   .glow-cursor-canvas { display: none; }
@@ -462,6 +463,9 @@ section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 2rem;
+  position: relative;
+  z-index: 10;
+  isolation: isolate;
 }
 
 .product-card {
@@ -474,6 +478,7 @@ section {
   cursor: pointer;
   overflow: hidden;
   position: relative;
+  z-index: 2;
 }
 
 .product-card:hover {
@@ -2319,7 +2324,7 @@ try {
   var fade = 0, lastInput = performance.now(), lastFrame = performance.now();
   var raf = 0;
 
-  canvas.style.mixBlendMode = 'screen';
+  canvas.style.mixBlendMode = 'lighten';
 
   function resize() {
     width = Math.max(window.innerWidth, 1);
@@ -2334,7 +2339,10 @@ try {
     initialized = true; fade = 1;
   }
 
+  var overCatalog = false;
   function onMove(e) {
+    overCatalog = !!e.target.closest('#catalogo, .modal-overlay, .cart-sidebar, footer');
+    canvas.style.opacity = overCatalog ? '0' : '';
     var x = clamp(e.clientX, 0, width);
     var y = clamp(height - e.clientY, 0, height);
     if (!initialized) initTrail(x, y);
@@ -2364,7 +2372,7 @@ try {
       }
     }
     var idle = now - lastInput;
-    var shouldFade = !pointerInside || idle > IDLE_TIMEOUT;
+    var shouldFade = !pointerInside || idle > IDLE_TIMEOUT || overCatalog;
     var fadeStep = (16.667 * delta) / Math.max(FADE_DUR, 16);
     var fadeTarget = initialized && !shouldFade ? 1 : 0;
     fade += (fadeTarget - fade) * Math.min(1, fadeStep * 7);
