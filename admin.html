@@ -1891,7 +1891,7 @@ const ADMIN_USERS = {
 var selectedUserId = null;
 
 // >>> PEGA AQUÍ tu URL de Google Apps Script <<<
-const SHEETS_API_URL = '';
+const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbxe7Ue3_5R8griKq0iwU56d7YZfiuyhwiEdCdroDfpH5DbUI1GdW7umSglJufR_ySE/exec';
 
 // ==================== DATA (localStorage + Google Sheets) ====================
 function loadData(key, fallback) {
@@ -1902,10 +1902,10 @@ function saveData(key, data) {
   localStorage.setItem('sefira_' + key, JSON.stringify(data));
 }
 
-async function sheetsGet(action) {
+async function sheetsGet() {
   if (!SHEETS_API_URL) return null;
   try {
-    const res = await fetch(SHEETS_API_URL + '?action=' + action);
+    const res = await fetch(SHEETS_API_URL);
     const data = await res.json();
     return Array.isArray(data) ? data : null;
   } catch { return null; }
@@ -1937,9 +1937,8 @@ function mapSheetProduct(p) {
 function productToSheet(p) {
   return {
     id: p.id, nombre: p.name, categoria: p.category, precio: p.price,
-    kilates: p.karat, peso: p.weight, tipoOro: p.goldType,
-    descripcion: p.description, stock: p.stock,
-    tallas: (p.sizes || []).join(', '), imagen: p.image, estado: p.status || 'activo'
+    costo: p.cost || 0, kilates: p.karat, tipoOro: p.goldType, peso: p.weight,
+    descripcion: p.description, imagen: p.image, stock: p.stock
   };
 }
 
@@ -1947,25 +1946,11 @@ async function syncFromSheets() {
   const btn = document.getElementById('syncBtn');
   if (btn) { btn.textContent = 'Sincronizando...'; btn.disabled = true; }
 
-  const sheetProducts = await sheetsGet('products');
+  const sheetProducts = await sheetsGet();
   if (sheetProducts && sheetProducts.length > 0) {
     adminProducts = sheetProducts.map(mapSheetProduct);
     saveData('products', adminProducts);
     renderProductsTable();
-  }
-
-  const sheetOrders = await sheetsGet('orders');
-  if (sheetOrders && sheetOrders.length > 0) {
-    adminOrders = sheetOrders;
-    saveData('orders', adminOrders);
-    renderOrdersTable();
-  }
-
-  const sheetClients = await sheetsGet('clients');
-  if (sheetClients && sheetClients.length > 0) {
-    adminClients = sheetClients;
-    saveData('clients', adminClients);
-    renderClientsTable();
   }
 
   if (btn) { btn.textContent = 'Sync Google Sheets'; btn.disabled = false; }
@@ -1977,14 +1962,12 @@ async function syncToSheets() {
   const btn = document.getElementById('syncUpBtn');
   if (btn) { btn.textContent = 'Subiendo...'; btn.disabled = true; }
 
-  await sheetsPost({
-    action: 'syncAll',
-    data: {
-      products: adminProducts.map(productToSheet),
-      orders: adminOrders,
-      clients: adminClients
-    }
+  var allProducts = adminProducts.map(productToSheet);
+  var cm = loadData('catalog_manillas', []);
+  cm.forEach(function(m) {
+    if (!allProducts.find(function(p) { return p.id === m.id; })) allProducts.push(productToSheet(m));
   });
+  await sheetsPost({ action: 'syncAll', data: allProducts });
 
   if (btn) { btn.textContent = 'Subir a Sheets'; btn.disabled = false; }
   showToast('Datos subidos a Google Sheets');
@@ -2338,6 +2321,7 @@ function saveProduct() {
   }
 
   syncCatalogPublic();
+  sheetsPost({ action: 'save', data: productToSheet(product) });
   closeProductForm();
   renderProductsTable();
   updateDashboard();
@@ -2371,6 +2355,7 @@ function deleteProduct(id) {
   }
 
   syncCatalogPublic();
+  sheetsPost({ action: 'delete', id: id });
   renderProductsTable();
   updateDashboard();
 }
@@ -3330,6 +3315,9 @@ function syncManillasCatalog() {
     };
   });
   saveData('catalog_manillas', catalogManillas);
+  catalogManillas.forEach(function(m) {
+    sheetsPost({ action: 'save', data: productToSheet(m) });
+  });
 }
 
 function editManilla(id) {
