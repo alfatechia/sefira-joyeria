@@ -1427,7 +1427,8 @@ header { z-index: 1000; }
 
 [data-netlify-deploy-id],
 .netlify-badge,
-iframe[src*="netlify"] {
+iframe[src*="netlify"],
+#nl-badge-frame {
   display: none !important;
   visibility: hidden !important;
 }
@@ -2470,19 +2471,14 @@ try {
 </script>
 
 <script>
-// Kill Netlify badge/popup widget
-(function kill(){
-  document.querySelectorAll('[data-netlify-deploy-id], .netlify-badge, [class*="netlify"], iframe[src*="netlify"]').forEach(function(el){el.remove();});
-  var obs = new MutationObserver(function(muts){
-    muts.forEach(function(m){
-      m.addedNodes.forEach(function(n){
-        if(n.nodeType===1 && (n.getAttribute('data-netlify-deploy-id') || (n.className && typeof n.className==='string' && n.className.indexOf('netlify')!==-1) || (n.tagName==='IFRAME' && n.src && n.src.indexOf('netlify')!==-1))){
-          n.remove();
-        }
-      });
-    });
-  });
-  obs.observe(document.body, {childList:true, subtree:true});
+(function(){
+  function kill(){
+    var el = document.getElementById('nl-badge-frame');
+    if(el) el.remove();
+    document.querySelectorAll('[data-netlify-deploy-id], .netlify-badge, [class*="netlify"], iframe[src*="netlify"]').forEach(function(e){e.remove();});
+  }
+  kill();
+  new MutationObserver(function(){kill();}).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 </body>
