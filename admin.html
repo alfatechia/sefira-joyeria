@@ -892,6 +892,11 @@ body {
         <span class="sidebar-link-icon">&#9733;</span> Manillas
       </div>
 
+      <div class="sidebar-section">Marketing</div>
+      <div class="sidebar-link" onclick="showPanel('marketing',this)">
+        <span class="sidebar-link-icon">&#9776;</span> Plan &amp; Plataformas
+      </div>
+
       <div class="sidebar-section">Reportes</div>
       <div class="sidebar-link" onclick="showPanel('reports',this)">
         <span class="sidebar-link-icon">&#9783;</span> Reportes
@@ -1587,6 +1592,76 @@ Oro suizo 18K — SÉFIRA ✨
     </div>
 
     <!-- ==================== REPORTS PANEL ==================== -->
+    <!-- ==================== MARKETING ==================== -->
+    <div class="panel" id="panel-marketing">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Marketing</h1>
+          <p class="page-subtitle">Plan de lanzamiento, plataformas y contenido</p>
+        </div>
+      </div>
+
+      <!-- PLATAFORMAS -->
+      <div class="card">
+        <h4>Plataformas (10)</h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.6rem;margin-top:1rem;" id="mktPlatforms"></div>
+      </div>
+
+      <!-- TAREAS DE HOY -->
+      <div class="card" style="margin-top:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+          <h4>Tareas de hoy — <span id="mktTodayDate"></span> (Día <span id="mktDayNum">1</span>/30)</h4>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <button class="btn btn-sm" onclick="mktPrevDay()" style="padding:0.3rem 0.8rem;font-size:0.65rem;">&#9664; Anterior</button>
+            <button class="btn btn-sm" onclick="mktNextDay()" style="padding:0.3rem 0.8rem;font-size:0.65rem;">Siguiente &#9654;</button>
+          </div>
+        </div>
+        <div id="mktTodayTasks" style="margin-top:1rem;"></div>
+        <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;">
+          <div style="font-size:0.7rem;color:var(--text-muted);">Progreso del día:</div>
+          <div style="flex:1;background:rgba(197,160,85,0.1);border-radius:4px;height:8px;overflow:hidden;">
+            <div id="mktProgress" style="height:100%;background:var(--gold);border-radius:4px;transition:width 0.3s;width:0%;"></div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--gold);" id="mktProgressText">0%</div>
+        </div>
+      </div>
+
+      <!-- CALENDARIO SEMANAL -->
+      <div class="card" style="margin-top:1.5rem;">
+        <h4>Calendario semanal</h4>
+        <div id="mktCalendar" style="margin-top:1rem;overflow-x:auto;"></div>
+      </div>
+
+      <!-- BANCO DE COPYS -->
+      <div class="card" style="margin-top:1.5rem;">
+        <h4>Banco de Copys</h4>
+        <div style="display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap;">
+          <select id="mktCopyProduct" onchange="renderMktCopys()" style="background:var(--bg-dark);color:var(--diamond);border:1px solid rgba(197,160,85,0.2);padding:0.4rem 0.8rem;font-size:0.7rem;border-radius:4px;">
+          </select>
+          <select id="mktCopyPlatform" onchange="renderMktCopys()" style="background:var(--bg-dark);color:var(--diamond);border:1px solid rgba(197,160,85,0.2);padding:0.4rem 0.8rem;font-size:0.7rem;border-radius:4px;">
+            <option value="instagram">Instagram / Facebook</option>
+            <option value="tiktok">TikTok</option>
+            <option value="pinterest">Pinterest</option>
+            <option value="mercadolibre">MercadoLibre</option>
+            <option value="whatsapp">WhatsApp Canal</option>
+          </select>
+        </div>
+        <div id="mktCopyResult" style="margin-top:1rem;background:var(--bg-dark);border:1px solid rgba(197,160,85,0.15);border-radius:6px;padding:1rem;font-size:0.75rem;line-height:1.6;white-space:pre-wrap;position:relative;"></div>
+      </div>
+
+      <!-- HASHTAGS -->
+      <div class="card" style="margin-top:1.5rem;">
+        <h4>Banco de Hashtags</h4>
+        <div id="mktHashtags" style="margin-top:1rem;"></div>
+      </div>
+
+      <!-- IDEAS DE CONTENIDO -->
+      <div class="card" style="margin-top:1.5rem;">
+        <h4>Ideas de Contenido</h4>
+        <div id="mktIdeas" style="margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.8rem;"></div>
+      </div>
+    </div>
+
     <div class="panel" id="panel-reports">
       <div class="page-header">
         <div>
@@ -3392,6 +3467,438 @@ if (sessionStorage.getItem('sefira_auth') === 'true') {
   renderInventoryTable();
   renderMovementsTable();
   renderManillasTable();
+  initMarketing();
+}
+
+// ==================== MARKETING ====================
+var MKT_PLATFORMS = [
+  {name:'Instagram', icon:'&#128247;'},
+  {name:'Facebook Página', icon:'&#128220;'},
+  {name:'Facebook Marketplace', icon:'&#128722;'},
+  {name:'WhatsApp Business', icon:'&#128172;'},
+  {name:'WhatsApp Canal', icon:'&#128226;'},
+  {name:'TikTok', icon:'&#127909;'},
+  {name:'Pinterest', icon:'&#128204;'},
+  {name:'MercadoLibre', icon:'&#128176;'},
+  {name:'Etsy (próximamente)', icon:'&#127912;'},
+  {name:'Google Shopping (próximamente)', icon:'&#128269;'}
+];
+
+var MKT_PLAN = [
+  {day:1, title:'Crear todas las cuentas', tasks:[
+    'Instagram — Cuenta de empresa, bio configurada',
+    'Facebook Página — Categoría: Joyería, vincular con IG',
+    'Facebook Marketplace — Publicar desde la página',
+    'WhatsApp Business — Perfil + mensajes automáticos',
+    'WhatsApp Canal — Crear canal "SÉFIRA Joyería"',
+    'TikTok — Cuenta de empresa, bio configurada',
+    'Pinterest — Cuenta empresa, tableros creados',
+    'MercadoLibre — Cuenta vendedor, verificar identidad'
+  ]},
+  {day:2, title:'Preparar contenido base', tasks:[
+    'Tomar 3 fotos por producto (30 fotos mínimo)',
+    'Crear 5 fotos de estilo de vida (joyas puestas)',
+    'Escribir descripciones para cada producto',
+    'Preparar precios consistentes en todas las plataformas'
+  ]},
+  {day:3, title:'Subir catálogo a todas las plataformas', tasks:[
+    'MercadoLibre: Publicar los 10 productos',
+    'Facebook Marketplace: Publicar los 10 productos',
+    'Pinterest: Subir cada producto como pin con link a sefira.vip',
+    'Instagram: Preparar 9 fotos para el feed (grilla inicial)',
+    'Meta Business Suite: Programar publicaciones semana 1'
+  ]},
+  {day:4, title:'Semana 1 — Lanzamiento (Lun)', tasks:[
+    'IG/FB: FOTO Logo SÉFIRA + "Algo especial está llegando"',
+    'Pinterest: 3 pins de productos',
+    'Canal WhatsApp: "¡Bienvenidos a SÉFIRA!"'
+  ]},
+  {day:5, title:'Semana 1 (Mar)', tasks:[
+    'IG/FB: REEL video corto piezas sobre tela negra (15 seg)',
+    'TikTok: Mismo reel adaptado',
+    'Pinterest: 3 pins'
+  ]},
+  {day:6, title:'Semana 1 (Mié)', tasks:[
+    'IG/FB: FOTO Anillo Cartier con precio + "Pieza disponible"',
+    'Pinterest: 3 pins'
+  ]},
+  {day:7, title:'Semana 1 (Jue)', tasks:[
+    'IG/FB: STORY Encuesta "¿Anillos o cadenas?" + FOTO Cadena Gucci',
+    'TikTok: Video proceso artesanal',
+    'Pinterest: 2 pins',
+    'Canal WhatsApp: mostrar cadena'
+  ]},
+  {day:8, title:'Semana 1 (Vie)', tasks:[
+    'IG/FB: REEL "5 razones para elegir oro 18K" (educativo)',
+    'TikTok: Mismo reel',
+    'Pinterest: 2 pins'
+  ]},
+  {day:9, title:'Semana 1 (Sáb)', tasks:[
+    'IG/FB: CARRUSEL 5 manillas artesanales con precios',
+    'Pinterest: 3 pins',
+    'MercadoLibre: verificar listings'
+  ]},
+  {day:10, title:'Semana 1 (Dom)', tasks:[
+    'IG/FB: STORY detrás de cámaras + descanso',
+    'Programar semana 2 en Meta Business Suite'
+  ]},
+  {day:11, title:'Semana 2 — Educación (Lun)', tasks:[
+    'IG/FB: CARRUSEL "¿Cómo saber si tu oro es real? 5 señales"',
+    'TikTok: Video mismo tema 60 seg',
+    'Pinterest: 3 pins'
+  ]},
+  {day:12, title:'Semana 2 (Mar)', tasks:[
+    'IG/FB: FOTO Topos con precio + testimonio',
+    'Pinterest: 3 pins',
+    'Canal WhatsApp: publicación'
+  ]},
+  {day:13, title:'Semana 2 (Mié)', tasks:[
+    'IG/FB: REEL Comparación oro 10K vs 14K vs 18K',
+    'TikTok: Mismo reel',
+    'Pinterest: 2 pins'
+  ]},
+  {day:14, title:'Semana 2 (Jue)', tasks:[
+    'IG/FB: FOTO Manilla Virgen + historia detrás de la pieza',
+    'Pinterest: 3 pins'
+  ]},
+  {day:15, title:'Semana 2 (Vie)', tasks:[
+    'IG/FB: REEL "Así se hace una manilla artesanal" (proceso)',
+    'TikTok: Mismo reel + hashtags Colombia',
+    'Pinterest: 2 pins',
+    'Canal WhatsApp: publicación'
+  ]},
+  {day:16, title:'Semana 2 (Sáb)', tasks:[
+    'IG/FB: CARRUSEL "Las 3 piezas más vendidas de SÉFIRA"',
+    'Pinterest: 3 pins'
+  ]},
+  {day:17, title:'Semana 2 (Dom)', tasks:[
+    'IG/FB: STORY pregunta abierta "¿Qué pieza les gustaría ver?"',
+    'Programar semana 3 en Meta Business Suite'
+  ]},
+  {day:18, title:'Semana 3 — Deseo (Lun)', tasks:[
+    'IG/FB: REEL alguien poniéndose un anillo en cámara lenta',
+    'TikTok: Mismo reel con música trending',
+    'Pinterest: 3 pins'
+  ]},
+  {day:19, title:'Semana 3 (Mar)', tasks:[
+    'IG/FB: FOTO Manilla en muñeca + "Hecha a mano para ti"',
+    'Pinterest: 3 pins'
+  ]},
+  {day:20, title:'Semana 3 (Mié)', tasks:[
+    'IG/FB: CARRUSEL "Cómo combinar tu cadena de oro" (outfits)',
+    'TikTok: Video styling tips',
+    'Pinterest: 2 pins',
+    'Canal WhatsApp: publicación'
+  ]},
+  {day:21, title:'Semana 3 (Jue)', tasks:[
+    'IG/FB: REEL Unboxing de un pedido (empaque bonito)',
+    'TikTok: Mismo reel',
+    'Pinterest: 3 pins'
+  ]},
+  {day:22, title:'Semana 3 (Vie)', tasks:[
+    'IG/FB: FOTO Topos puestos en oreja + "El regalo perfecto"',
+    'Pinterest: 2 pins'
+  ]},
+  {day:23, title:'Semana 3 (Sáb)', tasks:[
+    'IG/FB: STORY "Mañana tenemos algo especial..." (anticipación)',
+    'TikTok: Video teaser',
+    'Pinterest: 3 pins',
+    'Canal WhatsApp: publicación'
+  ]},
+  {day:24, title:'Semana 3 (Dom)', tasks:[
+    'Programar semana 4 en Meta Business Suite'
+  ]},
+  {day:25, title:'Semana 4 — Acción (Lun)', tasks:[
+    'IG/FB: POST "LANZAMIENTO OFICIAL — Envío gratis primera compra"',
+    'TikTok: Video anuncio de lanzamiento',
+    'Pinterest: 5 pins',
+    'Canal WhatsApp: publicación lanzamiento'
+  ]},
+  {day:26, title:'Semana 4 (Mar)', tasks:[
+    'IG/FB: REEL Todas las piezas en secuencia rápida con precios',
+    'TikTok: Mismo reel',
+    'Pinterest: 3 pins'
+  ]},
+  {day:27, title:'Semana 4 (Mié)', tasks:[
+    'IG/FB: STORY Cuenta regresiva "Quedan X piezas" + FOTO producto',
+    'Pinterest: 3 pins',
+    'Canal WhatsApp: publicación'
+  ]},
+  {day:28, title:'Semana 4 (Jue)', tasks:[
+    'IG/FB: CARRUSEL "Nuestros clientes opinan" (testimonios)',
+    'TikTok: Video testimonio',
+    'Pinterest: 2 pins'
+  ]},
+  {day:29, title:'Semana 4 (Vie)', tasks:[
+    'IG/FB: REEL "Última oportunidad: envío gratis hasta el domingo"',
+    'TikTok: Mismo reel con urgencia',
+    'Pinterest: 3 pins',
+    'Canal WhatsApp: publicación',
+    'FB Marketplace: Republicar con "ENVÍO GRATIS"'
+  ]},
+  {day:30, title:'Semana 4 (Sáb) — Cierre', tasks:[
+    'IG/FB: POST Resumen del mes + agradecimiento',
+    'Revisar métricas: Analytics, IG, MercadoLibre, WhatsApp',
+    'Planificar siguiente mes'
+  ]}
+];
+
+var MKT_COPYS = {
+  'Manilla Tebol': {
+    instagram: '✨ Manilla Tebol — Oro suizo 18K\nDiseño artesanal que habla por ti.\n\n💰 $420.000 COP\n📦 Envío a toda Colombia\n🔗 Catálogo completo: sefira.vip\n\n#JoyeríaColombia #Oro18K #ManillasDeOro #SÉFIRA #OroSuizo #HechoAMano',
+    tiktok: '¿Buscas algo diferente en oro? 🔥 Manilla Tebol en oro suizo 18K — hecha a mano, diseño único.\n\n#joyeriacolombia #oro18k #manillasdeoro #sefira #hechoamano #orosuizo',
+    pinterest: 'Manilla Tebol en Oro Suizo 18K | Diseño artesanal exclusivo | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
+    mercadolibre: 'Manilla Tebol Artesanal Oro Suizo 18K — SÉFIRA Joyería\n\nManilla artesanal modelo Tebol, elaborada en oro suizo 18 kilates. Diseño exclusivo hecho a mano. Incluye certificado de garantía.\n\n• Material: Oro suizo 18K\n• Tipo: Artesanal\n• Envío: A toda Colombia\n• Garantía: Certificado incluido',
+    whatsapp: '✨ *Manilla Tebol* — Oro suizo 18K\nDiseño artesanal hecho a mano.\n💰 $420.000\n📦 Envío a toda Colombia\n👉 Catálogo: sefira.vip'
+  },
+  'Manilla con Inicial': {
+    instagram: '✨ Tu inicial, tu estilo — Manilla con Inicial en Oro 18K\nPersonalízala con la letra que te identifica.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#ManillaPersonalizada #Oro18K #JoyeríaColombia #SÉFIRA #RegaloEspecial',
+    tiktok: 'Tu nombre, tu joya 💫 Manilla con Inicial en oro 18K — personalízala con tu letra.\n\n#manillapersonalizada #oro18k #joyeriacolombia #sefira #regaloperfecto',
+    pinterest: 'Manilla con Inicial Oro 18K | Joyería personalizada | SÉFIRA | Envíos Colombia | sefira.vip',
+    mercadolibre: 'Manilla con Inicial Personalizada Oro Suizo 18K — SÉFIRA\n\nManilla personalizable con la inicial de tu elección, elaborada en oro suizo 18 kilates. Regalo perfecto y único.\n\n• Material: Oro suizo 18K\n• Personalización: Inicial a elección\n• Envío: A toda Colombia',
+    whatsapp: '✨ *Manilla con Inicial* — Oro 18K\nPersonalízala con tu letra.\n📦 Envío a toda Colombia\n👉 sefira.vip'
+  },
+  'Manilla Virgen': {
+    instagram: '🙏 Manilla de la Virgen — Oro suizo 18K\nFe y elegancia en una sola pieza artesanal.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#ManillaVirgen #Oro18K #JoyeríaReligiosa #SÉFIRA #FeyEstilo',
+    tiktok: 'Fe y estilo en tu muñeca 🙏✨ Manilla de la Virgen en oro suizo 18K.\n\n#manillavirgen #oro18k #joyeriareligiosa #sefira #joyeriacolombia',
+    pinterest: 'Manilla Virgen Oro 18K | Joyería religiosa artesanal | SÉFIRA | Envíos Colombia | sefira.vip',
+    mercadolibre: 'Manilla Virgen Artesanal Oro Suizo 18K — SÉFIRA Joyería\n\nManilla artesanal con imagen de la Virgen, elaborada en oro suizo 18 kilates. Pieza de fe y elegancia.\n\n• Material: Oro suizo 18K\n• Tipo: Artesanal religiosa\n• Envío: A toda Colombia',
+    whatsapp: '🙏 *Manilla de la Virgen* — Oro 18K\nFe y elegancia artesanal.\n📦 Envío a toda Colombia\n👉 sefira.vip'
+  },
+  'Topos Grandes': {
+    instagram: '✨ Topos Grandes — Oro suizo 18K\nBrillo que no pasa desapercibido.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#ToposDeOro #AretesOro #Oro18K #JoyeríaColombia #SÉFIRA #BrilloReal',
+    tiktok: 'Brillo real, oro real ✨ Topos Grandes en oro suizo 18K — el complemento perfecto.\n\n#toposdeoro #aretes #oro18k #sefira #joyeriacolombia',
+    pinterest: 'Topos Grandes Oro 18K | Aretes artesanales | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
+    mercadolibre: 'Topos Aretes Grandes Oro Suizo 18K — SÉFIRA Joyería\n\nTopos (aretes) grandes en oro suizo 18 kilates. Brillo auténtico, elaboración artesanal.\n\n• Material: Oro suizo 18K\n• Tipo: Topos grandes\n• Envío: A toda Colombia',
+    whatsapp: '✨ *Topos Grandes* — Oro 18K\nBrillo que no pasa desapercibido.\n📦 Envío a toda Colombia\n👉 sefira.vip'
+  },
+  'Manilla Hilo Rojo': {
+    instagram: '❤️ Manilla Hilo Rojo — Oro suizo 18K\nEl hilo rojo del destino con toque de oro.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#HiloRojo #ManillaOro #Oro18K #SÉFIRA #Protección #JoyeríaColombia',
+    tiktok: 'El hilo rojo del destino + oro 18K ❤️✨ Protección y estilo en una manilla.\n\n#hilorojo #manilla #oro18k #sefira #joyeriacolombia #proteccion',
+    pinterest: 'Manilla Hilo Rojo Oro 18K | Protección y estilo | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
+    mercadolibre: 'Manilla Hilo Rojo Oro Suizo 18K — SÉFIRA Joyería\n\nManilla de hilo rojo con detalle en oro suizo 18 kilates. Símbolo de protección con elegancia.\n\n• Material: Hilo rojo + Oro suizo 18K\n• Significado: Protección\n• Envío: A toda Colombia',
+    whatsapp: '❤️ *Manilla Hilo Rojo* — Oro 18K\nProtección y estilo.\n📦 Envío a toda Colombia\n👉 sefira.vip'
+  },
+  'Anillo Cartier': {
+    instagram: '💎 Anillo tipo Cartier — Oro suizo 18K\nElegancia clásica que nunca pasa de moda.\n\n💰 $380.000 COP\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#AnilloCartier #Oro18K #JoyeríaColombia #SÉFIRA #AnilloDeOro #Elegancia',
+    tiktok: 'Elegancia que nunca pasa de moda 💎 Anillo tipo Cartier en oro suizo 18K.\n\n#anillocartier #oro18k #joyeriacolombia #sefira #anillodeoro',
+    pinterest: 'Anillo tipo Cartier Oro 18K | Elegancia clásica | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
+    mercadolibre: 'Anillo Tipo Cartier Oro Suizo 18K — SÉFIRA Joyería Artesanal\n\nAnillo inspirado en diseño Cartier, elaborado en oro suizo 18 kilates. Pieza elegante y atemporal.\n\n• Material: Oro suizo 18K\n• Estilo: Tipo Cartier\n• Envío: A toda Colombia\n• Garantía: Certificado incluido',
+    whatsapp: '💎 *Anillo tipo Cartier* — Oro 18K\nElegancia clásica.\n💰 $380.000\n📦 Envío a toda Colombia\n👉 sefira.vip'
+  },
+  'Cadena Gucci': {
+    instagram: '🔗 Cadena tipo Gucci 60cm — Oro suizo 18K\nPresencia y estilo en cada eslabón.\n\n💰 $850.000 COP\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#CadenaGucci #CadenaDeOro #Oro18K #JoyeríaColombia #SÉFIRA #EstiloMasculino',
+    tiktok: 'Presencia real con oro real 🔗🔥 Cadena tipo Gucci 60cm en oro suizo 18K.\n\n#cadenagucci #oro18k #cadenadeoro #sefira #joyeriacolombia',
+    pinterest: 'Cadena Gucci 60cm Oro 18K | Estilo y presencia | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
+    mercadolibre: 'Cadena Tipo Gucci 60cm Oro Suizo 18K — Envío Gratis — SÉFIRA\n\nCadena tipo Gucci de 60cm, elaborada en oro suizo 18 kilates. Presencia y estilo garantizado.\n\n• Material: Oro suizo 18K\n• Largo: 60cm\n• Envío: Gratis a toda Colombia',
+    whatsapp: '🔗 *Cadena tipo Gucci 60cm* — Oro 18K\nPresencia en cada eslabón.\n💰 $850.000\n📦 Envío a toda Colombia\n👉 sefira.vip'
+  }
+};
+
+var MKT_HASHTAGS = {
+  'General SÉFIRA': '#JoyeríaColombia #OroSuizo #Oro18K #JoyeríaArtesanal #SÉFIRA #HechoAMano #JoyeríaMedellín #AccesoriosDorados #ModaColombia #EstiloColombia',
+  'Anillos': '#AnillosDeOro #AnilloCartier #AnilloOro18K #AnilloDeLujo #AnilloArtesanal #AnilloDeCompromiso',
+  'Cadenas': '#CadenasDeOro #CadenaGucci #CadenaOro18K #CadenaArtesanal #CollarDeOro',
+  'Manillas / Pulseras': '#ManillasDeOro #PulserasDeOro #ManillaArtesanal #PulseraOro18K #ManillaPersonalizada',
+  'Aretes / Topos': '#AretesDeOro #ToposDeOro #AretesOro18K #ToposArtesanales #AretesElegantes',
+  'Religiosas': '#JoyeríaReligiosa #ManillaVirgen #FeyEstilo #Protección #HiloRojo',
+  'Regalos': '#RegaloEspecial #RegaloPerfecto #RegaloDeOro #JoyeríaParaRegalar #RegaloÚnico'
+};
+
+var MKT_IDEAS = [
+  {tipo:'FOTO producto', desc:'Pieza sobre tela negra, fondo limpio, luz natural'},
+  {tipo:'REEL / Video corto', desc:'15-30 seg mostrando la pieza desde varios ángulos'},
+  {tipo:'CARRUSEL educativo', desc:'"¿Cómo saber si tu oro es real?" o comparación de kilates'},
+  {tipo:'STORY encuesta', desc:'Pregunta "¿Anillos o cadenas?" para generar interacción'},
+  {tipo:'Behind the scenes', desc:'Proceso de elaboración artesanal, taller, herramientas'},
+  {tipo:'Unboxing', desc:'Video abriendo el empaque — genera confianza en envíos'},
+  {tipo:'Testimonio', desc:'Foto o video de cliente satisfecho (familia/amigos al inicio)'},
+  {tipo:'Styling / Outfit', desc:'"Cómo combinar tu cadena de oro" con diferentes looks'},
+  {tipo:'Dato curioso', desc:'"¿Sabías que el oro suizo 18K tiene 75% de oro puro?"'},
+  {tipo:'Promoción', desc:'Envío gratis, descuento primera compra, pieza limitada'}
+];
+
+var mktCurrentDay = 1;
+
+function initMarketing() {
+  renderMktPlatforms();
+  loadMktDay();
+  renderMktCalendar();
+  populateMktCopyProducts();
+  renderMktCopys();
+  renderMktHashtags();
+  renderMktIdeas();
+}
+
+function renderMktPlatforms() {
+  var c = document.getElementById('mktPlatforms');
+  if (!c) return;
+  c.innerHTML = MKT_PLATFORMS.map(function(p, i) {
+    var done = getMktCheck('platform_' + i);
+    return '<div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.7rem;background:' + (done ? 'rgba(197,160,85,0.15)' : 'rgba(255,255,255,0.03)') + ';border:1px solid rgba(197,160,85,' + (done ? '0.4' : '0.1') + ');border-radius:6px;cursor:pointer;transition:all 0.2s;" onclick="toggleMktPlatform(' + i + ')">' +
+      '<span style="font-size:1.1rem;">' + p.icon + '</span>' +
+      '<span style="font-size:0.7rem;color:' + (done ? 'var(--gold)' : 'var(--diamond)') + ';">' + p.name + '</span>' +
+      (done ? '<span style="margin-left:auto;color:var(--gold);font-size:0.7rem;">&#10003;</span>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function toggleMktPlatform(i) {
+  var key = 'platform_' + i;
+  setMktCheck(key, !getMktCheck(key));
+  renderMktPlatforms();
+}
+
+function loadMktDay() {
+  var saved = localStorage.getItem('sefira_mkt_day');
+  if (saved) mktCurrentDay = parseInt(saved) || 1;
+  renderMktToday();
+}
+
+function mktPrevDay() {
+  if (mktCurrentDay > 1) { mktCurrentDay--; saveMktDay(); renderMktToday(); renderMktCalendar(); }
+}
+function mktNextDay() {
+  if (mktCurrentDay < 30) { mktCurrentDay++; saveMktDay(); renderMktToday(); renderMktCalendar(); }
+}
+function mktGoToDay(d) {
+  mktCurrentDay = d; saveMktDay(); renderMktToday(); renderMktCalendar();
+}
+function saveMktDay() { localStorage.setItem('sefira_mkt_day', mktCurrentDay); }
+
+function renderMktToday() {
+  var dayData = MKT_PLAN.find(function(d) { return d.day === mktCurrentDay; });
+  if (!dayData) return;
+  document.getElementById('mktDayNum').textContent = mktCurrentDay;
+  document.getElementById('mktTodayDate').textContent = dayData.title;
+
+  var c = document.getElementById('mktTodayTasks');
+  var doneCount = 0;
+  c.innerHTML = dayData.tasks.map(function(t, i) {
+    var key = 'day' + mktCurrentDay + '_task' + i;
+    var done = getMktCheck(key);
+    if (done) doneCount++;
+    return '<label style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.5rem 0;border-bottom:1px solid rgba(197,160,85,0.06);cursor:pointer;">' +
+      '<input type="checkbox" ' + (done ? 'checked' : '') + ' onchange="toggleMktTask(' + mktCurrentDay + ',' + i + ')" style="accent-color:var(--gold);margin-top:2px;flex-shrink:0;">' +
+      '<span style="font-size:0.75rem;color:' + (done ? 'rgba(197,160,85,0.5)' : 'var(--diamond)') + ';text-decoration:' + (done ? 'line-through' : 'none') + ';">' + t + '</span>' +
+    '</label>';
+  }).join('');
+
+  var pct = dayData.tasks.length > 0 ? Math.round(doneCount / dayData.tasks.length * 100) : 0;
+  document.getElementById('mktProgress').style.width = pct + '%';
+  document.getElementById('mktProgressText').textContent = pct + '%';
+}
+
+function toggleMktTask(day, i) {
+  var key = 'day' + day + '_task' + i;
+  setMktCheck(key, !getMktCheck(key));
+  renderMktToday();
+}
+
+function getMktCheck(key) {
+  try {
+    var data = JSON.parse(localStorage.getItem('sefira_mkt_checks') || '{}');
+    return !!data[key];
+  } catch(e) { return false; }
+}
+function setMktCheck(key, val) {
+  try {
+    var data = JSON.parse(localStorage.getItem('sefira_mkt_checks') || '{}');
+    data[key] = val;
+    localStorage.setItem('sefira_mkt_checks', JSON.stringify(data));
+  } catch(e) {}
+}
+
+function renderMktCalendar() {
+  var c = document.getElementById('mktCalendar');
+  if (!c) return;
+  var weekStart = Math.floor((mktCurrentDay - 1) / 7) * 7 + 1;
+  var weekEnd = Math.min(weekStart + 6, 30);
+  var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.4rem;">';
+  for (var d = weekStart; d <= weekEnd; d++) {
+    var dayData = MKT_PLAN.find(function(dd) { return dd.day === d; });
+    var total = dayData ? dayData.tasks.length : 0;
+    var done = 0;
+    if (dayData) {
+      for (var i = 0; i < dayData.tasks.length; i++) {
+        if (getMktCheck('day' + d + '_task' + i)) done++;
+      }
+    }
+    var isCurrent = d === mktCurrentDay;
+    var allDone = total > 0 && done === total;
+    html += '<div onclick="mktGoToDay(' + d + ')" style="text-align:center;padding:0.6rem 0.3rem;border-radius:6px;cursor:pointer;border:1px solid ' + (isCurrent ? 'var(--gold)' : 'rgba(197,160,85,0.1)') + ';background:' + (allDone ? 'rgba(197,160,85,0.15)' : isCurrent ? 'rgba(197,160,85,0.08)' : 'rgba(255,255,255,0.02)') + ';">' +
+      '<div style="font-size:0.65rem;color:var(--text-muted);">Día</div>' +
+      '<div style="font-size:1rem;font-weight:600;color:' + (isCurrent ? 'var(--gold)' : 'var(--diamond)') + ';">' + d + '</div>' +
+      '<div style="font-size:0.6rem;color:' + (allDone ? 'var(--gold)' : 'var(--text-muted)') + ';">' + done + '/' + total + '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+  html += '<div style="display:flex;gap:0.5rem;margin-top:0.8rem;justify-content:center;">';
+  for (var w = 0; w < 5; w++) {
+    var ws = w * 7 + 1;
+    var isActive = mktCurrentDay >= ws && mktCurrentDay < ws + 7;
+    html += '<button onclick="mktGoToDay(' + ws + ')" class="btn btn-sm" style="padding:0.2rem 0.6rem;font-size:0.6rem;' + (isActive ? 'background:var(--gold);color:#000;' : '') + '">S' + (w < 4 ? (w + 1) : '0') + '</button>';
+  }
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+function populateMktCopyProducts() {
+  var sel = document.getElementById('mktCopyProduct');
+  if (!sel) return;
+  var names = Object.keys(MKT_COPYS);
+  sel.innerHTML = names.map(function(n) { return '<option value="' + n + '">' + n + '</option>'; }).join('');
+}
+
+function renderMktCopys() {
+  var product = document.getElementById('mktCopyProduct').value;
+  var platform = document.getElementById('mktCopyPlatform').value;
+  var c = document.getElementById('mktCopyResult');
+  if (!c || !MKT_COPYS[product]) { c.innerHTML = '<span style="color:var(--text-muted);">Selecciona un producto</span>'; return; }
+  var text = MKT_COPYS[product][platform] || 'Copy no disponible para esta plataforma';
+  c.innerHTML = '<div style="color:var(--diamond);">' + text.replace(/\n/g, '<br>') + '</div>' +
+    '<button onclick="copyMktText(this)" style="position:absolute;top:0.5rem;right:0.5rem;background:var(--gold);color:#000;border:none;padding:0.3rem 0.6rem;border-radius:4px;font-size:0.6rem;cursor:pointer;">Copiar</button>';
+}
+
+function copyMktText(btn) {
+  var text = btn.parentElement.querySelector('div').innerText;
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '¡Copiado!';
+    setTimeout(function() { btn.textContent = 'Copiar'; }, 1500);
+  });
+}
+
+function renderMktHashtags() {
+  var c = document.getElementById('mktHashtags');
+  if (!c) return;
+  c.innerHTML = Object.keys(MKT_HASHTAGS).map(function(cat) {
+    return '<div style="margin-bottom:1rem;">' +
+      '<div style="font-size:0.7rem;font-weight:600;color:var(--gold);margin-bottom:0.4rem;">' + cat + '</div>' +
+      '<div style="background:var(--bg-dark);border:1px solid rgba(197,160,85,0.1);border-radius:6px;padding:0.6rem;font-size:0.7rem;color:var(--diamond);line-height:1.8;position:relative;">' +
+        MKT_HASHTAGS[cat] +
+        '<button onclick="copyMktHashtag(this)" style="position:absolute;top:0.4rem;right:0.4rem;background:var(--gold);color:#000;border:none;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.55rem;cursor:pointer;">Copiar</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function copyMktHashtag(btn) {
+  var text = btn.parentElement.innerText.replace('Copiar', '').trim();
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '¡Copiado!';
+    setTimeout(function() { btn.textContent = 'Copiar'; }, 1500);
+  });
+}
+
+function renderMktIdeas() {
+  var c = document.getElementById('mktIdeas');
+  if (!c) return;
+  c.innerHTML = MKT_IDEAS.map(function(idea) {
+    return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(197,160,85,0.1);border-radius:6px;padding:0.8rem;">' +
+      '<div style="font-size:0.7rem;font-weight:600;color:var(--gold);margin-bottom:0.3rem;">' + idea.tipo + '</div>' +
+      '<div style="font-size:0.65rem;color:var(--text-muted);line-height:1.5;">' + idea.desc + '</div>' +
+    '</div>';
+  }).join('');
 }
 </script>
 
