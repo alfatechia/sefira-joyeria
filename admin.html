@@ -880,8 +880,11 @@ body {
       </div>
 
       <div class="sidebar-section">Marketing</div>
+      <div class="sidebar-link" onclick="showPanel('marketing',this)">
+        <span class="sidebar-link-icon">&#9776;</span> Plan &amp; Plataformas
+      </div>
       <div class="sidebar-link" onclick="showPanel('contenido',this)">
-        <span class="sidebar-link-icon">&#9998;</span> Contenido
+        <span class="sidebar-link-icon">&#9998;</span> Contenido Sep
       </div>
 
       <div class="sidebar-section">Finanzas</div>
@@ -890,11 +893,6 @@ body {
       </div>
       <div class="sidebar-link" onclick="showPanel('manillas',this)">
         <span class="sidebar-link-icon">&#9733;</span> Manillas
-      </div>
-
-      <div class="sidebar-section">Marketing</div>
-      <div class="sidebar-link" onclick="showPanel('marketing',this)">
-        <span class="sidebar-link-icon">&#9776;</span> Plan &amp; Plataformas
       </div>
 
       <div class="sidebar-section">Reportes</div>
@@ -2182,6 +2180,7 @@ function showPanel(name, el) {
   if (name === 'inventory') { renderInventoryTable(); renderMovementsTable(); }
   if (name === 'manillas') renderManillasTable();
   if (name === 'reports') updateReports();
+  if (name === 'marketing') initMarketing();
 }
 
 // ==================== DASHBOARD ====================
