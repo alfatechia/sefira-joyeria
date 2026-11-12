@@ -821,7 +821,19 @@ body {
   .cp-promo-detail { font-size: .72rem; }
   .cp-progress { gap: 8px; }
 }
+
+[data-netlify-deploy-id],
+.netlify-badge,
+iframe[src*="netlify"],
+#nl-badge-frame {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
 </style>
+<script>if(typeof window.__NETLIFY_IDENTITY_API_URL==='undefined'){window.__NETLIFY_IDENTITY_API_URL='off';}</script>
 </head>
 <body>
 
@@ -3903,6 +3915,17 @@ function renderMktIdeas() {
 if (sessionStorage.getItem('sefira_auth') === 'true') {
   initMarketing();
 }
+
+// Eliminar badge Netlify
+(function(){
+  function killBadge(){
+    var el=document.getElementById('nl-badge-frame');
+    if(el)el.remove();
+    document.querySelectorAll('[data-netlify-deploy-id],.netlify-badge,iframe[src*="netlify"]').forEach(function(e){e.remove();});
+  }
+  killBadge();
+  new MutationObserver(killBadge).observe(document.body,{childList:true,subtree:true});
+})();
 </script>
 
 </body>
