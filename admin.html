@@ -3466,7 +3466,6 @@ if (sessionStorage.getItem('sefira_auth') === 'true') {
   renderInventoryTable();
   renderMovementsTable();
   renderManillasTable();
-  initMarketing();
 }
 
 // ==================== MARKETING ====================
@@ -3898,6 +3897,11 @@ function renderMktIdeas() {
       '<div style="font-size:0.65rem;color:var(--text-muted);line-height:1.5;">' + idea.desc + '</div>' +
     '</div>';
   }).join('');
+}
+
+// Init marketing al cargar si hay sesión activa
+if (sessionStorage.getItem('sefira_auth') === 'true') {
+  initMarketing();
 }
 </script>
 
