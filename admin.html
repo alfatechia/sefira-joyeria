@@ -3005,15 +3005,15 @@ var FACTURA_COSTS = {
   'SEF-017': 50000, 'SEF-018': 40000, 'SEF-019': 35000
 };
 var inventoryData = loadData('inventory', [
-  { id: 'INV-001', name: 'Balín Diamantado #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 105000, notes: '' },
-  { id: 'INV-002', name: 'Balín Diamantado #4 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 130000, notes: '' },
-  { id: 'INV-003', name: 'Balín Diamantado #5 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 140000, notes: '' },
-  { id: 'INV-004', name: 'Balín Diamantado #6 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 170000, notes: '' },
-  { id: 'INV-005', name: 'Balín Diamantado #8 x4', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 4, minStock: 3, cost: 78000, notes: '' },
-  { id: 'INV-006', name: 'Balín Liso #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 50000, notes: '' },
+  { id: 'INV-001', name: 'Balín Diamantado #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 10500, notes: '' },
+  { id: 'INV-002', name: 'Balín Diamantado #4 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 13000, notes: '' },
+  { id: 'INV-003', name: 'Balín Diamantado #5 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 14000, notes: '' },
+  { id: 'INV-004', name: 'Balín Diamantado #6 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 17000, notes: '' },
+  { id: 'INV-005', name: 'Balín Diamantado #8 x4', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 4, minStock: 3, cost: 19500, notes: '' },
+  { id: 'INV-006', name: 'Balín Liso #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 5000, notes: '' },
   { id: 'INV-007', name: 'Cadena Gucci 60cm', image: 'assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg', stock: 1, minStock: 2, cost: 255000, notes: '' },
   { id: 'INV-008', name: 'Topos Esmeralda', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 65000, notes: '' },
-  { id: 'INV-009', name: 'Barriles x10', image: 'assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg', stock: 10, minStock: 5, cost: 160000, notes: '' },
+  { id: 'INV-009', name: 'Barriles x10', image: 'assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg', stock: 10, minStock: 5, cost: 16000, notes: '' },
   { id: 'INV-010', name: 'Dije Inicial M', image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
   { id: 'INV-011', name: 'Dije Inicial S', image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
   { id: 'INV-012', name: 'Dije Infinito', image: 'assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg', stock: 1, minStock: 2, cost: 70000, notes: '' },
@@ -3214,6 +3214,26 @@ function renderMovementsTable() {
 var MANO_OBRA = 10000;
 var MARGEN_PCT = 0.50;
 var manillasData = loadData('manillas', []);
+
+// Migración v4: el costo de balines/barriles "xN" era el del paquete; se vuelve costo unitario
+if (!localStorage.getItem('sefira_migration_v4')) {
+  inventoryData.forEach(function(i) {
+    var m = /x(\d+)\s*$/i.exec(i.name || '');
+    var n = m ? parseInt(m[1]) : 0;
+    if (n > 1 && i.cost >= 25000) i.cost = Math.round(i.cost / n);
+  });
+  saveData('inventory', inventoryData);
+  manillasData.forEach(function(man) {
+    (man.pieces || []).forEach(function(p) {
+      var inv = inventoryData.find(function(i) { return i.id === p.id; });
+      if (inv) p.cost = inv.cost;
+    });
+    man.costPieces = (man.pieces || []).reduce(function(s, p) { return s + p.cost * p.qty; }, 0);
+    man.costTotal = man.costPieces + (man.manoObra || MANO_OBRA);
+  });
+  saveData('manillas', manillasData);
+  localStorage.setItem('sefira_migration_v4', 'done');
+}
 var currentManillaPieces = [];
 
 function getInventoryItems() {
@@ -3653,57 +3673,56 @@ var MKT_PLAN = [
   ]}
 ];
 
-var MKT_COPYS = {
-  'Manilla Tebol': {
-    instagram: '✨ Manilla Tebol — Oro suizo 18K\nDiseño artesanal que habla por ti.\n\n💰 $420.000 COP\n📦 Envío a toda Colombia\n🔗 Catálogo completo: sefira.vip\n\n#JoyeríaColombia #Oro18K #ManillasDeOro #SÉFIRA #OroSuizo #HechoAMano',
-    tiktok: '¿Buscas algo diferente en oro? 🔥 Manilla Tebol en oro suizo 18K — hecha a mano, diseño único.\n\n#joyeriacolombia #oro18k #manillasdeoro #sefira #hechoamano #orosuizo',
-    pinterest: 'Manilla Tebol en Oro Suizo 18K | Diseño artesanal exclusivo | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
-    mercadolibre: 'Manilla Tebol Artesanal Oro Suizo 18K — SÉFIRA Joyería\n\nManilla artesanal modelo Tebol, elaborada en oro suizo 18 kilates. Diseño exclusivo hecho a mano. Incluye certificado de garantía.\n\n• Material: Oro suizo 18K\n• Tipo: Artesanal\n• Envío: A toda Colombia\n• Garantía: Certificado incluido',
-    whatsapp: '✨ *Manilla Tebol* — Oro suizo 18K\nDiseño artesanal hecho a mano.\n💰 $420.000\n📦 Envío a toda Colombia\n👉 Catálogo: sefira.vip'
-  },
-  'Manilla con Inicial': {
-    instagram: '✨ Tu inicial, tu estilo — Manilla con Inicial en Oro 18K\nPersonalízala con la letra que te identifica.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#ManillaPersonalizada #Oro18K #JoyeríaColombia #SÉFIRA #RegaloEspecial',
-    tiktok: 'Tu nombre, tu joya 💫 Manilla con Inicial en oro 18K — personalízala con tu letra.\n\n#manillapersonalizada #oro18k #joyeriacolombia #sefira #regaloperfecto',
-    pinterest: 'Manilla con Inicial Oro 18K | Joyería personalizada | SÉFIRA | Envíos Colombia | sefira.vip',
-    mercadolibre: 'Manilla con Inicial Personalizada Oro Suizo 18K — SÉFIRA\n\nManilla personalizable con la inicial de tu elección, elaborada en oro suizo 18 kilates. Regalo perfecto y único.\n\n• Material: Oro suizo 18K\n• Personalización: Inicial a elección\n• Envío: A toda Colombia',
-    whatsapp: '✨ *Manilla con Inicial* — Oro 18K\nPersonalízala con tu letra.\n📦 Envío a toda Colombia\n👉 sefira.vip'
-  },
-  'Manilla Virgen': {
-    instagram: '🙏 Manilla de la Virgen — Oro suizo 18K\nFe y elegancia en una sola pieza artesanal.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#ManillaVirgen #Oro18K #JoyeríaReligiosa #SÉFIRA #FeyEstilo',
-    tiktok: 'Fe y estilo en tu muñeca 🙏✨ Manilla de la Virgen en oro suizo 18K.\n\n#manillavirgen #oro18k #joyeriareligiosa #sefira #joyeriacolombia',
-    pinterest: 'Manilla Virgen Oro 18K | Joyería religiosa artesanal | SÉFIRA | Envíos Colombia | sefira.vip',
-    mercadolibre: 'Manilla Virgen Artesanal Oro Suizo 18K — SÉFIRA Joyería\n\nManilla artesanal con imagen de la Virgen, elaborada en oro suizo 18 kilates. Pieza de fe y elegancia.\n\n• Material: Oro suizo 18K\n• Tipo: Artesanal religiosa\n• Envío: A toda Colombia',
-    whatsapp: '🙏 *Manilla de la Virgen* — Oro 18K\nFe y elegancia artesanal.\n📦 Envío a toda Colombia\n👉 sefira.vip'
-  },
-  'Topos Grandes': {
-    instagram: '✨ Topos Grandes — Oro suizo 18K\nBrillo que no pasa desapercibido.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#ToposDeOro #AretesOro #Oro18K #JoyeríaColombia #SÉFIRA #BrilloReal',
-    tiktok: 'Brillo real, oro real ✨ Topos Grandes en oro suizo 18K — el complemento perfecto.\n\n#toposdeoro #aretes #oro18k #sefira #joyeriacolombia',
-    pinterest: 'Topos Grandes Oro 18K | Aretes artesanales | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
-    mercadolibre: 'Topos Aretes Grandes Oro Suizo 18K — SÉFIRA Joyería\n\nTopos (aretes) grandes en oro suizo 18 kilates. Brillo auténtico, elaboración artesanal.\n\n• Material: Oro suizo 18K\n• Tipo: Topos grandes\n• Envío: A toda Colombia',
-    whatsapp: '✨ *Topos Grandes* — Oro 18K\nBrillo que no pasa desapercibido.\n📦 Envío a toda Colombia\n👉 sefira.vip'
-  },
-  'Manilla Hilo Rojo': {
-    instagram: '❤️ Manilla Hilo Rojo — Oro suizo 18K\nEl hilo rojo del destino con toque de oro.\n\n💰 Consultar precio por DM\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#HiloRojo #ManillaOro #Oro18K #SÉFIRA #Protección #JoyeríaColombia',
-    tiktok: 'El hilo rojo del destino + oro 18K ❤️✨ Protección y estilo en una manilla.\n\n#hilorojo #manilla #oro18k #sefira #joyeriacolombia #proteccion',
-    pinterest: 'Manilla Hilo Rojo Oro 18K | Protección y estilo | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
-    mercadolibre: 'Manilla Hilo Rojo Oro Suizo 18K — SÉFIRA Joyería\n\nManilla de hilo rojo con detalle en oro suizo 18 kilates. Símbolo de protección con elegancia.\n\n• Material: Hilo rojo + Oro suizo 18K\n• Significado: Protección\n• Envío: A toda Colombia',
-    whatsapp: '❤️ *Manilla Hilo Rojo* — Oro 18K\nProtección y estilo.\n📦 Envío a toda Colombia\n👉 sefira.vip'
-  },
-  'Anillo Cartier': {
-    instagram: '💎 Anillo tipo Cartier — Oro suizo 18K\nElegancia clásica que nunca pasa de moda.\n\n💰 $380.000 COP\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#AnilloCartier #Oro18K #JoyeríaColombia #SÉFIRA #AnilloDeOro #Elegancia',
-    tiktok: 'Elegancia que nunca pasa de moda 💎 Anillo tipo Cartier en oro suizo 18K.\n\n#anillocartier #oro18k #joyeriacolombia #sefira #anillodeoro',
-    pinterest: 'Anillo tipo Cartier Oro 18K | Elegancia clásica | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
-    mercadolibre: 'Anillo Tipo Cartier Oro Suizo 18K — SÉFIRA Joyería Artesanal\n\nAnillo inspirado en diseño Cartier, elaborado en oro suizo 18 kilates. Pieza elegante y atemporal.\n\n• Material: Oro suizo 18K\n• Estilo: Tipo Cartier\n• Envío: A toda Colombia\n• Garantía: Certificado incluido',
-    whatsapp: '💎 *Anillo tipo Cartier* — Oro 18K\nElegancia clásica.\n💰 $380.000\n📦 Envío a toda Colombia\n👉 sefira.vip'
-  },
-  'Cadena Gucci': {
-    instagram: '🔗 Cadena tipo Gucci 60cm — Oro suizo 18K\nPresencia y estilo en cada eslabón.\n\n💰 $850.000 COP\n📦 Envío a toda Colombia\n🔗 sefira.vip\n\n#CadenaGucci #CadenaDeOro #Oro18K #JoyeríaColombia #SÉFIRA #EstiloMasculino',
-    tiktok: 'Presencia real con oro real 🔗🔥 Cadena tipo Gucci 60cm en oro suizo 18K.\n\n#cadenagucci #oro18k #cadenadeoro #sefira #joyeriacolombia',
-    pinterest: 'Cadena Gucci 60cm Oro 18K | Estilo y presencia | SÉFIRA Joyería | Envíos Colombia | sefira.vip',
-    mercadolibre: 'Cadena Tipo Gucci 60cm Oro Suizo 18K — Envío Gratis — SÉFIRA\n\nCadena tipo Gucci de 60cm, elaborada en oro suizo 18 kilates. Presencia y estilo garantizado.\n\n• Material: Oro suizo 18K\n• Largo: 60cm\n• Envío: Gratis a toda Colombia',
-    whatsapp: '🔗 *Cadena tipo Gucci 60cm* — Oro 18K\nPresencia en cada eslabón.\n💰 $850.000\n📦 Envío a toda Colombia\n👉 sefira.vip'
+function mktEsc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function mktGetProducts() {
+  var list = [], seen = {};
+  function add(id, name, price, category, desc) {
+    if (!name || seen[id]) return;
+    seen[id] = true;
+    list.push({ id: id, name: name, price: price || 0, category: category || '', desc: desc || '' });
   }
-};
+  adminProducts.forEach(function(p) { add(p.id, p.name, p.price, p.category, p.description); });
+  manillasData.forEach(function(m) {
+    var piezas = (m.pieces || []).map(function(p) { return p.qty + ' ' + p.name; }).join(', ');
+    add(m.id, m.name, m.salePrice, 'pulseras', piezas ? 'Manilla artesanal con ' + piezas + '. Hecha a mano en oro suizo 18K.' : '');
+  });
+  return list;
+}
+
+function mktBuildCopy(p, platform) {
+  var price = p.price > 0 ? '$' + p.price.toLocaleString('es-CO') : '';
+  var priceLine = price ? '💰 ' + price + ' COP\n' : '💰 Consultar precio por DM\n';
+  var desc = p.desc || 'Diseño artesanal que habla por ti.';
+  var tagsByCat = {
+    anillos: '#AnillosDeOro #AnilloOro18K #AnilloDeLujo',
+    cadenas: '#CadenasDeOro #CadenaOro18K #CollarDeOro',
+    pulseras: '#ManillasDeOro #PulserasDeOro #ManillaArtesanal',
+    aretes: '#AretesDeOro #ToposDeOro #AretesOro18K'
+  };
+  var tags = (tagsByCat[p.category] || '') + ' #JoyeríaColombia #Oro18K #SÉFIRA #OroSuizo #HechoAMano';
+  tags = tags.trim();
+  var tagsLower = tags.toLowerCase();
+
+  if (platform === 'instagram') {
+    return '✨ ' + p.name + ' — Oro suizo 18K\n' + desc + '\n\n' + priceLine + '📦 Envío a toda Colombia\n🔗 Catálogo completo: sefira.vip\n\n' + tags;
+  }
+  if (platform === 'tiktok') {
+    return '¿Buscas algo diferente en oro? 🔥 ' + p.name + ' en oro suizo 18K — diseño único.\n' + (price ? price + ' · ' : '') + 'Pedidos por WhatsApp 👇\n\n' + tagsLower;
+  }
+  if (platform === 'pinterest') {
+    return p.name + ' en Oro Suizo 18K | ' + desc + ' | SÉFIRA Joyería | Envíos Colombia | sefira.vip';
+  }
+  if (platform === 'mercadolibre') {
+    return p.name + ' Oro Suizo 18K — SÉFIRA Joyería\n\n' + desc + '\n\n• Material: Oro suizo 18K\n• Hecho a mano\n• Envío: A toda Colombia\n' + (price ? '• Precio: ' + price + '\n' : '') + '• Garantía: Certificado incluido';
+  }
+  if (platform === 'whatsapp') {
+    return '✨ *' + p.name + '* — Oro suizo 18K\n' + desc + '\n' + (price ? '💰 ' + price + '\n' : '💰 Consultar precio\n') + '📦 Envío a toda Colombia\n👉 Catálogo: sefira.vip';
+  }
+  return 'Copy no disponible para esta plataforma';
+}
 
 var MKT_HASHTAGS = {
   'General SÉFIRA': '#JoyeríaColombia #OroSuizo #Oro18K #JoyeríaArtesanal #SÉFIRA #HechoAMano #JoyeríaMedellín #AccesoriosDorados #ModaColombia #EstiloColombia',
@@ -3856,16 +3875,24 @@ function renderMktCalendar() {
 function populateMktCopyProducts() {
   var sel = document.getElementById('mktCopyProduct');
   if (!sel) return;
-  var names = Object.keys(MKT_COPYS);
-  sel.innerHTML = names.map(function(n) { return '<option value="' + n + '">' + n + '</option>'; }).join('');
+  var previous = sel.value;
+  var items = mktGetProducts();
+  if (items.length === 0) {
+    sel.innerHTML = '<option value="">Aún no hay productos creados</option>';
+    return;
+  }
+  sel.innerHTML = items.map(function(p) { return '<option value="' + mktEsc(p.id) + '">' + mktEsc(p.name) + '</option>'; }).join('');
+  if (previous && items.some(function(p) { return p.id === previous; })) sel.value = previous;
 }
 
 function renderMktCopys() {
   var product = document.getElementById('mktCopyProduct').value;
   var platform = document.getElementById('mktCopyPlatform').value;
   var c = document.getElementById('mktCopyResult');
-  if (!c || !MKT_COPYS[product]) { c.innerHTML = '<span style="color:var(--text-muted);">Selecciona un producto</span>'; return; }
-  var text = MKT_COPYS[product][platform] || 'Copy no disponible para esta plataforma';
+  if (!c) return;
+  var item = mktGetProducts().find(function(p) { return p.id === product; });
+  if (!item) { c.innerHTML = '<span style="color:var(--text-muted);">Crea un producto o una manilla y aparecerá aquí con su precio real</span>'; return; }
+  var text = mktEsc(mktBuildCopy(item, platform));
   c.innerHTML = '<div style="color:var(--diamond);">' + text.replace(/\n/g, '<br>') + '</div>' +
     '<button onclick="copyMktText(this)" style="position:absolute;top:0.5rem;right:0.5rem;background:var(--gold);color:#000;border:none;padding:0.3rem 0.6rem;border-radius:4px;font-size:0.6rem;cursor:pointer;">Copiar</button>';
 }
