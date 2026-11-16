@@ -1335,8 +1335,14 @@ Oro suizo 18K — SÉFIRA ✨
           <h1 class="page-title">Inventario Insumos</h1>
           <p class="page-subtitle">Materia prima e insumos para armar productos. Acá se lleva la contabilidad.</p>
         </div>
-        <button class="btn btn-gold" onclick="openInventoryForm()">+ Agregar insumo</button>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn" onclick="downloadBackup()">Descargar copia de seguridad</button>
+          <button class="btn" onclick="document.getElementById('restoreFile').click()">Restaurar copia</button>
+          <input type="file" id="restoreFile" accept=".json,application/json" style="display:none" onchange="restoreBackup(this)">
+          <button class="btn btn-gold" onclick="openInventoryForm()">+ Agregar insumo</button>
+        </div>
       </div>
+      <div id="backupStatus" style="margin:-0.5rem 0 1rem;font-size:0.75rem;"></div>
 
       <div class="inv-summary">
         <div class="stat-card"><div class="stat-label">Total unidades</div><div class="stat-value" id="invTotalValue">0</div></div>
@@ -1984,7 +1990,85 @@ function loadData(key, fallback) {
   catch { return fallback; }
 }
 function saveData(key, data) {
-  localStorage.setItem('sefira_' + key, JSON.stringify(data));
+  try {
+    localStorage.setItem('sefira_' + key, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    alert('No se pudo guardar "' + key + '": el navegador se quedó sin espacio. Descarga una copia de seguridad en Inventario Insumos y avísame.');
+    return false;
+  }
+}
+
+if (navigator.storage && navigator.storage.persist) { navigator.storage.persist().catch(function() {}); }
+
+var BACKUP_KEYS = ['inventory', 'inv_movements', 'manillas', 'catalog_manillas', 'products', 'orders', 'clients', 'catalog_public'];
+
+function downloadBackup() {
+  var backup = { app: 'sefira', fecha: new Date().toISOString(), datos: {} };
+  BACKUP_KEYS.forEach(function(k) {
+    var v = localStorage.getItem('sefira_' + k);
+    if (v !== null) backup.datos[k] = v;
+  });
+  var blob = new Blob([JSON.stringify(backup)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sefira-copia-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  localStorage.setItem('sefira_last_backup', String(Date.now()));
+  updateBackupStatus();
+}
+
+function restoreBackup(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var backup = JSON.parse(e.target.result);
+      if (backup.app !== 'sefira' || !backup.datos) throw new Error('formato');
+      if (!confirm('Esto reemplaza tu inventario, manillas y productos actuales por los de la copia del ' + (backup.fecha || '').slice(0, 10) + '. ¿Continuar?')) return;
+      Object.keys(backup.datos).forEach(function(k) {
+        if (BACKUP_KEYS.indexOf(k) >= 0) localStorage.setItem('sefira_' + k, backup.datos[k]);
+      });
+      location.reload();
+    } catch (err) {
+      alert('Ese archivo no es una copia de seguridad de SÉFIRA.');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function updateBackupStatus() {
+  var el = document.getElementById('backupStatus');
+  if (!el) return;
+  var last = parseInt(localStorage.getItem('sefira_last_backup') || '0');
+  if (!last) {
+    el.style.color = 'var(--red)';
+    el.textContent = 'Aún no has descargado una copia de seguridad. Tus fotos e inventario solo viven en este navegador: descarga una copia.';
+    return;
+  }
+  var days = Math.floor((Date.now() - last) / 86400000);
+  el.style.color = days >= 7 ? 'var(--red)' : 'var(--green)';
+  el.textContent = days === 0 ? 'Última copia de seguridad: hoy.' : 'Última copia de seguridad: hace ' + days + ' día' + (days === 1 ? '' : 's') + (days >= 7 ? '. Descarga una nueva.' : '.');
+}
+
+function compressImage(file, maxSide, cb) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      cb(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = function() { cb(e.target.result); };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 async function sheetsGet() {
@@ -2193,6 +2277,7 @@ function showPanel(name, el) {
   if (name === 'manillas') renderManillasTable();
   if (name === 'reports') updateReports();
   if (name === 'marketing') initMarketing();
+  if (name === 'inventory') updateBackupStatus();
 }
 
 // ==================== DASHBOARD ====================
@@ -3005,23 +3090,23 @@ var FACTURA_COSTS = {
   'SEF-017': 50000, 'SEF-018': 40000, 'SEF-019': 35000
 };
 var inventoryData = loadData('inventory', [
-  { id: 'INV-001', name: 'Balín Diamantado #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 10500, notes: '' },
-  { id: 'INV-002', name: 'Balín Diamantado #4 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 13000, notes: '' },
-  { id: 'INV-003', name: 'Balín Diamantado #5 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 14000, notes: '' },
-  { id: 'INV-004', name: 'Balín Diamantado #6 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 17000, notes: '' },
-  { id: 'INV-005', name: 'Balín Diamantado #8 x4', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 4, minStock: 3, cost: 19500, notes: '' },
-  { id: 'INV-006', name: 'Balín Liso #3 x10', image: 'assets/img/productos/Gemini_Generated_Image_ujn2uvujn2uvujn2.jpg', stock: 10, minStock: 5, cost: 5000, notes: '' },
-  { id: 'INV-007', name: 'Cadena Gucci 60cm', image: 'assets/img/productos/Gemini_Generated_Image_nlywhqnlywhqnlyw.jpg', stock: 1, minStock: 2, cost: 255000, notes: '' },
-  { id: 'INV-008', name: 'Topos Esmeralda', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 65000, notes: '' },
-  { id: 'INV-009', name: 'Barriles x10', image: 'assets/img/productos/Gemini_Generated_Image_uvco3ouvco3ouvco.jpg', stock: 10, minStock: 5, cost: 16000, notes: '' },
-  { id: 'INV-010', name: 'Dije Inicial M', image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
-  { id: 'INV-011', name: 'Dije Inicial S', image: 'assets/img/productos/Gemini_Generated_Image_qfwcq8qfwcq8qfwc.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
-  { id: 'INV-012', name: 'Dije Infinito', image: 'assets/img/productos/Gemini_Generated_Image_949dwf949dwf949d.jpg', stock: 1, minStock: 2, cost: 70000, notes: '' },
-  { id: 'INV-013', name: 'Dije Virgen', image: 'assets/img/productos/Gemini_Generated_Image_grgkz2grgkz2grgk.jpg', stock: 1, minStock: 2, cost: 65000, notes: '' },
-  { id: 'INV-014', name: 'Topos Oro Grande', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 50000, notes: '' },
-  { id: 'INV-015', name: 'Topos Oro Mediano', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 40000, notes: '' },
-  { id: 'INV-016', name: 'Topos Oro Pequeño', image: 'assets/img/productos/Gemini_Generated_Image_m8fq57m8fq57m8fq.jpg', stock: 1, minStock: 2, cost: 35000, notes: '' },
-  { id: 'INV-017', name: 'Dije Trébol', image: 'assets/img/productos/Gemini_Generated_Image_jl0l7njl0l7njl0l.jpg', stock: 1, minStock: 2, cost: 45000, notes: '' },
+  { id: 'INV-001', name: 'Balín Diamantado #3 x10', image: '', stock: 10, minStock: 5, cost: 10500, notes: '' },
+  { id: 'INV-002', name: 'Balín Diamantado #4 x10', image: '', stock: 10, minStock: 5, cost: 13000, notes: '' },
+  { id: 'INV-003', name: 'Balín Diamantado #5 x10', image: '', stock: 10, minStock: 5, cost: 14000, notes: '' },
+  { id: 'INV-004', name: 'Balín Diamantado #6 x10', image: '', stock: 10, minStock: 5, cost: 17000, notes: '' },
+  { id: 'INV-005', name: 'Balín Diamantado #8 x4', image: '', stock: 4, minStock: 3, cost: 19500, notes: '' },
+  { id: 'INV-006', name: 'Balín Liso #3 x10', image: '', stock: 10, minStock: 5, cost: 5000, notes: '' },
+  { id: 'INV-007', name: 'Cadena Gucci 60cm', image: '', stock: 1, minStock: 2, cost: 255000, notes: '' },
+  { id: 'INV-008', name: 'Topos Esmeralda', image: '', stock: 1, minStock: 2, cost: 65000, notes: '' },
+  { id: 'INV-009', name: 'Barriles x10', image: '', stock: 10, minStock: 5, cost: 16000, notes: '' },
+  { id: 'INV-010', name: 'Dije Inicial M', image: '', stock: 1, minStock: 2, cost: 45000, notes: '' },
+  { id: 'INV-011', name: 'Dije Inicial S', image: '', stock: 1, minStock: 2, cost: 45000, notes: '' },
+  { id: 'INV-012', name: 'Dije Infinito', image: '', stock: 1, minStock: 2, cost: 70000, notes: '' },
+  { id: 'INV-013', name: 'Dije Virgen', image: '', stock: 1, minStock: 2, cost: 65000, notes: '' },
+  { id: 'INV-014', name: 'Topos Oro Grande', image: '', stock: 1, minStock: 2, cost: 50000, notes: '' },
+  { id: 'INV-015', name: 'Topos Oro Mediano', image: '', stock: 1, minStock: 2, cost: 40000, notes: '' },
+  { id: 'INV-016', name: 'Topos Oro Pequeño', image: '', stock: 1, minStock: 2, cost: 35000, notes: '' },
+  { id: 'INV-017', name: 'Dije Trébol', image: '', stock: 1, minStock: 2, cost: 45000, notes: '' },
 ]);
 var inventoryMovements = loadData('inv_movements', []);
 var invSearchTerm = '';
@@ -3076,13 +3161,11 @@ function previewInvImage(input) {
   var preview = document.getElementById('invImagePreview');
   var img = document.getElementById('invImagePreviewImg');
   if (input.files && input.files[0]) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById('invImage').value = e.target.result;
-      img.src = e.target.result;
+    compressImage(input.files[0], 800, function(dataUrl) {
+      document.getElementById('invImage').value = dataUrl;
+      img.src = dataUrl;
       preview.style.display = 'block';
-    };
-    reader.readAsDataURL(input.files[0]);
+    });
   }
 }
 
